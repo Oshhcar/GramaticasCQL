@@ -86,14 +86,27 @@ namespace GramaticasCQL.Parsers.CQL
                 map_ = ToTerm("map"),
                 list_ = ToTerm("list"),
                 procedure_ = ToTerm("procedure"),
-                call_ = ToTerm("call");
+                call_ = ToTerm("call"),
+                break_ = ToTerm("break"),
+                continue_ = ToTerm("continue"),
+                return_ = ToTerm("return"),
+                cursor_ = ToTerm("cursor"),
+                is_ = ToTerm("is"),
+                each_ = ToTerm("each"),
+                open_ = ToTerm("open"),
+                close_ = ToTerm("close"),
+                log_ = ToTerm("log"),
+                throw_ = ToTerm("throw"),
+                try_ = ToTerm("try"),
+                catch_ = ToTerm("catch");
 
             MarkReservedWords("null", "true", "false", "type", "if", "not", "exist", "int", "double", "string", "boolean",
                 "date", "time", "use", "create", "database", "drop", "table", "counter", "primary", "key", "alter", "add",
                 "truncate", "commit", "rollback", "user", "with", "password", "grant", "on", "revoke", "insert", "into",
                 "values", "update", "set", "where", "delete", "from", "select", "order", "by", "asc", "desc", "limit",
                 "begin", "batch", "apply", "count", "min", "max", "sum", "avg", "in", "else", "switch", "case", "default",
-                "while", "do", "for", "new", "map", "list", "procedure", "call");
+                "while", "do", "for", "new", "map", "list", "procedure", "call", "break", "continue", "return", "cursor",
+                "is", "each", "open", "close", "log", "throw", "try", "catch");
 
             /* Relational operators */
             KeyTerm
@@ -224,6 +237,18 @@ namespace GramaticasCQL.Parsers.CQL
 
                 PROCDEF = new NonTerminal("PROCDEF"),
 
+                BREAK_STMT = new NonTerminal("BREAK_STMT"),
+                CONTINUE_STMT = new NonTerminal("CONTINUE_STMT"),
+                RETURN_STMT = new NonTerminal("RETURN_STMT"),
+
+                CURSOR_STMT = new NonTerminal("CURSOR_STMT"),
+                FOREACH_STMT = new NonTerminal("FOREACH_STMT"),
+                OPEN_STMT = new NonTerminal("OPEN_STMT"),
+                CLOSE_STMT = new NonTerminal("CLOSE_STMT"),
+                LOG_STMT = new NonTerminal("LOG_STMT"),
+                THROW_STMT = new NonTerminal("THROW_STMT"),
+                TRYCATCH_STMT = new NonTerminal("TRYCATCH_STMT"),
+
                 BLOQUE = new NonTerminal("BLOQUE"),
                 SENTENCIAS = new NonTerminal("SENTENCIAS"),
                 SENTENCIA = new NonTerminal("SENTENCIA"),
@@ -296,7 +321,14 @@ namespace GramaticasCQL.Parsers.CQL
                               | DOWHILE_STMT + semicolon
                               | FOR_STMT
                               | FUNDEF
-                              | PROCDEF;
+                              | PROCDEF
+                              | CURSOR_STMT + semicolon
+                              | FOREACH_STMT
+                              | OPEN_STMT + semicolon
+                              | CLOSE_STMT + semicolon
+                              | LOG_STMT + semicolon
+                              | THROW_STMT + semicolon
+                              | TRYCATCH_STMT;
 
             INSTRUCCION.ErrorRule = SyntaxError + semicolon;
 
@@ -402,7 +434,19 @@ namespace GramaticasCQL.Parsers.CQL
                               | SWITCH_STMT
                               | WHILE_STMT
                               | DOWHILE_STMT + semicolon
-                              | FOR_STMT;
+                              | FOR_STMT
+
+                              | BREAK_STMT + semicolon
+                              | CONTINUE_STMT + semicolon
+                              | RETURN_STMT + semicolon
+                              
+                              | CURSOR_STMT + semicolon
+                              | FOREACH_STMT
+                              | OPEN_STMT + semicolon
+                              | CLOSE_STMT + semicolon
+                              | LOG_STMT + semicolon
+                              | THROW_STMT + semicolon
+                              | TRYCATCH_STMT;
 
             TARGET_LIST.Rule = MakePlusRule(TARGET_LIST, comma, TARGET);
 
@@ -458,6 +502,27 @@ namespace GramaticasCQL.Parsers.CQL
                           | procedure_ + identifier + leftPar + PARAMETER_LIST + rightPar + comma + leftPar + rightPar + BLOQUE
                           | procedure_ + identifier + leftPar + rightPar + comma + leftPar + PARAMETER_LIST + rightPar + BLOQUE; ;
 
+            BREAK_STMT.Rule = break_;
+
+            CONTINUE_STMT.Rule = continue_;
+
+            RETURN_STMT.Rule = return_
+                              | return_ + EXPRESSION_LIST;
+
+            CURSOR_STMT.Rule = cursor_ + identifier2 + is_ + SELECT;
+
+            FOREACH_STMT.Rule = for_ + each_ + leftPar + PARAMETER_LIST + rightPar + in_ + identifier2 + BLOQUE;
+
+            OPEN_STMT.Rule = open_ + identifier2;
+
+            CLOSE_STMT.Rule = close_ + identifier2;
+
+            LOG_STMT.Rule = log_ + leftPar + EXPRESSION + rightPar;
+
+            THROW_STMT.Rule = throw_ + new_ + identifier;
+
+            TRYCATCH_STMT.Rule = try_ + BLOQUE + catch_ + PARAMETER_LIST + leftPar + rightPar + BLOQUE;
+
             EXPRESSION_LIST.Rule = MakePlusRule(EXPRESSION_LIST, comma, EXPRESSION);
 
             EXPRESSION.Rule = CONDITIONAL_EXPRESSION | INSTANCE;
@@ -498,7 +563,8 @@ namespace GramaticasCQL.Parsers.CQL
 
             LITERAL.Rule = number | stringliteral | true_ | false_ | date | time | null_;
 
-            ATTRIBUTEREF.Rule = PRIMARY + dot + identifier;
+            ATTRIBUTEREF.Rule = PRIMARY + dot + identifier
+                                | PRIMARY + dot + FUNCALL; //*
 
             AGGREGATION.Rule = AGGREGATION_FUN + leftPar + menorque + SELECT + mayorque + rightPar;
 
