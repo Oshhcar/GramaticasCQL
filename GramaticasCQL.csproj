@@ -60,8 +60,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Parsers\CHISON\AnalizadorCHISON.cs" />
+    <Compile Include="Parsers\CHISON\GramaticaCHISON.cs" />
     <Compile Include="Parsers\CQL\AnalizadorCQL.cs" />
     <Compile Include="Parsers\CQL\GramaticaCQL.cs" />
+    <Compile Include="Parsers\LUP\AnalizadorLUP.cs" />
+    <Compile Include="Parsers\LUP\GramaticaLUP.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

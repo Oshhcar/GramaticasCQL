@@ -1,4 +1,6 @@
-﻿using GramaticasCQL.Parsers.CQL;
+﻿using GramaticasCQL.Parsers.CHISON;
+using GramaticasCQL.Parsers.CQL;
+using GramaticasCQL.Parsers.LUP;
 using Irony;
 using Irony.Parsing;
 using System;
@@ -142,6 +144,88 @@ namespace GramaticasCQL
             }
 
             return nodoString;
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            if (!fastColoredTextBox2.Text.Equals(String.Empty))
+            {
+                AnalizadorLUP analizador = new AnalizadorLUP();
+
+                if (analizador.AnalizarEntrada(fastColoredTextBox2.Text))
+                {
+                    MessageBox.Show("Documento ok.", "Mensaje");
+                    ReporteErrores(analizador.Raiz);
+                }
+                else
+                {
+                    MessageBox.Show("El archivo contiene errores.", "Error");
+                    tabBottom.SelectedTab = tabPage3;
+                    ReporteErrores(analizador.Raiz);
+                }
+            }
+        }
+
+        private void Button3_Click(object sender, EventArgs e)
+        {
+            if (!fastColoredTextBox2.Text.Equals(String.Empty))
+            {
+                AnalizadorLUP analizador = new AnalizadorLUP();
+
+                if (analizador.AnalizarEntrada(fastColoredTextBox2.Text))
+                {
+                    MessageBox.Show("Documento ok.", "Mensaje");
+                    ReporteErrores(analizador.Raiz);
+                    GraficarArbol(analizador.Raiz.Root);
+                }
+                else
+                {
+                    MessageBox.Show("El archivo contiene errores.", "Error");
+                    tabBottom.SelectedTab = tabPage3;
+                    ReporteErrores(analizador.Raiz);
+                }
+            }
+        }
+
+        private void Button4_Click(object sender, EventArgs e)
+        {
+            if (!fastColoredTextBox3.Text.Equals(String.Empty))
+            {
+                AnalizadorCHISON analizador = new AnalizadorCHISON();
+
+                if (analizador.AnalizarEntrada(fastColoredTextBox3.Text))
+                {
+                    MessageBox.Show("Documento ok.", "Mensaje");
+                    ReporteErrores(analizador.Raiz);
+                }
+                else
+                {
+                    MessageBox.Show("El archivo contiene errores.", "Error");
+                    tabBottom.SelectedTab = tabPage3;
+                    ReporteErrores(analizador.Raiz);
+                }
+            }
+        }
+
+        private void Button6_Click(object sender, EventArgs e)
+        {
+            if (!fastColoredTextBox3.Text.Equals(String.Empty))
+            {
+                AnalizadorCHISON analizador = new AnalizadorCHISON();
+
+                if (analizador.AnalizarEntrada(fastColoredTextBox3.Text))
+                {
+                    MessageBox.Show("Documento ok.", "Mensaje");
+                    ReporteErrores(analizador.Raiz);
+                    GraficarArbol(analizador.Raiz.Root);
+                }
+                else
+                {
+                    MessageBox.Show("El archivo contiene errores.", "Error");
+                    tabBottom.SelectedTab = tabPage3;
+                    ReporteErrores(analizador.Raiz);
+                }
+            }
         }
     }
 }
