@@ -121,7 +121,7 @@ namespace GramaticasCQL.Parsers.CQL
             KeyTerm
                 or = ToTerm("||"),
                 and = ToTerm("&&"),
-                xor = ToTerm("xor"),
+                xor = ToTerm("^"),
                 not = ToTerm("!");
 
             /* Shift operators */
@@ -155,18 +155,21 @@ namespace GramaticasCQL.Parsers.CQL
                 masEqual = ToTerm("+="),
                 menosEqual = ToTerm("-="),
                 porEqual = ToTerm("*="),
-                divisionEqual = ToTerm("/=");
+                divisionEqual = ToTerm("/="),
+                menormenor = ToTerm("<<"),
+                mayormayor = ToTerm(">>");
 
-            MarkPunctuation("=", ";");
+            MarkPunctuation(";");
 
             var number = new NumberLiteral("number");
             //var identifier = new IdentifierTerminal("identifier");
             RegexBasedTerminal identifier = new RegexBasedTerminal("identifier", "([a-zA-ZñÑ]|_)([a-zA-ZñÑ]|[0-9]|_)*");
-            RegexBasedTerminal identifier2 = new RegexBasedTerminal("identifier", "@([a-zA-ZñÑ]|_)([a-zA-ZñÑ]|[0-9]|_)*");
+            RegexBasedTerminal identifier2 = new RegexBasedTerminal("identifier2", "@([a-zA-ZñÑ]|_)([a-zA-ZñÑ]|[0-9]|_)*");
+            RegexBasedTerminal date = new RegexBasedTerminal("date", "\'([0-2][0-9]{3}|[0-9][0-9]{0,2})-([0]?[0-9]|[1][0-2])-([0]?[0-9]|[1-2][0-9]|[3][0-1])\'");
+            RegexBasedTerminal time = new RegexBasedTerminal("time", "\'([0]?[0-9]|[1][0-9]|[2][0-4]):([0]?[0-9]|[1-5][0-9]):([0]?[0-9]|[1-5][0-9])\'");
+            //RegexBasedTerminal date = new RegexBasedTerminal("date", "\'[0-9]+-[0-9]+-[0-9]+\'");
+            //RegexBasedTerminal time = new RegexBasedTerminal("time", "\'[0-9]+:[0-9] +:[0-9]+\'");
             var stringliteral = new StringLiteral("stringliteral", "\"", StringOptions.IsTemplate);
-            //String 2
-            RegexBasedTerminal date = new RegexBasedTerminal("date", "'[0-2][0-9]{3}-([0][0-9]|[1][0-2])-([0][0-9]|[1][0-9]|[2][0-9]|[3][0-1])'");
-            RegexBasedTerminal time = new RegexBasedTerminal("time", "'([0][0-9]|[1][0-9]|[2][0-4]):[0-5][0-9]:[0-5][0-9]'");
 
             NonTerminal
                 INICIO = new NonTerminal("INICIO"),
@@ -219,7 +222,7 @@ namespace GramaticasCQL.Parsers.CQL
 
                 DECLARATION_STMT = new NonTerminal("DECLARATION_STMT"),
                 AUGMENTED_ASSIGNMENT_STMT = new NonTerminal("AUGMENTED_ASSIGNMENT_STMT"),
-                AUGTARGET = new NonTerminal("AUGTARGET"),
+                //AUGTARGET = new NonTerminal("AUGTARGET"),
                 AUG_OPERATOR = new NonTerminal("AUG_OPERATOR"),
 
                 IF_STMT = new NonTerminal("IF_STMT"),
@@ -264,16 +267,16 @@ namespace GramaticasCQL.Parsers.CQL
                 EXPRESSION = new NonTerminal("EXPRESSION"),
                 CONDITIONAL_EXPRESSION = new NonTerminal("CONDITIONAL_EXPRESSION"),
                 INSTANCE = new NonTerminal("INSTANCE"),
-                OR_EXPR = new NonTerminal("OR_EXP"),
-                AND_EXPR = new NonTerminal("AND_EXP"),
-                XOR_EXPR = new NonTerminal("XOR_EXP"),
-                NOT_EXPR = new NonTerminal("NOT_EXP"),
+                OR_EXPR = new NonTerminal("OR_EXPR"),
+                AND_EXPR = new NonTerminal("AND_EXPR"),
+                XOR_EXPR = new NonTerminal("XOR_EXPR"),
+                NOT_EXPR = new NonTerminal("NOT_EXPR"),
                 COMPARISON = new NonTerminal("COMPARISON"),
                 COMP_OPERATOR = new NonTerminal("COMP_OPERATOR"),
                 SHIFT_EXPR = new NonTerminal("SHIFT_EXPR"),
-                A_EXPR = new NonTerminal("A_EXP"),
-                M_EXPR = new NonTerminal("M_EXP"),
-                U_EXPR = new NonTerminal("U_EXP"),
+                A_EXPR = new NonTerminal("A_EXPR"),
+                M_EXPR = new NonTerminal("M_EXPR"),
+                U_EXPR = new NonTerminal("U_EXPR"),
                 POWER = new NonTerminal("POWER"),
                 PRIMARY = new NonTerminal("PRIMARY"),
                 ATOM = new NonTerminal("ATOM"),
@@ -330,7 +333,7 @@ namespace GramaticasCQL.Parsers.CQL
                               | THROW_STMT + semicolon
                               | TRYCATCH_STMT;
 
-            INSTRUCCION.ErrorRule = SyntaxError + semicolon;
+            //INSTRUCCION.ErrorRule = SyntaxError + semicolon;
 
 
             TYPE.Rule = int_ | double_ | string_ | boolean_ | date_ | time_ | identifier | counter_ | map_ | list_ | set_;
@@ -421,7 +424,8 @@ namespace GramaticasCQL.Parsers.CQL
 
             ////////////////////////////////////////////////////////////////
 
-            BLOQUE.Rule = leftLla + SENTENCIAS + rightLla;
+            BLOQUE.Rule = leftLla + SENTENCIAS + rightLla
+                        | leftLla + rightLla;
 
             SENTENCIAS.Rule = MakePlusRule(SENTENCIAS, SENTENCIA);
 
@@ -459,19 +463,19 @@ namespace GramaticasCQL.Parsers.CQL
             DECLARATION_STMT.Rule = TYPE + TARGET_LIST
                                    | TYPE + TARGET_LIST + equal + EXPRESSION;
 
-            ASSIGNMENT_STMT.Rule = TARGET_LIST + equal + EXPRESSION;
+            ASSIGNMENT_STMT.Rule = TARGET + equal + EXPRESSION;
 
             ASSIGNMENT_LIST.Rule = MakePlusRule(ASSIGNMENT_LIST, comma, ASSIGNMENT_STMT);
 
-            AUGMENTED_ASSIGNMENT_STMT.Rule = AUGTARGET + AUG_OPERATOR + EXPRESSION;
+            AUGMENTED_ASSIGNMENT_STMT.Rule = TARGET + AUG_OPERATOR + EXPRESSION;
 
-            AUGTARGET.Rule = identifier | identifier2 | ATTRIBUTEREF; //*
+            //AUGTARGET.Rule = identifier | identifier2 | ATTRIBUTEREF; //*
 
             AUG_OPERATOR.Rule = masEqual | menosEqual | porEqual | divisionEqual;
 
             IF_STMT.Rule = IF_LIST + else_ + BLOQUE
                         | IF_LIST;
-
+             
             IF_LIST.Rule = IF_LIST + else_ + if_ + leftPar + EXPRESSION + rightPar + BLOQUE
                           | if_ + leftPar + EXPRESSION + rightPar + BLOQUE;
 
@@ -566,7 +570,7 @@ namespace GramaticasCQL.Parsers.CQL
             ATTRIBUTEREF.Rule = PRIMARY + dot + identifier
                                 | PRIMARY + dot + FUNCALL; //*
 
-            AGGREGATION.Rule = AGGREGATION_FUN + leftPar + menorque + SELECT + mayorque + rightPar;
+            AGGREGATION.Rule = AGGREGATION_FUN + leftPar + menormenor + SELECT + mayormayor + rightPar;
 
             AGGREGATION_FUN.Rule = count_ | min_ | max_ | sum_ | avg_;
 

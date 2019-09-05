@@ -1,5 +1,7 @@
-﻿using GramaticasCQL.Parsers.CHISON;
+﻿using GramaticasCQL.Parsers;
+using GramaticasCQL.Parsers.CHISON;
 using GramaticasCQL.Parsers.CQL;
+using GramaticasCQL.Parsers.CQL.ast;
 using GramaticasCQL.Parsers.LUP;
 using Irony;
 using Irony.Parsing;
@@ -32,8 +34,38 @@ namespace GramaticasCQL
 
                 if (analizador.AnalizarEntrada(txtSource.Text))
                 {
-                    MessageBox.Show("Documento ok.", "Mensaje");
-                    ReporteErrores(analizador.Raiz);
+                    ASTCQL ast = (ASTCQL) analizador.GenerarArbol(analizador.Raiz.Root);
+
+                    if (ast != null)
+                    {
+                        //MessageBox.Show("Documento ok.", "Mensaje");
+                        ReporteErrores(analizador.Raiz);
+
+                        LinkedList<string> log = new LinkedList<string>();
+                        LinkedList<Error> errores = new LinkedList<Error>();
+
+                        ast.Ejecutar(log, errores);
+
+                        if (log.Count() > 0)
+                        {
+                            tabBottom.SelectedTab = pageLanguage;
+
+                            foreach (string l in log)
+                            {
+                                rtbSalida.Text += l + "\n";
+                            }
+                        }
+
+                        if (errores.Count() > 0)
+                        {
+                            foreach (Error error in errores)
+                            {
+                                gridErrors.Rows.Add("Semántico", error.Descripcion, error.Linea);
+                            }
+                        }
+                       
+                    }
+                    
                 }
                 else
                 {

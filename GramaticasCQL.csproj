@@ -63,7 +63,36 @@
     <Compile Include="Parsers\CHISON\AnalizadorCHISON.cs" />
     <Compile Include="Parsers\CHISON\GramaticaCHISON.cs" />
     <Compile Include="Parsers\CQL\AnalizadorCQL.cs" />
+    <Compile Include="Parsers\CQL\ast\ASTCQL.cs" />
+    <Compile Include="Parsers\CQL\ast\entorno\Date.cs" />
+    <Compile Include="Parsers\CQL\ast\entorno\Entorno.cs" />
+    <Compile Include="Parsers\CQL\ast\entorno\Null.cs" />
+    <Compile Include="Parsers\CQL\ast\entorno\Simbolo.cs" />
+    <Compile Include="Parsers\CQL\ast\entorno\Cadena.cs" />
+    <Compile Include="Parsers\CQL\ast\entorno\Time.cs" />
+    <Compile Include="Parsers\CQL\ast\entorno\Tipo.cs" />
+    <Compile Include="Parsers\CQL\ast\expresion\Expresion.cs" />
+    <Compile Include="Parsers\CQL\ast\expresion\Identificador.cs" />
+    <Compile Include="Parsers\CQL\ast\expresion\Literal.cs" />
+    <Compile Include="Parsers\CQL\ast\expresion\operacion\Aritmetica.cs" />
+    <Compile Include="Parsers\CQL\ast\expresion\operacion\Logica.cs" />
+    <Compile Include="Parsers\CQL\ast\expresion\operacion\Operacion.cs" />
+    <Compile Include="Parsers\CQL\ast\expresion\operacion\Relacional.cs" />
+    <Compile Include="Parsers\CQL\ast\expresion\operacion\Unario.cs" />
+    <Compile Include="Parsers\CQL\ast\expresion\Ternario.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\Asignacion.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\AsignacionOperacion.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\Bloque.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\condicionales\Case.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\condicionales\If.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\condicionales\SubIf.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\condicionales\Switch.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\Declaracion.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\Instruccion.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\Log.cs" />
+    <Compile Include="Parsers\CQL\ast\NodoASTCQL.cs" />
     <Compile Include="Parsers\CQL\GramaticaCQL.cs" />
+    <Compile Include="Parsers\Error.cs" />
     <Compile Include="Parsers\LUP\AnalizadorLUP.cs" />
     <Compile Include="Parsers\LUP\GramaticaLUP.cs" />
     <Compile Include="Program.cs" />
@@ -93,5 +122,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
