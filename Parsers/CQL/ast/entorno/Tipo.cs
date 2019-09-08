@@ -80,4 +80,10 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         SET,
         NULL
     }
+
+    public enum Rol
+    {
+        VARIABLE,
+        FUNCION
+    }
 }

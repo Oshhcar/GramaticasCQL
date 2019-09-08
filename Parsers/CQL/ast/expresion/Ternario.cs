@@ -20,9 +20,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
         public Expresion V { get; set; }
         public Expresion F { get; set; }
 
-        public override object GetValor(Entorno e, LinkedList<Error> errores)
+        public override object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores)
         {
-            object valExpr = Expr.GetValor(e, errores);
+            object valExpr = Expr.GetValor(e, log, errores);
 
             if (valExpr != null)
             {
@@ -30,7 +30,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                 {
                     if ((Boolean)valExpr)
                     {
-                        object valV = V.GetValor(e, errores);
+                        object valV = V.GetValor(e, log, errores);
 
                         if (valV != null)
                         {
@@ -40,7 +40,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                     }
                     else
                     {
-                        object valF = F.GetValor(e, errores);
+                        object valF = F.GetValor(e, log, errores);
 
                         if (valF != null)
                         {

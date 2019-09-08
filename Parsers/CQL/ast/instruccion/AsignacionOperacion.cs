@@ -24,7 +24,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
         public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<string> log, LinkedList<Error> errores)
         {
-            object valExpr = Expr.GetValor(e, errores);
+            object valExpr = Expr.GetValor(e, log, errores);
 
             if (valExpr != null)
             {
@@ -33,7 +33,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                 if (sim != null)
                 {
                     Aritmetica arit = new Aritmetica(new Literal(sim.Tipo, sim.Valor, Linea, Columna), new Literal(Expr.Tipo, valExpr, Linea, Columna), Op, Linea, Columna);
-                    object valArit = arit.GetValor(e, errores);
+                    object valArit = arit.GetValor(e, log, errores);
 
                     if (valArit != null)
                     {

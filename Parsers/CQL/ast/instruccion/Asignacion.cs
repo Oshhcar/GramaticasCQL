@@ -21,7 +21,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
         public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<string> log, LinkedList<Error> errores)
         {
-            Object valExpr = Expr.GetValor(e, errores);
+            Object valExpr = Expr.GetValor(e, log, errores);
 
             if (valExpr != null)
             {
@@ -34,6 +34,21 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                         sim.Valor = valExpr;
                         return null;
                     }
+                    else
+                    {
+                        Casteo cast = new Casteo(sim.Tipo, new Literal(Expr.Tipo, valExpr, 0, 0), 0, 0)
+                        {
+                            Mostrar = false
+                        };
+                        valExpr = cast.GetValor(e, log, errores);
+
+                        if (valExpr != null)
+                        {
+                            sim.Valor = valExpr;
+                            return null;
+                        }
+                    }
+
                     errores.AddLast(new Error("Semántico", "El valor no corresponde al tipo de la variable.", Linea, Columna));
                     return null;
                 }

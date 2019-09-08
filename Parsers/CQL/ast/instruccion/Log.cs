@@ -19,7 +19,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
         public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<string> log, LinkedList<Error> errores)
         {
-            object valorExpr = Expr.GetValor(e, errores);
+            object valorExpr = Expr.GetValor(e, log, errores);
 
             if (valorExpr != null)
                 log.AddLast(valorExpr.ToString());

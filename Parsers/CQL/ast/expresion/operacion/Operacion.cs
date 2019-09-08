@@ -21,7 +21,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
         public Expresion Op2 { get; set; }
         public Operador Op { get; set; }
 
-        public override object GetValor(Entorno e, LinkedList<Error> errores)
+        public override object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores)
         {
             return null;
         }

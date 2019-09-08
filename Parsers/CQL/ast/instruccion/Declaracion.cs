@@ -23,22 +23,37 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
         public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<string> log, LinkedList<Error> errores)
         {
-            object valorExpr = Expr?.GetValor(e, errores);
-
-            if (Expr != null)
-            {
-                if (valorExpr == null)
-                    return null;
-
-                if (!Tipo.Equals(Expr.Tipo))
-                {
-                    errores.AddLast(new Error("Semántico", "El valor no corresponde al tipo declarado.", Linea, Columna));
-                    return null;
-                }
-            }
-
             foreach (Expresion target in Target)
             {
+                object valorExpr = null;
+
+                if (Target.Last.Value.Equals(target))
+                {
+                    if (Expr != null)
+                    {
+                        valorExpr = Expr.GetValor(e, log, errores);
+
+                        if (valorExpr == null)
+                            return null;
+
+                        if (!Tipo.Equals(Expr.Tipo))
+                        {
+                            Casteo cast = new Casteo(Tipo, new Literal(Expr.Tipo, valorExpr, 0, 0), 0, 0)
+                            {
+                                Mostrar = false
+                            };
+
+                            valorExpr = cast.GetValor(e, log, errores);
+
+                            if (valorExpr == null)
+                            {
+                                errores.AddLast(new Error("Semántico", "El valor no corresponde al tipo declarado.", Linea, Columna));
+                                return null;
+                            }
+                        }
+                    }
+                }
+
                 if (target is Identificador id)
                 {
                     Simbolo sim = e.GetLocal(id.Id);
@@ -49,7 +64,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                         continue;
                     }
 
-                    sim = new Simbolo(Tipo, id.Id, valorExpr);
+                    sim = new Simbolo(Tipo, Rol.VARIABLE, id.Id, valorExpr);
                     e.Add(sim);
                 }
                 else

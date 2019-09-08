@@ -14,15 +14,15 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
 
         public Logica(Expresion op1, int linea, int columna) : base(op1, null, Operador.NOT, linea, columna) { }
 
-        public override object GetValor(Entorno e, LinkedList<Error> errores)
+        public override object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores)
         {
-            object valOp1 = Op1.GetValor(e, errores);
+            object valOp1 = Op1.GetValor(e, log, errores);
 
             if (valOp1 != null)
             {
                 if (Op != Operador.NOT)
                 {
-                    object valOp2 = Op2.GetValor(e, errores);
+                    object valOp2 = Op2.GetValor(e, log, errores);
 
                     if (valOp2 != null)
                     {
@@ -33,11 +33,11 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
                             switch (Op)
                             {
                                 case Operador.OR:
-                                    return (Boolean)valOp1 || (Boolean)valOp2;
+                                    return (bool)valOp1 || (bool)valOp2;
                                 case Operador.AND:
-                                    return (Boolean)valOp1 && (Boolean)valOp2;
+                                    return (bool)valOp1 && (bool)valOp2;
                                 case Operador.XOR:
-                                    return (Boolean)valOp1 ^ (Boolean)valOp2;
+                                    return (bool)valOp1 ^ (bool)valOp2;
                             }
                         }
                         errores.AddLast(new Error("Semántico", "No se pudo realizar la operación lógica.", Linea, Columna));
@@ -49,7 +49,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
 
                     if (Op1.Tipo.IsBoolean())
                     {
-                        return !(Boolean)valOp1;
+                        return !(bool)valOp1;
                     }
                     errores.AddLast(new Error("Semántico", "No se pudo realizar la operación lógica.", Linea, Columna));
                 }

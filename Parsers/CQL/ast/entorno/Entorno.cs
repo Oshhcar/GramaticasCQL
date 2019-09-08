@@ -31,7 +31,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         {
             foreach (Simbolo sim in Simbolos)
             {
-                if (sim.Id.Equals(id))
+                if (sim.Id.Equals(id) && sim.Rol == Rol.VARIABLE)
                 {
                     return sim;
                 }
@@ -44,10 +44,18 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         {
             foreach (Simbolo sim in Simbolos)
             {
-                if (sim.Id.Equals(id))
-                {
+                if (sim.Id.Equals(id) && sim.Rol == Rol.VARIABLE)
                     return sim;
-                }
+            }
+            return null;
+        }
+
+        public Simbolo GetFuncion(string id)
+        {
+            foreach (Simbolo sim in Global.Simbolos)
+            {
+                if (sim.Id.Equals(id) && sim.Rol == Rol.FUNCION)
+                    return sim;
             }
             return null;
         }
@@ -57,7 +65,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             Console.WriteLine("**Entorno**");
             foreach (Simbolo s in Simbolos)
             {
-                Console.WriteLine(s.Id + ", " + s.Tipo.Type + ", " + s.Valor.ToString());
+                Console.WriteLine(s.Id + ", " + s.Tipo.Type + ", " + s.Rol + " " + s.Valor.ToString());
 
             }
 

@@ -23,14 +23,38 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
             {
                 foreach (NodoASTCQL bloque in Bloques)
                 {
-                    /*Capturar los retornos*/
                     if (bloque is Instruccion inst)
                     {
-                        inst.Ejecutar(e, funcion, ciclo, sw, log, errores);
+                        object obj = inst.Ejecutar(e, funcion, ciclo, sw, log, errores);
+
+                        if (obj is Break)
+                        {
+                            if (ciclo || sw)
+                                return obj;
+                            else
+                                errores.AddLast(new Error("Semántico", "Sentencia break no se encuentra dentro de un switch o ciclo.", Linea, Columna));
+
+                        }
+                        else if (obj is Continue)
+                        {
+                            if (ciclo)
+                                return obj;
+                            else
+                                errores.AddLast(new Error("Semántico", "Sentencia continue no se encuentra dentro de un ciclo.", Linea, Columna));
+
+                        }
+                        else if (obj is Return)
+                        {
+                            if (funcion)
+                                return obj;
+                            else
+                                errores.AddLast(new Error("Semántico", "Sentencia return no se encuentra dentro de una función o procedimiento.", Linea, Columna));
+
+                        }
                     }
-                    else if(bloque is Expresion expr)
+                    else if (bloque is Expresion expr)
                     {
-                        expr.GetValor(e, errores);
+                        expr.GetValor(e, log, errores);
                     }
                 }
             }

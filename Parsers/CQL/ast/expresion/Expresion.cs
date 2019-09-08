@@ -13,7 +13,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
         public Tipo Tipo { get; set; }
 
-        public abstract object GetValor(Entorno e, LinkedList<Error> errores);
+        public abstract object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores);
 
         public virtual Simbolo GetSimbolo(Entorno e) { return null; }
 

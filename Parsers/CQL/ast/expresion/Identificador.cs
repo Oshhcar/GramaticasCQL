@@ -16,7 +16,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
         public string Id { get; set; }
 
-        public override object GetValor(Entorno e, LinkedList<Error> errores)
+        public override object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores)
         {
             Simbolo sim = e.Get(Id);
 

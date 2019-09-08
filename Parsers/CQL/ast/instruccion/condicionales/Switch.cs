@@ -21,7 +21,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.condicionales
 
         public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<string> log, LinkedList<Error> errores)
         {
-            object valExp = Expr.GetValor(e, errores);
+            object valExp = Expr.GetValor(e, log, errores);
 
             if (valExp != null)
             {
@@ -33,8 +33,16 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.condicionales
                     caso.ExprSwitch = exprSwitch;
                     caso.Continuar = continuar;
 
-                    caso.Ejecutar(e, funcion, ciclo, true, log, errores);
+                    object obj = caso.Ejecutar(e, funcion, ciclo, true, log, errores);
                     continuar = caso.Continuar;
+
+                    if (obj != null)
+                    {
+                        if (obj is Break)
+                            return null;//continuar = false;
+                        else
+                            return obj;
+                    }
                 }
             }
             return null;

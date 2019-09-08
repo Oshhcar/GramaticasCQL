@@ -20,7 +20,10 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.condicionales
         {
             foreach (SubIf subIf in SubIfs)
             {
-                subIf.Ejecutar(e, funcion, ciclo, sw, log, errores);
+                object obj = subIf.Ejecutar(e, funcion, ciclo, sw, log, errores);
+
+                if (obj != null)
+                    return obj;
 
                 if (subIf.Entra)
                     return null;

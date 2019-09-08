@@ -16,16 +16,22 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             Hours = 0;
             Minutes = 0;
             Seconds = 0;
+            Correcto = false;
 
             try
             {
                 Hours = Convert.ToInt32(d[0]);
                 Minutes = Convert.ToInt32(d[1]);
                 Seconds = Convert.ToInt32(d[2]);
+
+                if (Hours >= 0 && Hours <= 24)
+                    if (Minutes >= 0 && Minutes <= 60)
+                        if (Seconds >= 0 && Seconds <= 60)
+                            Correcto = true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Time: " + ex.Message);
+                Console.WriteLine("Exception Time: " + ex.Message);
             }
 
         }
@@ -33,6 +39,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         public int Hours { get; set; }
         public int Minutes { get; set; }
         public int Seconds { get; set; }
+        public bool Correcto { get; set; }
 
         public override string ToString()
         {

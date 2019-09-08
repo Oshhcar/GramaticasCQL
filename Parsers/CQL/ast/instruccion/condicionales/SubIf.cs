@@ -35,7 +35,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.condicionales
         {
             if (!Else)
             {
-                object valCond = Cond.GetValor(e, errores);
+                object valCond = Cond.GetValor(e, log, errores);
 
                 if (valCond != null)
                 {

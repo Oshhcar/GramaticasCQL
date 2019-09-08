@@ -12,7 +12,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
     {
         public Unario(Expresion op1, Operador op, int linea, int columna) : base(op1, null, op, linea, columna) { }
 
-        public override object GetValor(Entorno e, LinkedList<Error> errores)
+        public override object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores)
         {
             if (Op == Operador.AUMENTO || Op == Operador.DECREMENTO)
             {
@@ -26,7 +26,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
                         Aritmetica arit = new Aritmetica(new Literal(sim.Tipo, sim.Valor, Linea, Columna), new Literal(new Tipo(Type.INT), 1, Linea, Columna), op, Linea, Columna);
 
                         object valAnt = sim.Valor;
-                        object valArit = arit.GetValor(e, errores);
+                        object valArit = arit.GetValor(e, log, errores);
 
                         if (valArit != null)
                         {
@@ -51,7 +51,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
             }
             else
             {
-                Object valOp1 = Op1.GetValor(e, errores);
+                Object valOp1 = Op1.GetValor(e, log, errores);
 
                 if (valOp1 != null)
                 {
@@ -59,7 +59,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
                     {
                         object factor = Op == Operador.SUMA ? 1 : -1;
                         Aritmetica arit = new Aritmetica(new Literal(Op1.Tipo, valOp1, Linea, Columna), new Literal(new Tipo(Type.INT), factor, Linea, Columna), Operador.MULTIPLICACION, Linea, Columna);
-                        object valor = arit.GetValor(e, errores);
+                        object valor = arit.GetValor(e, log, errores);
                         Tipo = arit.Tipo;
                         return valor;
                     }

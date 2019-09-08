@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GramaticasCQL.Parsers.CQL.ast.expresion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,23 +10,27 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
     class Simbolo
     {
 
-        public Simbolo(Tipo tipo, string id)
+        public Simbolo(Tipo tipo, Rol rol, string id)
         {
             Tipo = tipo;
+            Rol = rol;
             Id = id;
             Valor = Predefinido();
         }
 
-        public Simbolo(Tipo tipo, string id, object valor)
+        public Simbolo(Tipo tipo, Rol rol, string id, object valor)
         {
             Tipo = tipo;
+            Rol = rol;
             Id = id;
             Valor = valor ?? Predefinido();
         }
 
         public Tipo Tipo { get; set; }
+        public Rol Rol { get; set; }
         public string Id { get; set; }
         public object Valor { get; set; }
+
 
         public object Predefinido()
         {

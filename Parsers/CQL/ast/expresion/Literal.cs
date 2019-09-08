@@ -17,8 +17,25 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
         public object Valor { get; set; }
 
-        public override object GetValor(Entorno e, LinkedList<Error> errores)
+        public override object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores)
         {
+            if (Tipo.IsDate())
+            {
+                if (!((Date)Valor).Correcto)
+                {
+                    errores.AddLast(new Error("Léxico", "Literal date escrita incorrectamente.", Linea, Columna));
+                    return null;
+                }
+            }
+            else if (Tipo.IsTime())
+            {
+                if (!((Time)Valor).Correcto)
+                {
+                    errores.AddLast(new Error("Léxico", "Literal time escrita incorrectamente.", Linea, Columna));
+                    return null;
+                }
+            }
+
             return Valor;
         }
     }

@@ -165,10 +165,10 @@ namespace GramaticasCQL.Parsers.CQL
             //var identifier = new IdentifierTerminal("identifier");
             RegexBasedTerminal identifier = new RegexBasedTerminal("identifier", "([a-zA-ZñÑ]|_)([a-zA-ZñÑ]|[0-9]|_)*");
             RegexBasedTerminal identifier2 = new RegexBasedTerminal("identifier2", "@([a-zA-ZñÑ]|_)([a-zA-ZñÑ]|[0-9]|_)*");
-            RegexBasedTerminal date = new RegexBasedTerminal("date", "\'([0-2][0-9]{3}|[0-9][0-9]{0,2})-([0]?[0-9]|[1][0-2])-([0]?[0-9]|[1-2][0-9]|[3][0-1])\'");
-            RegexBasedTerminal time = new RegexBasedTerminal("time", "\'([0]?[0-9]|[1][0-9]|[2][0-4]):([0]?[0-9]|[1-5][0-9]):([0]?[0-9]|[1-5][0-9])\'");
-            //RegexBasedTerminal date = new RegexBasedTerminal("date", "\'[0-9]+-[0-9]+-[0-9]+\'");
-            //RegexBasedTerminal time = new RegexBasedTerminal("time", "\'[0-9]+:[0-9] +:[0-9]+\'");
+            //RegexBasedTerminal date = new RegexBasedTerminal("date", "\'([0-2][0-9]{3}|[0-9][0-9]{0,2})-([0]?[0-9]|[1][0-2])-([0]?[0-9]|[1-2][0-9]|[3][0-1])\'");
+            //RegexBasedTerminal time = new RegexBasedTerminal("time", "\'([0]?[0-9]|[1][0-9]|[2][0-4]):([0]?[0-9]|[1-5][0-9]):([0]?[0-9]|[1-5][0-9])\'");
+            RegexBasedTerminal date = new RegexBasedTerminal("date", "\'[0-9]+-[0-9]+-[0-9]+\'");
+            RegexBasedTerminal time = new RegexBasedTerminal("time", "\'[0-9]+:[0-9]+:[0-9]+\'");
             var stringliteral = new StringLiteral("stringliteral", "\"", StringOptions.IsTemplate);
 
             NonTerminal
@@ -493,7 +493,7 @@ namespace GramaticasCQL.Parsers.CQL
 
             FOR_INIT.Rule = DECLARATION_STMT | ASSIGNMENT_STMT;
 
-            FOR_UPDATE.Rule = ASSIGNMENT_STMT | SHIFT_EXPR + leftShift | SHIFT_EXPR + rightShift;
+            FOR_UPDATE.Rule = AUGMENTED_ASSIGNMENT_STMT | ASSIGNMENT_STMT | SHIFT_EXPR + leftShift | SHIFT_EXPR + rightShift;
 
             FUNDEF.Rule = TYPE + identifier + leftPar + PARAMETER_LIST + rightPar + BLOQUE
                          | TYPE + identifier + leftPar + rightPar + BLOQUE;
@@ -576,7 +576,8 @@ namespace GramaticasCQL.Parsers.CQL
 
             ENCLOSURE.Rule = PARENTH_FORM | MAP_DISPLAY | LIST_DISPLAY;
 
-            PARENTH_FORM.Rule = leftPar + EXPRESSION + rightPar;
+            PARENTH_FORM.Rule = leftPar + EXPRESSION + rightPar
+                               | leftPar + TYPE + rightPar + EXPRESSION;
 
             MAP_DISPLAY.Rule = leftCor + MAP_LIST + rightCor;
 

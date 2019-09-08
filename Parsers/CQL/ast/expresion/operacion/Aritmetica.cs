@@ -13,10 +13,10 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
 
         public Aritmetica(Expresion op1, Expresion op2, Operador op, int linea, int columna) : base(op1, op2, op, linea, columna) { }
 
-        public override object GetValor(Entorno e, LinkedList<Error> errores)
+        public override object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores)
         {
-            object valOp1 = Op1.GetValor(e, errores);
-            object valOp2 = Op2.GetValor(e, errores);
+            object valOp1 = Op1.GetValor(e, log, errores);
+            object valOp2 = Op2.GetValor(e, log, errores);
 
             if (valOp1 != null && valOp2 != null)
             {
@@ -32,19 +32,19 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
                             switch (Op)
                             {
                                 case Operador.SUMA:
-                                    return Convert.ToDouble(valOp1.ToString()) + Convert.ToDouble(valOp2.ToString());
+                                    return Convert.ToDouble(valOp1) + Convert.ToDouble(valOp2);
                                 case Operador.RESTA:
-                                    return Convert.ToDouble(valOp1.ToString()) - Convert.ToDouble(valOp2.ToString());
+                                    return Convert.ToDouble(valOp1) - Convert.ToDouble(valOp2);
                                 case Operador.MULTIPLICACION:
-                                    return Convert.ToDouble(valOp1.ToString()) * Convert.ToDouble(valOp2.ToString());
+                                    return Convert.ToDouble(valOp1) * Convert.ToDouble(valOp2);
                                 case Operador.POTENCIA:
-                                    return Math.Pow(Convert.ToDouble(valOp1.ToString()), Convert.ToDouble(valOp2.ToString()));
+                                    return Math.Pow(Convert.ToDouble(valOp1), Convert.ToDouble(valOp2));
                                 case Operador.MODULO:
-                                    return Convert.ToDouble(valOp1.ToString()) % Convert.ToDouble(valOp2.ToString());
+                                    return Convert.ToDouble(valOp1) % Convert.ToDouble(valOp2);
                                 case Operador.DIVISION:
-                                    if (Convert.ToDouble(valOp2.ToString()) != 0)
+                                    if (Convert.ToDouble(valOp2) != 0)
                                     {
-                                        return Convert.ToDouble(valOp1.ToString()) / Convert.ToDouble(valOp2.ToString());
+                                        return Convert.ToDouble(valOp1) / Convert.ToDouble(valOp2);
                                     }
                                     errores.AddLast(new Error("Semántico", "División entre 0.", Linea, Columna));
                                     return null;
@@ -55,19 +55,19 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
                             switch (Op)
                             {
                                 case Operador.SUMA:
-                                    return Convert.ToInt32(valOp1.ToString()) + Convert.ToInt32(valOp2.ToString());
+                                    return Convert.ToInt32(valOp1) + Convert.ToInt32(valOp2);
                                 case Operador.RESTA:
-                                    return Convert.ToInt32(valOp1.ToString()) - Convert.ToInt32(valOp2.ToString());
+                                    return Convert.ToInt32(valOp1) - Convert.ToInt32(valOp2);
                                 case Operador.MULTIPLICACION:
-                                    return Convert.ToInt32(valOp1.ToString()) * Convert.ToInt32(valOp2.ToString());
+                                    return Convert.ToInt32(valOp1) * Convert.ToInt32(valOp2);
                                 case Operador.POTENCIA:
-                                    return Math.Pow(Convert.ToInt32(valOp1.ToString()), Convert.ToInt32(valOp2.ToString()));
+                                    return Math.Pow(Convert.ToInt32(valOp1), Convert.ToInt32(valOp2));
                                 case Operador.MODULO:
-                                    return Convert.ToInt32(valOp1.ToString()) % Convert.ToInt32(valOp2.ToString());
+                                    return Convert.ToInt32(valOp1) % Convert.ToInt32(valOp2);
                                 case Operador.DIVISION:
-                                    if (Convert.ToInt32(valOp2.ToString()) != 0)
+                                    if (Convert.ToInt32(valOp2) != 0)
                                     {
-                                        return Convert.ToInt32(valOp1.ToString()) / Convert.ToInt32(valOp2.ToString());
+                                        return Convert.ToInt32(valOp1) / Convert.ToInt32(valOp2);
                                     }
                                     errores.AddLast(new Error("Semántico", "División entre 0.", Linea, Columna));
                                     return null;

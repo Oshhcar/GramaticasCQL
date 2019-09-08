@@ -21,6 +21,7 @@ namespace GramaticasCQL.Parsers.CQL.ast
         public void Ejecutar(LinkedList<string> log, LinkedList<Error> errores)
         {
             Entorno global = new Entorno(null);
+            global.Global = global;
 
             foreach (NodoASTCQL stmt in Sentencias)
             {
@@ -30,7 +31,7 @@ namespace GramaticasCQL.Parsers.CQL.ast
                 }
                 else  if(stmt is Expresion expr)
                 {
-                    expr.GetValor(global, errores);
+                    expr.GetValor(global, log, errores);
                 }
 
             }

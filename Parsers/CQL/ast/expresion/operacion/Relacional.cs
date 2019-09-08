@@ -12,10 +12,10 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
     {
         public Relacional(Expresion op1, Expresion op2, Operador op, int linea, int columna) : base(op1, op2, op, linea, columna) { }
 
-        public override object GetValor(Entorno e, LinkedList<Error> errores)
+        public override object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores)
         {
-            object valOp1 = Op1.GetValor(e, errores);
-            object valOp2 = Op2.GetValor(e, errores);
+            object valOp1 = Op1.GetValor(e, log, errores);
+            object valOp2 = Op2.GetValor(e, log, errores);
 
             if (valOp1 != null && valOp2 != null)
             {
@@ -23,8 +23,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
 
                 if (Op1.Tipo.IsNumeric() && Op2.Tipo.IsNumeric())
                 {
-                    double op1 = Convert.ToDouble(valOp1.ToString());
-                    double op2 = Convert.ToDouble(valOp2.ToString());
+                    double op1 = Convert.ToDouble(valOp1);
+                    double op2 = Convert.ToDouble(valOp2);
 
                     switch (Op)
                     {

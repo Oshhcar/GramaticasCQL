@@ -14,7 +14,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GramaticasCQL
@@ -28,6 +27,8 @@ namespace GramaticasCQL
 
         private void BtnRun_Click(object sender, EventArgs e)
         {
+            rtbSalida.Clear();
+
             if (!txtSource.Text.Equals(String.Empty))
             {
                 AnalizadorCQL analizador = new AnalizadorCQL();
@@ -60,7 +61,7 @@ namespace GramaticasCQL
                         {
                             foreach (Error error in errores)
                             {
-                                gridErrors.Rows.Add("Semántico", error.Descripcion, error.Linea);
+                                gridErrors.Rows.Add(error.Valor, error.Descripcion, error.Linea);
                             }
                         }
                        

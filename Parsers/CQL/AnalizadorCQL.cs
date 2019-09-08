@@ -3,6 +3,7 @@ using GramaticasCQL.Parsers.CQL.ast.entorno;
 using GramaticasCQL.Parsers.CQL.ast.expresion;
 using GramaticasCQL.Parsers.CQL.ast.expresion.operacion;
 using GramaticasCQL.Parsers.CQL.ast.instruccion;
+using GramaticasCQL.Parsers.CQL.ast.instruccion.ciclos;
 using GramaticasCQL.Parsers.CQL.ast.instruccion.condicionales;
 using Irony.Parsing;
 using System;
@@ -209,9 +210,86 @@ namespace GramaticasCQL.Parsers.CQL
                         return cases;
 
                     }
+                case "WHILE_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new While((Expresion)GenerarArbol(hijos[2]), (Bloque)GenerarArbol(hijos[4]), linea, columna);
+                case "DOWHILE_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new DoWhile((Expresion)GenerarArbol(hijos[4]), (Bloque)GenerarArbol(hijos[1]), linea, columna);
+                case "FOR_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new For((Instruccion)GenerarArbol(hijos[2]), (Expresion)GenerarArbol(hijos[3]), (NodoASTCQL)GenerarArbol(hijos[4]), (Bloque)GenerarArbol(hijos[6]), linea, columna);
+                case "FOR_INIT":
+                    return GenerarArbol(hijos[0]);
+                case "FOR_UPDATE":
+                    if (hijos.Count() == 1)
+                        return GenerarArbol(hijos[0]);
+                    else
+                    {
+                        linea = hijos[1].Token.Location.Line + 1;
+                        columna = hijos[1].Token.Location.Column + 1;
+                        return new Unario((Expresion)GenerarArbol(hijos[0]), GetOperador(hijos[1]), linea, columna);
+                    }
+                case "FUNDEF":
+                    linea = hijos[1].Token.Location.Line + 1;
+                    columna = hijos[1].Token.Location.Column + 1;
+                    if (hijos.Count() == 5)
+                        return new FuncionDef((Tipo)GenerarArbol(hijos[0]), hijos[1].Token.Text, (Bloque)GenerarArbol(hijos[4]), linea, columna);
+                    else
+                        return new FuncionDef((Tipo)GenerarArbol(hijos[0]), hijos[1].Token.Text,(LinkedList<Identificador>)GenerarArbol(hijos[3]), (Bloque)GenerarArbol(hijos[5]), linea, columna);
+                case "PARAMETER_LIST":
+                    if (hijos.Count() == 2)
+                    {
+                        linea = hijos[1].Token.Location.Line + 1;
+                        columna = hijos[1].Token.Location.Column + 1;
+
+                        LinkedList<Identificador> parametro = new LinkedList<Identificador>();
+                        Identificador id = new Identificador(hijos[1].Token.Text, linea, columna);
+                        id.Tipo = (Tipo)GenerarArbol(hijos[0]);
+                        parametro.AddLast(id);
+                        return parametro;
+                    }
+                    else
+                    {
+                        linea = hijos[3].Token.Location.Line + 1;
+                        columna = hijos[3].Token.Location.Column + 1;
+
+                        LinkedList<Identificador> parametro = (LinkedList<Identificador>)GenerarArbol(hijos[0]);
+                        Identificador id = new Identificador(hijos[3].Token.Text, linea, columna);
+                        id.Tipo = (Tipo)GenerarArbol(hijos[2]);
+                        parametro.AddLast(id);
+                        return parametro;
+                    }
+
+                case "BREAK_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new Break(linea, columna);
+                case "CONTINUE_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new Continue(linea, columna);
+                case "RETURN_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 1)
+                        return new Return(linea, columna);
+                    else
+                        return new Return((LinkedList<Expresion>)GenerarArbol(hijos[1]), linea, columna);
+
                 case "LOG_STMT":
                     return new Log((Expresion)GenerarArbol(hijos[2]), hijos[0].Token.Location.Line + 1, hijos[0].Token.Location.Column + 1);
 
+                case "EXPRESSION_LIST":
+                    LinkedList<Expresion> exprList = new LinkedList<Expresion>();
+                    foreach(ParseTreeNode hijo in hijos)
+                    {
+                        exprList.AddLast((Expresion)GenerarArbol(hijo));
+                    }
+                    return exprList;
                 case "EXPRESSION":
                     return GenerarArbol(hijos[0]);
 
@@ -368,10 +446,33 @@ namespace GramaticasCQL.Parsers.CQL
                         return new Literal(new Tipo(Type.NULL), new Null(), linea, columna);
                     }
                     return null;
+                case "ATTRIBUTEREF":
+                    linea = hijos[1].Token.Location.Line + 1;
+                    columna = hijos[1].Token.Location.Column + 1;
+                    if (hijos[2].Term.Name.Equals("identifier"))
+                        return new AtributoRef((Expresion)GenerarArbol(hijos[0]), new Identificador(hijos[2].Token.Text, linea, columna), linea, columna);
+                    else
+                        return new AtributoRef((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), linea, columna);
+
                 case "ENCLOSURE":
                     return GenerarArbol(hijos[0]);
                 case "PARENTH_FORM":
-                    return GenerarArbol(hijos[1]);
+                    if (hijos.Count() == 3)
+                        return GenerarArbol(hijos[1]);
+                    else
+                    {
+                        linea = hijos[0].Token.Location.Line + 1;
+                        columna = hijos[0].Token.Location.Column + 1;
+                        return new Casteo((Tipo)GenerarArbol(hijos[1]), (Expresion)GenerarArbol(hijos[3]), linea, columna);
+                    }
+
+                case "FUNCALL":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 3)
+                        return new FuncionCall(hijos[0].Token.Text, linea, columna);
+                    else
+                        return new FuncionCall(hijos[0].Token.Text, (LinkedList<Expresion>)GenerarArbol(hijos[2]), linea, columna);
             }
 
             return null;

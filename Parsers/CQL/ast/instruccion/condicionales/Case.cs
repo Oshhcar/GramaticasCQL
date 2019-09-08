@@ -36,12 +36,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.condicionales
             {
                 if (!Continuar)
                 {
-                    object valExpr = Expr.GetValor(e, errores);
+                    object valExpr = Expr.GetValor(e, log, errores);
 
                     if (valExpr != null)
                     { 
                         Relacional rel = new Relacional(ExprSwitch, new Literal(Expr.Tipo, valExpr, Linea, Columna), Operador.IGUAL, Linea, Columna);
-                        object valRel = rel.GetValor(e, errores);
+                        object valRel = rel.GetValor(e, log, errores);
 
                         if (valRel != null)
                         {
