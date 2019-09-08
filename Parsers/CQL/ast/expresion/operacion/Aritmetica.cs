@@ -88,6 +88,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
             {
                 if (Op1.Tipo.IsString() || Op2.Tipo.IsString())
                 {
+                    /*Verificar Objetos y otros tipos sin toString()*/
                     if (Op == Operador.SUMA)
                     {
                         Tipo = new Tipo(Type.STRING);

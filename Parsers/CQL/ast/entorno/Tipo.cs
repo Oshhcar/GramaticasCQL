@@ -63,6 +63,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         {
             return base.GetHashCode();
         }
+
+        public bool isPrimitivo()
+        {
+
+            return false;
+        }
     }
 
     public enum Type
@@ -84,6 +90,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
     public enum Rol
     {
         VARIABLE,
-        FUNCION
+        FUNCION,
+        COLLECTION
     }
 }

@@ -83,7 +83,7 @@ namespace GramaticasCQL.Parsers.CQL
                         case "list":
                             return new Tipo(Type.LIST);
                         case "set":
-                            return new Tipo(Type.MAP);
+                            return new Tipo(Type.SET);
                         default:
                             return null;
                     }
@@ -292,7 +292,15 @@ namespace GramaticasCQL.Parsers.CQL
                     return exprList;
                 case "EXPRESSION":
                     return GenerarArbol(hijos[0]);
-
+                case "INSTANCE":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 2)
+                        return new Instancia(hijos[1].Token.Text, linea, columna);
+                    else if (hijos.Count() == 5)
+                        return new Instancia(hijos[1].Token.Text,(Tipo)GenerarArbol(hijos[3]), linea, columna);
+                    else
+                        return new Instancia(hijos[1].Token.Text, (Tipo)GenerarArbol(hijos[3]), (Tipo)GenerarArbol(hijos[5]), linea, columna);
                 case "CONDITIONAL_EXPRESSION":
                     if (hijos.Count() == 1)
                         return GenerarArbol(hijos[0]);

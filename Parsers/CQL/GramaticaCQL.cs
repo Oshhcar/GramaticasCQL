@@ -458,7 +458,7 @@ namespace GramaticasCQL.Parsers.CQL
                         | identifier2
                         | ATTRIBUTEREF; //*
 
-            EXPRESSION_STMT.Rule = SHIFT_EXPR + leftShift | SHIFT_EXPR + rightShift | FUNCALL | CALL;
+            EXPRESSION_STMT.Rule = SHIFT_EXPR + leftShift | SHIFT_EXPR + rightShift | FUNCALL | CALL | ATTRIBUTEREF;
 
             DECLARATION_STMT.Rule = TYPE + TARGET_LIST
                                    | TYPE + TARGET_LIST + equal + EXPRESSION;

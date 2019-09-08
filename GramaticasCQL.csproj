@@ -64,9 +64,11 @@
     <Compile Include="Parsers\CHISON\GramaticaCHISON.cs" />
     <Compile Include="Parsers\CQL\AnalizadorCQL.cs" />
     <Compile Include="Parsers\CQL\ast\ASTCQL.cs" />
+    <Compile Include="Parsers\CQL\ast\entorno\CollectionValue.cs" />
     <Compile Include="Parsers\CQL\ast\entorno\Date.cs" />
     <Compile Include="Parsers\CQL\ast\entorno\Entorno.cs" />
     <Compile Include="Parsers\CQL\ast\entorno\Funcion.cs" />
+    <Compile Include="Parsers\CQL\ast\entorno\Collection.cs" />
     <Compile Include="Parsers\CQL\ast\entorno\Null.cs" />
     <Compile Include="Parsers\CQL\ast\entorno\Simbolo.cs" />
     <Compile Include="Parsers\CQL\ast\entorno\Cadena.cs" />
@@ -77,6 +79,7 @@
     <Compile Include="Parsers\CQL\ast\expresion\Expresion.cs" />
     <Compile Include="Parsers\CQL\ast\expresion\FuncionCall.cs" />
     <Compile Include="Parsers\CQL\ast\expresion\Identificador.cs" />
+    <Compile Include="Parsers\CQL\ast\expresion\Instancia.cs" />
     <Compile Include="Parsers\CQL\ast\expresion\Literal.cs" />
     <Compile Include="Parsers\CQL\ast\expresion\operacion\Aritmetica.cs" />
     <Compile Include="Parsers\CQL\ast\expresion\operacion\Logica.cs" />
