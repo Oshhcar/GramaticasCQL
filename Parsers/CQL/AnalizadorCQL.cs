@@ -154,13 +154,13 @@ namespace GramaticasCQL.Parsers.CQL
                     return GetAugOperador(hijos[0]);
                 case "IF_STMT":
                     if (hijos.Count() == 1)
-                        return new If((LinkedList<SubIf>)GenerarArbol(hijos[0]),0,0);
+                        return new If((LinkedList<SubIf>)GenerarArbol(hijos[0]), 0, 0);
                     else
                     {
                         LinkedList<SubIf> subIfs = (LinkedList<SubIf>)GenerarArbol(hijos[0]);
                         linea = hijos[1].Token.Location.Line + 1;
                         columna = hijos[1].Token.Location.Column + 1;
-                        subIfs.AddLast(new SubIf((Bloque)GenerarArbol(hijos[2]),linea, columna));
+                        subIfs.AddLast(new SubIf((Bloque)GenerarArbol(hijos[2]), linea, columna));
                         return new If(subIfs, 0, 0);
                     }
                 case "IF_LIST":
@@ -239,7 +239,7 @@ namespace GramaticasCQL.Parsers.CQL
                     if (hijos.Count() == 5)
                         return new FuncionDef((Tipo)GenerarArbol(hijos[0]), hijos[1].Token.Text, (Bloque)GenerarArbol(hijos[4]), linea, columna);
                     else
-                        return new FuncionDef((Tipo)GenerarArbol(hijos[0]), hijos[1].Token.Text,(LinkedList<Identificador>)GenerarArbol(hijos[3]), (Bloque)GenerarArbol(hijos[5]), linea, columna);
+                        return new FuncionDef((Tipo)GenerarArbol(hijos[0]), hijos[1].Token.Text, (LinkedList<Identificador>)GenerarArbol(hijos[3]), (Bloque)GenerarArbol(hijos[5]), linea, columna);
                 case "PARAMETER_LIST":
                     if (hijos.Count() == 2)
                     {
@@ -285,7 +285,7 @@ namespace GramaticasCQL.Parsers.CQL
 
                 case "EXPRESSION_LIST":
                     LinkedList<Expresion> exprList = new LinkedList<Expresion>();
-                    foreach(ParseTreeNode hijo in hijos)
+                    foreach (ParseTreeNode hijo in hijos)
                     {
                         exprList.AddLast((Expresion)GenerarArbol(hijo));
                     }
@@ -298,7 +298,7 @@ namespace GramaticasCQL.Parsers.CQL
                     if (hijos.Count() == 2)
                         return new Instancia(hijos[1].Token.Text, linea, columna);
                     else if (hijos.Count() == 5)
-                        return new Instancia(hijos[1].Token.Text,(Tipo)GenerarArbol(hijos[3]), linea, columna);
+                        return new Instancia(hijos[1].Token.Text, (Tipo)GenerarArbol(hijos[3]), linea, columna);
                     else
                         return new Instancia(hijos[1].Token.Text, (Tipo)GenerarArbol(hijos[3]), (Tipo)GenerarArbol(hijos[5]), linea, columna);
                 case "CONDITIONAL_EXPRESSION":
@@ -473,7 +473,31 @@ namespace GramaticasCQL.Parsers.CQL
                         columna = hijos[0].Token.Location.Column + 1;
                         return new Casteo((Tipo)GenerarArbol(hijos[1]), (Expresion)GenerarArbol(hijos[3]), linea, columna);
                     }
-
+                case "MAP_DISPLAY":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                        return new MapDisplay((LinkedList<CollectionValue>)GenerarArbol(hijos[1]), linea, columna);
+                case "MAP_LIST":
+                    if (hijos.Count() == 3)
+                    {
+                        LinkedList<CollectionValue> collection = new LinkedList<CollectionValue>();
+                        collection.AddLast(new CollectionValue(GenerarArbol(hijos[0]), GenerarArbol(hijos[2])));
+                        return collection;
+                    }
+                    else
+                    {
+                        LinkedList<CollectionValue> collection = (LinkedList<CollectionValue>)GenerarArbol(hijos[0]);
+                        collection.AddLast(new CollectionValue(GenerarArbol(hijos[2]), GenerarArbol(hijos[4])));
+                        return collection;
+                    }
+                case "LIST_DISPLAY":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new ListDisplay((LinkedList<Expresion>)GenerarArbol(hijos[1]), linea, columna);
+                case "SET_DISPLAY":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new SetDisplay((LinkedList<Expresion>)GenerarArbol(hijos[1]), linea, columna);
                 case "FUNCALL":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
@@ -481,6 +505,11 @@ namespace GramaticasCQL.Parsers.CQL
                         return new FuncionCall(hijos[0].Token.Text, linea, columna);
                     else
                         return new FuncionCall(hijos[0].Token.Text, (LinkedList<Expresion>)GenerarArbol(hijos[2]), linea, columna);
+
+                case "ACCESS":
+                    linea = hijos[1].Token.Location.Line + 1;
+                    columna = hijos[1].Token.Location.Column + 1;
+                    return new Acceso((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), linea, columna);
             }
 
             return null;

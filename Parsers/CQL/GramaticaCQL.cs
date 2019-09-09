@@ -282,12 +282,14 @@ namespace GramaticasCQL.Parsers.CQL
                 ATOM = new NonTerminal("ATOM"),
                 FUNCALL = new NonTerminal("FUNCALL"),
                 CALL = new NonTerminal("CALL"),
+                ACCESS = new NonTerminal("ACCESS"),
                 ENCLOSURE = new NonTerminal("ENCLOSURE"),
                 LITERAL = new NonTerminal("LITERAL"),
                 PARENTH_FORM = new NonTerminal("PARENTH_FORM"),
                 MAP_DISPLAY = new NonTerminal("MAP_DISPLAY"),
                 MAP_LIST = new NonTerminal("MAP_LIST"),
-                LIST_DISPLAY = new NonTerminal("LIST_DISPLAY");
+                LIST_DISPLAY = new NonTerminal("LIST_DISPLAY"),
+                SET_DISPLAY = new NonTerminal("SET_DISPLAY");
                 
             this.Root = INICIO;
 
@@ -561,20 +563,20 @@ namespace GramaticasCQL.Parsers.CQL
 
             POWER.Rule = PRIMARY | PRIMARY + potencia + U_EXPR;
 
-            PRIMARY.Rule = ATOM | ATTRIBUTEREF | AGGREGATION | FUNCALL | CALL;
+            PRIMARY.Rule = ATOM | ATTRIBUTEREF | AGGREGATION | FUNCALL | CALL | ACCESS; 
 
             ATOM.Rule = identifier | identifier2 | LITERAL | ENCLOSURE;
 
             LITERAL.Rule = number | stringliteral | true_ | false_ | date | time | null_;
 
             ATTRIBUTEREF.Rule = PRIMARY + dot + identifier
-                                | PRIMARY + dot + FUNCALL; //*
+                                | PRIMARY + dot + FUNCALL;
 
             AGGREGATION.Rule = AGGREGATION_FUN + leftPar + menormenor + SELECT + mayormayor + rightPar;
 
             AGGREGATION_FUN.Rule = count_ | min_ | max_ | sum_ | avg_;
 
-            ENCLOSURE.Rule = PARENTH_FORM | MAP_DISPLAY | LIST_DISPLAY;
+            ENCLOSURE.Rule = PARENTH_FORM | MAP_DISPLAY | LIST_DISPLAY | SET_DISPLAY;
 
             PARENTH_FORM.Rule = leftPar + EXPRESSION + rightPar
                                | leftPar + TYPE + rightPar + EXPRESSION;
@@ -586,11 +588,15 @@ namespace GramaticasCQL.Parsers.CQL
 
             LIST_DISPLAY.Rule = leftCor + EXPRESSION_LIST + rightCor;
 
+            SET_DISPLAY.Rule = leftLla + EXPRESSION_LIST + rightLla; 
+
             FUNCALL.Rule = identifier + leftPar + rightPar
                        | identifier + leftPar + EXPRESSION_LIST + rightPar;
 
             CALL.Rule = call_ + identifier + leftPar + rightPar
                        | call_ + identifier + leftPar + EXPRESSION_LIST + rightPar;
+
+            ACCESS.Rule = PRIMARY + leftCor + EXPRESSION + rightCor;
 
         }
     }

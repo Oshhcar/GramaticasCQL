@@ -358,7 +358,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     return null;
                                                 }
                                                 else
-                                                    errores.AddLast(new Error("Semántico", "El tipo del parametro no coinciden con la valor del List.", Linea, Columna));
+                                                    errores.AddLast(new Error("Semántico", "El tipo del parametro no coinciden con el valor del List.", Linea, Columna));
                                             }
                                             else
                                                 errores.AddLast(new Error("Semántico", "El List no ha sido inicializado.", Linea, Columna));
@@ -537,7 +537,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                                                 if (parametro1.Tipo.IsInt())
                                                 {
-                                                    set.Recorrer();
+                                                    //set.Recorrer();
 
                                                     object valValor = set.Get(valParametro1);
                                                     if (valValor != null)
@@ -863,6 +863,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                             }
                             else
                                 errores.AddLast(new Error("Semántico", "La función Contains necesita un parámetro.", Linea, Columna));
+                            break;
+                        default:
+                            errores.AddLast(new Error("Semántico", "No se ha encontrado la función: " + funcion.Id + ".", Linea, Columna));
                             break;
                     }
                 }
