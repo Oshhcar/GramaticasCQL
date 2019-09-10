@@ -25,9 +25,16 @@ namespace GramaticasCQL.Parsers.CQL.ast
 
             foreach (NodoASTCQL stmt in Sentencias)
             {
+                if (stmt is FuncionDef fun)
+                    fun.Ejecutar(global, false, false, false, log, errores);
+            }
+
+            foreach (NodoASTCQL stmt in Sentencias)
+            {
                 if (stmt is Instruccion instr)
                 {
-                    instr.Ejecutar(global, false, false, false, log, errores);
+                    if(!(stmt is FuncionDef))
+                        instr.Ejecutar(global, false, false, false, log, errores);
                 }
                 else  if(stmt is Expresion expr)
                 {
