@@ -8,16 +8,14 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
 {
     class Collection
     {
-        public Collection(Tipo clave, Tipo valor)
+        public Collection(Tipo tipo)
         {
-            TipoClave = clave;
-            TipoValor = valor;
+            Tipo = tipo;
             Valores = new LinkedList<CollectionValue>();
             Posicion = 0;
         }
 
-        public Tipo TipoClave { get; set; }
-        public Tipo TipoValor { get; set; }
+        public Tipo Tipo { get; set; }
         public LinkedList<CollectionValue> Valores { get; set; }
         public int Posicion { get; set; }
 
@@ -106,11 +104,11 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             LinkedList<CollectionValue> tmp = new LinkedList<CollectionValue>();
             IEnumerable<CollectionValue> ordered;
 
-            if (TipoValor.IsString() || TipoValor.IsDate() || TipoValor.IsTime())
+            if (Tipo.Valor.IsString() || Tipo.Valor.IsDate() || Tipo.Valor.IsTime())
                 ordered = Valores.OrderBy(p => p.Valor.ToString()).AsEnumerable();
-            else if (TipoValor.IsInt())
+            else if (Tipo.Valor.IsInt())
                 ordered = Valores.OrderBy(p => (int)p.Valor).AsEnumerable();
-            else if (TipoValor.IsDouble())
+            else if (Tipo.Valor.IsDouble())
                 ordered = Valores.OrderBy(p => (double)p.Valor).AsEnumerable();
             else
                 ordered = null;
@@ -130,11 +128,11 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
 
         public object Predefinido()
         {
-            if (TipoValor.IsInt())
+            if (Tipo.Valor.IsInt())
                 return 0;
-            else if (TipoValor.IsDouble())
+            else if (Tipo.Valor.IsDouble())
                 return 0.0;
-            else if (TipoValor.IsBoolean())
+            else if (Tipo.Valor.IsBoolean())
                 return false;
             else
                 return new Null();

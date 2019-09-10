@@ -20,8 +20,23 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             Objeto = objeto;
         }
 
+        public Tipo(Tipo clave, Tipo valor)
+        {
+            Type = Type.MAP;
+            Clave = clave;
+            Valor = valor;
+        }
+
+        public Tipo(Type type, Tipo valor)
+        {
+            Type = type;
+            Valor = valor;
+        }
+
         public Type Type { get; set; }
         public string Objeto { get; set; }
+        public Tipo Clave { get; set; }
+        public Tipo Valor { get; set; }
 
         public bool IsInt() { return Type == Type.INT; }
         public bool IsDouble() { return Type == Type.DOUBLE; }
@@ -35,8 +50,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         public bool IsList() { return Type == Type.LIST; }
         public bool IsSet() { return Type == Type.SET; }
         public bool IsNull() { return Type == Type.NULL; }
-        public bool IsNumeric() { return Type == Type.INT || Type == Type.DOUBLE; }
-
+        public bool IsNumeric() { return IsInt() || IsDouble(); }
+        public bool IsCollection() { return IsMap() || IsList() || IsSet(); }
         public override bool Equals(object obj)
         {
             if (obj is Tipo t)
@@ -51,6 +66,21 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
                     {
                         return Objeto.Equals(t.Objeto);
                     }
+                    else if (IsMap() && t.IsMap())
+                    {
+                        if(Clave != null  && Valor != null)
+                            return Clave.Equals(t.Clave) && Valor.Equals(t.Valor);
+                    }
+                    else if (IsList() && t.IsList())
+                    {
+                        if(Valor != null) 
+                            return Valor.Equals(t.Valor);
+                    }
+                    else if (IsSet() && t.IsSet())
+                    {
+                        if(Valor != null)
+                            return Valor.Equals(t.Valor);
+                    }
 
                     return t.IsNull() ? true : Type == t.Type;
                 }
@@ -59,15 +89,20 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             return base.Equals(obj);
         }
 
+        public bool EqualsCollection(Tipo t)
+        {
+            if (IsMap() && t.IsMap())
+                return true;
+            else if (IsList() && t.IsList())
+                return true;
+            else if (IsSet() && t.IsSet())
+                return true;
+            return false;
+        }
+
         public override int GetHashCode()
         {
             return base.GetHashCode();
-        }
-
-        public bool isPrimitivo()
-        {
-
-            return false;
         }
     }
 

@@ -24,7 +24,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
             if (valValor != null)
             {
-                Collection set = new Collection(new Tipo(Type.INT), valor.Tipo);
+                Collection set = new Collection(new Tipo(Type.SET, valor.Tipo));
                 set.Insert(set.Posicion++, valValor);
 
                 for (int i = 1; i < Collection.Count(); i++)
@@ -34,7 +34,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                     if (valValor != null)
                     {
-                        if (set.TipoValor.Equals(valor.Tipo))
+                        if (set.Tipo.Valor.Equals(valor.Tipo))
                             set.Insert(set.Posicion++, valValor);
                         else
                             errores.AddLast(new Error("Semántico", "El tipo no coinciden con el valor del List.", Linea, Columna));

@@ -40,7 +40,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                 object valor = GetCollection? collection.GetCollection(valExpr.ToString()) : collection.Get(valExpr.ToString());
                                 if (valor != null)
                                 {
-                                     Tipo = collection.TipoValor;
+                                     Tipo = collection.Tipo.Valor;
                                     return valor;
                                 }
                                 else

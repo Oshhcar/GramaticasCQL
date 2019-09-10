@@ -352,7 +352,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                             if (!(valorTarget is Null))
                                             {
                                                 Collection list = (Collection)valorTarget;
-                                                if (list.TipoValor.Equals(parametro1.Tipo))
+                                                if (list.Tipo.Valor.Equals(parametro1.Tipo))
                                                 {
                                                     list.Insert(list.Posicion++, valParametro1);
                                                     return null;
@@ -368,7 +368,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                             if (!(valorTarget is Null))
                                             {
                                                 Collection set = (Collection)valorTarget;
-                                                if (set.TipoValor.Equals(parametro1.Tipo))
+                                                if (set.Tipo.Valor.Equals(parametro1.Tipo))
                                                 {
                                                     set.Insert(set.Posicion++, valParametro1);
                                                     set.Ordenar();
@@ -405,7 +405,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                 {
                                                     Collection map = (Collection)valorTarget;
 
-                                                    if (map.TipoClave.Equals(parametro1.Tipo) && map.TipoValor.Equals(parametro2.Tipo))
+                                                    if (map.Tipo.Clave.Equals(parametro1.Tipo) && map.Tipo.Valor.Equals(parametro2.Tipo))
                                                     {
                                                         if (map.Get(valParametro1) == null)
                                                         {
@@ -428,7 +428,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                 if (!(valorTarget is Null))
                                                 {
                                                     Collection list = (Collection)valorTarget;
-                                                    if (list.TipoValor.Equals(parametro1.Tipo))
+                                                    if (list.Tipo.Valor.Equals(parametro1.Tipo))
                                                     {
                                                         list.Insert(list.Posicion++, valParametro1);
                                                         return null;
@@ -446,7 +446,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                 if (!(valorTarget is Null))
                                                 {
                                                     Collection set = (Collection)valorTarget;
-                                                    if (set.TipoValor.Equals(parametro1.Tipo))
+                                                    if (set.Tipo.Valor.Equals(parametro1.Tipo))
                                                     {
                                                         set.Insert(set.Posicion++, valParametro1);
                                                         set.Ordenar();
@@ -487,19 +487,19 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                             {
                                                 Collection map = (Collection)valorTarget;
 
-                                                if (map.TipoClave.Equals(parametro1.Tipo))
+                                                if (map.Tipo.Clave.Equals(parametro1.Tipo))
                                                 {
                                                     object valValor = map.Get(valParametro1);
                                                     if (valValor != null)
                                                     {
-                                                        Tipo = map.TipoValor;
+                                                        Tipo = map.Tipo.Valor;
                                                         return valValor;
                                                     }
                                                     else
                                                         errores.AddLast(new Error("Semántico", "No existe un valor con la clave: " + valParametro1.ToString() + " en Map.", Linea, Columna));
                                                 }
                                                 else
-                                                    errores.AddLast(new Error("Semántico", "El tipo de la clave no coincide con el declarado en el Map: " + map.TipoClave.Type.ToString() + ".", Linea, Columna));
+                                                    errores.AddLast(new Error("Semántico", "El tipo de la clave no coincide con el declarado en el Map: " + map.Tipo.Clave.Type.ToString() + ".", Linea, Columna));
                                             }
                                             else
                                                 errores.AddLast(new Error("Semántico", "El Map no ha sido inicializado.", Linea, Columna));
@@ -516,7 +516,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     object valValor = list.Get(valParametro1);
                                                     if (valValor != null)
                                                     {
-                                                        Tipo = list.TipoValor;
+                                                        Tipo = list.Tipo.Valor;
                                                         return valValor;
                                                     }
                                                     else
@@ -542,7 +542,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     object valValor = set.Get(valParametro1);
                                                     if (valValor != null)
                                                     {
-                                                        Tipo = set.TipoValor;
+                                                        Tipo = set.Tipo.Valor;
                                                         return valValor;
                                                     }
                                                     else
@@ -585,7 +585,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                             {
                                                 Collection map = (Collection)valorTarget;
 
-                                                if (map.TipoClave.Equals(parametro1.Tipo) && map.TipoValor.Equals(parametro2.Tipo))
+                                                if (map.Tipo.Clave.Equals(parametro1.Tipo) && map.Tipo.Valor.Equals(parametro2.Tipo))
                                                 {
                                                     if (map.Set(valParametro1, valParametro2))
                                                     {
@@ -606,7 +606,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                             {
                                                 Collection list = (Collection)valorTarget;
 
-                                                if (parametro1.Tipo.IsInt() && list.TipoValor.Equals(parametro2.Tipo))
+                                                if (parametro1.Tipo.IsInt() && list.Tipo.Valor.Equals(parametro2.Tipo))
                                                 {
                                                     if (list.Set(valParametro1, valParametro2))
                                                     {
@@ -627,7 +627,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                             {
                                                 Collection set = (Collection)valorTarget;
 
-                                                if (parametro1.Tipo.IsInt() && set.TipoValor.Equals(parametro2.Tipo))
+                                                if (parametro1.Tipo.IsInt() && set.Tipo.Valor.Equals(parametro2.Tipo))
                                                 {
                                                     if (set.Set(valParametro1, valParametro2))
                                                     {
@@ -673,7 +673,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                             {
                                                 Collection map = (Collection)valorTarget;
 
-                                                if (map.TipoClave.Equals(parametro1.Tipo))
+                                                if (map.Tipo.Clave.Equals(parametro1.Tipo))
                                                 {
                                                     if (map.Remove(valParametro1))
                                                     {
@@ -683,7 +683,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         errores.AddLast(new Error("Semántico", "No existe un valor con la clave: " + valParametro1.ToString() + " en Map.", Linea, Columna));
                                                 }
                                                 else
-                                                    errores.AddLast(new Error("Semántico", "El tipo de la clave no coincide con el declarado en el Map: " + map.TipoClave.Type.ToString() + ".", Linea, Columna));
+                                                    errores.AddLast(new Error("Semántico", "El tipo de la clave no coincide con el declarado en el Map: " + map.Tipo.Clave.Type.ToString() + ".", Linea, Columna));
                                             }
                                             else
                                                 errores.AddLast(new Error("Semántico", "El Map no ha sido inicializado.", Linea, Columna));
@@ -798,7 +798,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                             {
                                                 Collection map = (Collection)valorTarget;
 
-                                                if (map.TipoClave.Equals(parametro1.Tipo))
+                                                if (map.Tipo.Clave.Equals(parametro1.Tipo))
                                                 {
                                                     object valValor = map.Get(valParametro1);
                                                     Tipo = new Tipo(Type.BOOLEAN);
@@ -808,7 +808,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         return false;
                                                 }
                                                 else
-                                                    errores.AddLast(new Error("Semántico", "El tipo de la clave no coincide con el declarado en el Map: " + map.TipoClave.Type.ToString() + ".", Linea, Columna));
+                                                    errores.AddLast(new Error("Semántico", "El tipo de la clave no coincide con el declarado en el Map: " + map.Tipo.Clave.Type.ToString() + ".", Linea, Columna));
                                             }
                                             else
                                                 errores.AddLast(new Error("Semántico", "El Map no ha sido inicializado.", Linea, Columna));
@@ -820,7 +820,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                             {
                                                 Collection list = (Collection)valorTarget;
 
-                                                if (list.TipoValor.Equals(parametro1.Tipo))
+                                                if (list.Tipo.Valor.Equals(parametro1.Tipo))
                                                 {
                                                     Tipo = new Tipo(Type.BOOLEAN);
                                                     if (list.Contains(valParametro1))
@@ -829,7 +829,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         return false;
                                                 }
                                                 else
-                                                    errores.AddLast(new Error("Semántico", "El tipo del valor no coincide con el declarado en el List: " + list.TipoValor.Type.ToString() + ".", Linea, Columna));
+                                                    errores.AddLast(new Error("Semántico", "El tipo del valor no coincide con el declarado en el List: " + list.Tipo.Valor.Type.ToString() + ".", Linea, Columna));
                                             }
                                             else
                                                 errores.AddLast(new Error("Semántico", "El List no ha sido inicializado.", Linea, Columna));
@@ -841,7 +841,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                             {
                                                 Collection set = (Collection)valorTarget;
 
-                                                if (set.TipoValor.Equals(parametro1.Tipo))
+                                                if (set.Tipo.Valor.Equals(parametro1.Tipo))
                                                 {
                                                     Tipo = new Tipo(Type.BOOLEAN);
                                                     if (set.Contains(valParametro1))
@@ -850,7 +850,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         return false;
                                                 }
                                                 else
-                                                    errores.AddLast(new Error("Semántico", "El tipo del valor no coincide con el declarado en el Set: " + set.TipoValor.Type.ToString() + ".", Linea, Columna));
+                                                    errores.AddLast(new Error("Semántico", "El tipo del valor no coincide con el declarado en el Set: " + set.Tipo.Valor.Type.ToString() + ".", Linea, Columna));
                                             }
                                             else
                                                 errores.AddLast(new Error("Semántico", "El Set no ha sido inicializado.", Linea, Columna));

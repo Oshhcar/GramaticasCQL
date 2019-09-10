@@ -125,11 +125,11 @@ namespace GramaticasCQL.Parsers.CQL
                         case "counter":
                             return new Tipo(Type.COUNTER);
                         case "map":
-                            return new Tipo(Type.MAP);
+                            return new Tipo((Tipo)GenerarArbol(hijos[2]), (Tipo)GenerarArbol(hijos[4]));
                         case "list":
-                            return new Tipo(Type.LIST);
+                            return new Tipo(Type.LIST, (Tipo)GenerarArbol(hijos[2]));
                         case "set":
-                            return new Tipo(Type.SET);
+                            return new Tipo(Type.SET, (Tipo)GenerarArbol(hijos[2]));
                         default:
                             return null;
                     }

@@ -38,13 +38,13 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
             {
                 case "map":
                     Tipo = new Tipo(Type.MAP);
-                    return new Collection(Tipo1, Tipo2);
+                    return new Collection(new Tipo(Tipo1, Tipo2));
                 case "list":
                     Tipo = new Tipo(Type.LIST);
-                    return new Collection(new Tipo(Type.INT), Tipo1);
+                    return new Collection(new Tipo(Type.LIST, Tipo1));
                 case "set":
                     Tipo = new Tipo(Type.SET);
-                    return new Collection(new Tipo(Type.INT), Tipo1);
+                    return new Collection(new Tipo(Type.SET, Tipo1));
             }
             return null;
         }

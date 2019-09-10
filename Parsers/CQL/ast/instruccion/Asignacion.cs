@@ -38,16 +38,33 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                         }
                         else
                         {
-                            Casteo cast = new Casteo(sim.Tipo, new Literal(Expr.Tipo, valExpr, 0, 0), 0, 0)
+                            if (sim.Tipo.IsCollection() && Expr.Tipo.IsCollection())
                             {
-                                Mostrar = false
-                            };
-                            valExpr = cast.GetValor(e, log, errores);
+                                if (sim.Tipo.EqualsCollection(Expr.Tipo))
+                                {
+                                    if (valExpr is Collection collection)
+                                    {
+                                        sim.Tipo.Clave = collection.Tipo.Clave;
+                                        sim.Tipo.Valor = collection.Tipo.Valor;
+                                        sim.Valor = collection;
+                                        return null;
+                                    }
+                                }
 
-                            if (valExpr != null)
+                            }
+                            else
                             {
-                                sim.Valor = valExpr;
-                                return null;
+                                Casteo cast = new Casteo(sim.Tipo, new Literal(Expr.Tipo, valExpr, 0, 0), 0, 0)
+                                {
+                                    Mostrar = false
+                                };
+                                valExpr = cast.GetValor(e, log, errores);
+
+                                if (valExpr != null)
+                                {
+                                    sim.Valor = valExpr;
+                                    return null;
+                                }
                             }
                         }
 

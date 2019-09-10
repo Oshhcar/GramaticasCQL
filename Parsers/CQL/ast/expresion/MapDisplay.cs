@@ -27,7 +27,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
             if (valClave != null && valValor != null)
             {
-                Collection map = new Collection(clave.Tipo, valor.Tipo);
+                Collection map = new Collection(new Tipo(clave.Tipo, valor.Tipo));
                 map.Insert(valClave, valValor);
 
                 for (int i = 1; i < Collection.Count(); i++)
@@ -40,7 +40,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                     if (valClave != null && valValor != null)
                     {
-                        if (map.TipoClave.Equals(clave.Tipo) && map.TipoValor.Equals(valor.Tipo))
+                        if (map.Tipo.Clave.Equals(clave.Tipo) && map.Tipo.Valor.Equals(valor.Tipo))
                         {
                             if (map.Get(valClave) == null)
                                 map.Insert(valClave, valValor);

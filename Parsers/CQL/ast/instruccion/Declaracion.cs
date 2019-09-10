@@ -51,6 +51,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                                 return null;
                             }
                         }
+
+                        if (valorExpr is Collection collection)
+                        {
+                            Tipo.Clave = collection.Tipo.Clave;
+                            Tipo.Valor = collection.Tipo.Valor;
+                        }
                     }
                 }
 
