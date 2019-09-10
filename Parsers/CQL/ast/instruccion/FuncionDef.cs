@@ -48,7 +48,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
             if (sim == null)
             {
                 Funcion fun = new Funcion(Parametro, Bloque);
-                sim = new Simbolo(Tipo, Rol.FUNCION, firma, fun);
+                sim = new Simbolo(Tipo, Rol.FUNCION, firma.ToLower(), fun);
                 e.Add(sim);
             }
             else

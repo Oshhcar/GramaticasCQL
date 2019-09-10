@@ -64,7 +64,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                         continue;
                     }
 
-                    sim = new Simbolo(Tipo, Rol.VARIABLE, id.Id, valorExpr);
+                    sim = new Simbolo(Tipo, Rol.VARIABLE, id.Id.ToLower(), valorExpr);
                     e.Add(sim);
                 }
                 else

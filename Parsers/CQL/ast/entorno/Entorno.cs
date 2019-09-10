@@ -31,7 +31,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         {
             foreach (Simbolo sim in Simbolos)
             {
-                if (sim.Id.Equals(id) && sim.Rol == Rol.VARIABLE)
+                if (sim.Id.Equals(id.ToLower()) && sim.Rol == Rol.VARIABLE)
                 {
                     return sim;
                 }
@@ -44,7 +44,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         {
             foreach (Simbolo sim in Simbolos)
             {
-                if (sim.Id.Equals(id) && sim.Rol == Rol.VARIABLE)
+                if (sim.Id.Equals(id.ToLower()) && sim.Rol == Rol.VARIABLE)
                     return sim;
             }
             return null;
@@ -54,7 +54,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         {
             foreach (Simbolo sim in Global.Simbolos)
             {
-                if (sim.Id.Equals(id) && sim.Rol == Rol.FUNCION)
+                if (sim.Id.Equals(id.ToLower()) && sim.Rol == Rol.FUNCION)
                     return sim;
             }
             return null;
