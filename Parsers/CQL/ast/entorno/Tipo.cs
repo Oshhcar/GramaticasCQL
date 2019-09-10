@@ -52,6 +52,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         public bool IsNull() { return Type == Type.NULL; }
         public bool IsNumeric() { return IsInt() || IsDouble(); }
         public bool IsCollection() { return IsMap() || IsList() || IsSet(); }
+        public bool IsNullable() { return IsString() || IsObject() || IsMap() || IsList() || IsSet() || IsNull(); }
+
         public override bool Equals(object obj)
         {
             if (obj is Tipo t)

@@ -239,6 +239,29 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
                     errores.AddLast(new Error("Semántico", "Con " + Op1.Tipo.Type + " solo se puede operar el igual y diferente.", Linea, Columna));
                     return null;
                 }
+                else if (Op1.Tipo.IsNull() || Op2.Tipo.IsNull())
+                {
+                    if (Op1.Tipo.IsNull() && Op2.Tipo.IsNullable())
+                    {
+                        if (Op == Operador.IGUAL)
+                            return valOp2 is Null;
+                        else if (Op == Operador.DIFERENTE)
+                            return !(valOp2 is Null);
+
+                        errores.AddLast(new Error("Semántico", "Con Null solo se puede operar el igual y diferente.", Linea, Columna));
+                        return null;
+                    }
+                    else if (Op2.Tipo.IsNull() && Op1.Tipo.IsNullable())
+                    {
+                        if (Op == Operador.IGUAL)
+                            return valOp1 is Null;
+                        else if (Op == Operador.DIFERENTE)
+                            return !(valOp1 is Null);
+
+                        errores.AddLast(new Error("Semántico", "Con Null solo se puede operar el igual y diferente.", Linea, Columna));
+                        return null;
+                    }
+                }
 
                 errores.AddLast(new Error("Semántico", "No se pudo realizar la operación relacional.", Linea, Columna));
             }
