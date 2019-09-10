@@ -87,6 +87,52 @@ namespace GramaticasCQL.Parsers.CQL
                         default:
                             return null;
                     }
+                case "TYPE_PRIMITIVE":
+                    switch (hijos[0].Term.Name)
+                    {
+                        case "int":
+                            return new Tipo(Type.INT);
+                        case "double":
+                            return new Tipo(Type.DOUBLE);
+                        case "string":
+                            return new Tipo(Type.STRING);
+                        case "boolean":
+                            return new Tipo(Type.BOOLEAN);
+                        case "date":
+                            return new Tipo(Type.DATE);
+                        case "time":
+                            return new Tipo(Type.TIME);
+                        default:
+                            return null;
+                    }
+                case "TYPE_COLLECTION":
+                    switch (hijos[0].Term.Name)
+                    {
+                        case "int":
+                            return new Tipo(Type.INT);
+                        case "double":
+                            return new Tipo(Type.DOUBLE);
+                        case "string":
+                            return new Tipo(Type.STRING);
+                        case "boolean":
+                            return new Tipo(Type.BOOLEAN);
+                        case "date":
+                            return new Tipo(Type.DATE);
+                        case "time":
+                            return new Tipo(Type.TIME);
+                        case "identifier":
+                            return new Tipo(hijos[0].Token.Text);
+                        case "counter":
+                            return new Tipo(Type.COUNTER);
+                        case "map":
+                            return new Tipo(Type.MAP);
+                        case "list":
+                            return new Tipo(Type.LIST);
+                        case "set":
+                            return new Tipo(Type.SET);
+                        default:
+                            return null;
+                    }
 
                 case "BLOQUE":
                     linea = hijos[0].Token.Location.Line + 1;

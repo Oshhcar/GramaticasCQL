@@ -177,6 +177,8 @@ namespace GramaticasCQL.Parsers.CQL
                 INSTRUCCION = new NonTerminal("INSTRUCCION"),
 
                 TYPE = new NonTerminal("TYPE"),
+                TYPE_PRIMITIVE = new NonTerminal("TYPE_PRIMITIVE"),
+                TYPE_COLLECTION = new NonTerminal("TYPE_COLLECTION"),
                 TYPEDEF = new NonTerminal("TYPEDEF"),
                 IFNOTEXIST = new NonTerminal("IFNOTEXIST"),
                 ATTRIBUTE_LIST = new NonTerminal("ATTRIBUTELIST"),
@@ -339,6 +341,13 @@ namespace GramaticasCQL.Parsers.CQL
 
 
             TYPE.Rule = int_ | double_ | string_ | boolean_ | date_ | time_ | identifier | counter_ | map_ | list_ | set_;
+
+            TYPE_PRIMITIVE.Rule = int_ | double_ | string_ | boolean_ | date_ | time_ ;
+
+            TYPE_COLLECTION.Rule = int_ | double_ | string_ | boolean_ | date_ | time_ | identifier
+                                    | map_ + menorque + TYPE_PRIMITIVE + comma + TYPE_COLLECTION + mayorque
+                                    | list_ + menorque + TYPE_COLLECTION + mayorque
+                                    | set_ + menorque + TYPE_COLLECTION + mayorque;
 
             IFNOTEXIST.Rule = if_ + not_ + exist_;
 
@@ -535,9 +544,9 @@ namespace GramaticasCQL.Parsers.CQL
             EXPRESSION.Rule = CONDITIONAL_EXPRESSION | INSTANCE;
 
             INSTANCE.Rule = new_ + identifier
-                            | new_ + map_ + menorque + TYPE + comma + TYPE + mayorque
-                            | new_ + list_ + menorque + TYPE + mayorque
-                            | new_ + set_ + menorque + TYPE + mayorque;
+                            | new_ + map_ + menorque + TYPE_PRIMITIVE + comma + TYPE_COLLECTION + mayorque
+                            | new_ + list_ + menorque + TYPE_COLLECTION + mayorque
+                            | new_ + set_ + menorque + TYPE_COLLECTION + mayorque;
 
             CONDITIONAL_EXPRESSION.Rule = OR_EXPR | OR_EXPR + questionmark + OR_EXPR + colon + EXPRESSION;
 
