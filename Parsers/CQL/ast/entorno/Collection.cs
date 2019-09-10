@@ -37,6 +37,16 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             return null;
         }
 
+        public CollectionValue GetCollection(object clave)
+        {
+            foreach (CollectionValue val in Valores)
+            {
+                if (val.Clave.Equals(clave.ToString()))
+                    return val;
+            }
+            return null;
+        }
+
         public bool Set(object clave, object valor)
         {
             foreach (CollectionValue val in Valores)

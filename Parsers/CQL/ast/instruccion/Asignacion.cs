@@ -25,34 +25,75 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
             if (valExpr != null)
             {
-                Simbolo sim = Target.GetSimbolo(e);
-
-                if (sim != null)
+                if (Target is Identificador)
                 {
-                    if (sim.Tipo.Equals(Expr.Tipo))
-                    {
-                        sim.Valor = valExpr;
-                        return null;
-                    }
-                    else
-                    {
-                        Casteo cast = new Casteo(sim.Tipo, new Literal(Expr.Tipo, valExpr, 0, 0), 0, 0)
-                        {
-                            Mostrar = false
-                        };
-                        valExpr = cast.GetValor(e, log, errores);
+                    Simbolo sim = Target.GetSimbolo(e);
 
-                        if (valExpr != null)
+                    if (sim != null)
+                    {
+                        if (sim.Tipo.Equals(Expr.Tipo))
                         {
                             sim.Valor = valExpr;
                             return null;
                         }
-                    }
+                        else
+                        {
+                            Casteo cast = new Casteo(sim.Tipo, new Literal(Expr.Tipo, valExpr, 0, 0), 0, 0)
+                            {
+                                Mostrar = false
+                            };
+                            valExpr = cast.GetValor(e, log, errores);
 
-                    errores.AddLast(new Error("Semántico", "El valor no corresponde al tipo de la variable.", Linea, Columna));
-                    return null;
+                            if (valExpr != null)
+                            {
+                                sim.Valor = valExpr;
+                                return null;
+                            }
+                        }
+
+                        errores.AddLast(new Error("Semántico", "El valor no corresponde al tipo de la variable.", Linea, Columna));
+                        return null;
+                    }
+                    errores.AddLast(new Error("Semántico", "No se ha declarado una variable con el id: " + Target.GetId() + ".", Linea, Columna));
+
                 }
-                errores.AddLast(new Error("Semántico", "No se ha declarado una variable con el id: " + Target.GetId() + ".", Linea, Columna));
+                else if (Target is AtributoRef atributo)
+                {
+
+                }
+                else if (Target is Acceso acceso)
+                {
+                    acceso.GetCollection = true;
+                    CollectionValue collection = (CollectionValue) acceso.GetValor(e, log, errores);
+
+                    if (collection != null)
+                    {
+                        if (acceso.Tipo.Equals(Expr.Tipo))
+                        {
+                            collection.Valor = valExpr;
+                            return null;
+                        }
+                        else
+                        {
+                            Casteo cast = new Casteo(acceso.Tipo, new Literal(Expr.Tipo, valExpr, 0, 0), 0, 0)
+                            {
+                                Mostrar = false
+                            };
+                            valExpr = cast.GetValor(e, log, errores);
+
+                            if (valExpr != null)
+                            {
+                                collection.Valor = valExpr;
+                                return null;
+                            }
+                        }
+
+                        errores.AddLast(new Error("Semántico", "El valor no corresponde al tipo de la variable.", Linea, Columna));
+                        return null;
+                    }
+                    errores.AddLast(new Error("Semántico", "No se ha declarado una variable con el id: " + Target.GetId() + ".", Linea, Columna));
+
+                }
             }
             return null;
         }
