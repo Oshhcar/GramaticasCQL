@@ -365,15 +365,6 @@ namespace GramaticasCQL.Parsers.CQL
                         columna = hijos[1].Token.Location.Column + 1;
                         return new Logica((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), Operador.OR, linea, columna);
                     }
-                case "XOR_EXPR":
-                    if (hijos.Count() == 1)
-                        return GenerarArbol(hijos[0]);
-                    else
-                    {
-                        linea = hijos[1].Token.Location.Line + 1;
-                        columna = hijos[1].Token.Location.Column + 1;
-                        return new Logica((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), Operador.XOR, linea, columna);
-                    }
                 case "AND_EXPR":
                     if (hijos.Count() == 1)
                         return GenerarArbol(hijos[0]);
@@ -383,14 +374,23 @@ namespace GramaticasCQL.Parsers.CQL
                         columna = hijos[1].Token.Location.Column + 1;
                         return new Logica((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), Operador.AND, linea, columna);
                     }
-                case "NOT_EXPR":
+                case "XOR_EXPR":
                     if (hijos.Count() == 1)
                         return GenerarArbol(hijos[0]);
                     else
                     {
-                        linea = hijos[0].Token.Location.Line + 1;
-                        columna = hijos[0].Token.Location.Column + 1;
-                        return new Logica((Expresion)GenerarArbol(hijos[1]), linea, columna);
+                        linea = hijos[1].Token.Location.Line + 1;
+                        columna = hijos[1].Token.Location.Column + 1;
+                        return new Logica((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), Operador.XOR, linea, columna);
+                    }
+                case "COMPARISON_EQ":
+                    if (hijos.Count() == 1)
+                        return GenerarArbol(hijos[0]);
+                    else
+                    {
+                        linea = hijos[1].Token.Location.Line + 1;
+                        columna = hijos[1].Token.Location.Column + 1;
+                        return new Relacional((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), GetOperador(hijos[1]), linea, columna);
                     }
                 case "COMPARISON":
                     if (hijos.Count() == 1)
@@ -403,15 +403,6 @@ namespace GramaticasCQL.Parsers.CQL
                     }
                 case "COMP_OPERATOR":
                     return GetOperador(hijos[0]);
-                case "SHIFT_EXPR":
-                    if (hijos.Count() == 1)
-                        return GenerarArbol(hijos[0]);
-                    else
-                    {
-                        linea = hijos[1].Token.Location.Line + 1;
-                        columna = hijos[1].Token.Location.Column + 1;
-                        return new Unario((Expresion)GenerarArbol(hijos[0]), GetOperador(hijos[1]), linea, columna);
-                    }
                 case "A_EXPR":
                     if (hijos.Count() == 1)
                         return GenerarArbol(hijos[0]);
@@ -439,6 +430,15 @@ namespace GramaticasCQL.Parsers.CQL
                         columna = hijos[0].Token.Location.Column + 1;
                         return new Unario((Expresion)GenerarArbol(hijos[1]), GetOperador(hijos[0]), linea, columna);
                     }
+                case "NOT_EXPR":
+                    if (hijos.Count() == 1)
+                        return GenerarArbol(hijos[0]);
+                    else
+                    {
+                        linea = hijos[0].Token.Location.Line + 1;
+                        columna = hijos[0].Token.Location.Column + 1;
+                        return new Logica((Expresion)GenerarArbol(hijos[1]), linea, columna);
+                    }
                 case "POWER":
                     if (hijos.Count() == 1)
                         return GenerarArbol(hijos[0]);
@@ -447,6 +447,15 @@ namespace GramaticasCQL.Parsers.CQL
                         linea = hijos[1].Token.Location.Line + 1;
                         columna = hijos[1].Token.Location.Column + 1;
                         return new Aritmetica((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), GetOperador(hijos[1]), linea, columna);
+                    }
+                case "SHIFT_EXPR":
+                    if (hijos.Count() == 1)
+                        return GenerarArbol(hijos[0]);
+                    else
+                    {
+                        linea = hijos[1].Token.Location.Line + 1;
+                        columna = hijos[1].Token.Location.Column + 1;
+                        return new Unario((Expresion)GenerarArbol(hijos[0]), GetOperador(hijos[1]), linea, columna);
                     }
                 case "PRIMARY":
                     return GenerarArbol(hijos[0]);

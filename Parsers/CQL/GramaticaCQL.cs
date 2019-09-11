@@ -274,6 +274,7 @@ namespace GramaticasCQL.Parsers.CQL
                 XOR_EXPR = new NonTerminal("XOR_EXPR"),
                 NOT_EXPR = new NonTerminal("NOT_EXPR"),
                 COMPARISON = new NonTerminal("COMPARISON"),
+                COMPARISON_EQ = new NonTerminal("COMPARISON_EQ"),
                 COMP_OPERATOR = new NonTerminal("COMP_OPERATOR"),
                 SHIFT_EXPR = new NonTerminal("SHIFT_EXPR"),
                 A_EXPR = new NonTerminal("A_EXPR"),
@@ -548,30 +549,33 @@ namespace GramaticasCQL.Parsers.CQL
                             | new_ + list_ + menorque + TYPE_COLLECTION + mayorque
                             | new_ + set_ + menorque + TYPE_COLLECTION + mayorque;
 
-            CONDITIONAL_EXPRESSION.Rule = OR_EXPR | OR_EXPR + questionmark + OR_EXPR + colon + EXPRESSION;
+            CONDITIONAL_EXPRESSION.Rule = OR_EXPR | OR_EXPR + questionmark + EXPRESSION + colon + EXPRESSION;
 
-            OR_EXPR.Rule = XOR_EXPR | OR_EXPR + or + XOR_EXPR;
+            OR_EXPR.Rule = AND_EXPR | OR_EXPR + or + AND_EXPR;
 
-            XOR_EXPR.Rule = AND_EXPR | XOR_EXPR + xor + AND_EXPR;
+            AND_EXPR.Rule = XOR_EXPR | AND_EXPR + and + XOR_EXPR;
 
-            AND_EXPR.Rule = NOT_EXPR | AND_EXPR + and + NOT_EXPR;
+            XOR_EXPR.Rule = COMPARISON_EQ | XOR_EXPR + xor + COMPARISON_EQ;
 
-            NOT_EXPR.Rule = COMPARISON | not + NOT_EXPR;
+            COMPARISON_EQ.Rule = COMPARISON | COMPARISON_EQ + igual + COMPARISON
+                                            | COMPARISON_EQ + diferente + COMPARISON;
 
-            COMPARISON.Rule = SHIFT_EXPR | COMPARISON + COMP_OPERATOR + SHIFT_EXPR;
+            COMPARISON.Rule = A_EXPR | COMPARISON + COMP_OPERATOR + A_EXPR;
 
-            COMP_OPERATOR.Rule = menorque | mayorque | igual | mayorigual | menorigual | diferente;
-
-            SHIFT_EXPR.Rule = A_EXPR | SHIFT_EXPR + leftShift | SHIFT_EXPR + rightShift;
+            COMP_OPERATOR.Rule = menorque | mayorque | mayorigual | menorigual;
 
             A_EXPR.Rule = M_EXPR | A_EXPR + mas + A_EXPR | A_EXPR + menos + M_EXPR;
 
             M_EXPR.Rule = U_EXPR | M_EXPR + por + U_EXPR | M_EXPR + division + U_EXPR
                         | M_EXPR + modulo + U_EXPR;
 
-            U_EXPR.Rule = POWER | menos + U_EXPR | mas + U_EXPR;
+            U_EXPR.Rule = NOT_EXPR | POWER | menos + U_EXPR | mas + U_EXPR;
 
-            POWER.Rule = PRIMARY | PRIMARY + potencia + U_EXPR;
+            NOT_EXPR.Rule = not + U_EXPR;
+
+            POWER.Rule = SHIFT_EXPR | SHIFT_EXPR + potencia + U_EXPR;
+
+            SHIFT_EXPR.Rule = PRIMARY | SHIFT_EXPR + leftShift | SHIFT_EXPR + rightShift;
 
             PRIMARY.Rule = ATOM | ATTRIBUTEREF | AGGREGATION | FUNCALL | CALL | ACCESS; 
 
