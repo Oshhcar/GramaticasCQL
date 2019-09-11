@@ -14,12 +14,22 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             Padre = padre;
 
             if (padre != null)
+            {
                 Global = padre.Global;
+                Master = padre.Master;
+            }
+        }
+
+        public Entorno(Entorno padre, LinkedList<Simbolo> simbolos)
+        {
+            Simbolos = simbolos;
+            Padre = padre;
         }
 
         public LinkedList<Simbolo> Simbolos { get; set; }
         public Entorno Padre { get; set; }
         public Entorno Global { get; set; }
+        public MasterBD Master { get; set; }
 
         public void Add(Simbolo sim)
         {
@@ -55,6 +65,16 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             foreach (Simbolo sim in Global.Simbolos)
             {
                 if (sim.Id.Equals(id.ToLower()) && sim.Rol == Rol.FUNCION)
+                    return sim;
+            }
+            return null;
+        }
+
+        public Simbolo GetAtributo(string id)
+        {
+            foreach (Simbolo sim in Simbolos)
+            {
+                if (sim.Id.Equals(id.ToLower()) && sim.Rol == Rol.ATRIBUTO)
                     return sim;
             }
             return null;

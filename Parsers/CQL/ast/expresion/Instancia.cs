@@ -46,6 +46,31 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                     Tipo = new Tipo(Type.SET);
                     return new Collection(new Tipo(Type.SET, Tipo1));
             }
+
+            BD actual = e.Master.Actual;
+
+            if (actual != null)
+            {
+                Simbolo sim = actual.GetUserType(Id);
+                if (sim != null)
+                {
+                    Tipo = new Tipo(Id.ToLower());
+
+                    LinkedList<Simbolo> sims = new LinkedList<Simbolo>();
+
+                    foreach (Simbolo s in ((Entorno)sim.Valor).Simbolos)
+                    {
+                        sims.AddLast(new Simbolo(s.Tipo, Rol.ATRIBUTO, s.Id));
+                    }
+
+                    return new Objeto(Id.ToLower(), new Entorno(null, sims));
+                }
+                else
+                    errores.AddLast(new Error("Semántico", "No existe un User Type con el id: " + Id + " en la base de datos.", Linea, Columna));
+            }
+            else
+                errores.AddLast(new Error("Semántico", "No se ha seleccionado una base de datos, no se pudo buscar el User Type.", Linea, Columna));
+
             return null;
         }
     }

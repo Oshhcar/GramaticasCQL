@@ -128,6 +128,10 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
     {
         VARIABLE,
         FUNCION,
-        COLLECTION
+        COLLECTION,
+        ATRIBUTO,
+        USERTYPE,
+        BD,
+        TABLA
     }
 }

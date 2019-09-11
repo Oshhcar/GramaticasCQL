@@ -5,6 +5,7 @@ using GramaticasCQL.Parsers.CQL.ast.expresion.operacion;
 using GramaticasCQL.Parsers.CQL.ast.instruccion;
 using GramaticasCQL.Parsers.CQL.ast.instruccion.ciclos;
 using GramaticasCQL.Parsers.CQL.ast.instruccion.condicionales;
+using GramaticasCQL.Parsers.CQL.ast.instruccion.ddl;
 using Irony.Parsing;
 using System;
 using System.Collections.Generic;
@@ -75,7 +76,7 @@ namespace GramaticasCQL.Parsers.CQL
                         case "time":
                             return new Tipo(Type.TIME);
                         case "identifier":
-                            return new Tipo(hijos[0].Token.Text);
+                            return new Tipo(hijos[0].Token.Text.ToLower());
                         case "counter":
                             return new Tipo(Type.COUNTER);
                         case "map":
@@ -121,7 +122,7 @@ namespace GramaticasCQL.Parsers.CQL
                         case "time":
                             return new Tipo(Type.TIME);
                         case "identifier":
-                            return new Tipo(hijos[0].Token.Text);
+                            return new Tipo(hijos[0].Token.Text.ToLower());
                         case "counter":
                             return new Tipo(Type.COUNTER);
                         case "map":
@@ -133,6 +134,40 @@ namespace GramaticasCQL.Parsers.CQL
                         default:
                             return null;
                     }
+                case "TYPEDEF":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 6)
+                        return new TypeCrear(hijos[2].Token.Text, false,(LinkedList<Simbolo>)GenerarArbol(hijos[4]), linea, columna);
+                    else
+                        return new TypeCrear(hijos[3].Token.Text, true, (LinkedList<Simbolo>)GenerarArbol(hijos[5]), linea, columna);
+                case "ATTRIBUTE_LIST":
+                    LinkedList<Simbolo> atribute = new LinkedList<Simbolo>();
+                    foreach (ParseTreeNode hijo in hijos)
+                    {
+                        atribute.AddLast((Simbolo)GenerarArbol(hijo));
+                    }
+                    return atribute;
+                case "ATTRIBUTE":
+                    return new Simbolo((Tipo)GenerarArbol(hijos[1]), Rol.ATRIBUTO, hijos[0].Token.Text.ToLower());
+                case "USE":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new Use(hijos[1].Token.Text, linea, columna);
+                case "DATABASEDEF":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 3)
+                        return new BDCrear(hijos[2].Token.Text, false, linea, columna);
+                    else
+                        return new BDCrear(hijos[3].Token.Text, true, linea, columna);
+                case "DROP":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 3)
+                        return new BDBorrar(hijos[2].Token.Text, false, linea, columna);
+                    else
+                        return new BDBorrar(hijos[3].Token.Text, true, linea, columna);
 
                 case "BLOQUE":
                     linea = hijos[0].Token.Location.Line + 1;
@@ -552,7 +587,10 @@ namespace GramaticasCQL.Parsers.CQL
                 case "SET_DISPLAY":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
-                    return new SetDisplay((LinkedList<Expresion>)GenerarArbol(hijos[1]), linea, columna);
+                    if (hijos.Count() == 3)
+                        return new SetDisplay((LinkedList<Expresion>)GenerarArbol(hijos[1]), linea, columna);
+                    else
+                        return new ObjetoDisplay(hijos[4].Token.Text,(LinkedList<Expresion>)GenerarArbol(hijos[1]), linea, columna);
                 case "FUNCALL":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;

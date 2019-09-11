@@ -26,6 +26,13 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             Valor = valor ?? Predefinido();
         }
 
+        public Simbolo(Rol rol, string id, object valor)
+        {
+            Rol = rol;
+            Id = id;
+            Valor = valor;
+        }
+
         public Tipo Tipo { get; set; }
         public Rol Rol { get; set; }
         public string Id { get; set; }

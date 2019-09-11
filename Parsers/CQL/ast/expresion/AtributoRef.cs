@@ -14,10 +14,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
         {
             Target = target;
             Atributo = atributo;
+            GetObjeto = false;
         }
 
         public Expresion Target;
         public Expresion Atributo;
+        public bool GetObjeto;
 
         public override object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores)
         {
@@ -871,10 +873,35 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                 }
                 else
                 {
-                    //atributo es Id
+                    if (Target.Tipo.IsObject())
+                    {
+                        if (!(valorTarget is Null))
+                        {
+                            Objeto obj = (Objeto)valorTarget;
+
+                            Simbolo sim = obj.Entorno.GetAtributo(Atributo.GetId());
+
+                            if (sim != null)
+                            {
+                                Tipo = sim.Tipo;
+                                return GetObjeto ? sim : sim.Valor;
+                            }
+                            else
+                                errores.AddLast(new Error("Semántico", "No hay un atributo con el id: "+Atributo.GetId()+" en el User Type.", Linea, Columna));
+                        }
+                        else
+                            errores.AddLast(new Error("Semántico", "No se ha inicializado la variable.", Linea, Columna));
+                    }
+                    else
+                        errores.AddLast(new Error("Semántico", "La variable no es un User Type.", Linea, Columna));
                 }
             }
             return null;
+        }
+
+        public override string GetId()
+        {
+            return Target.GetId();
         }
     }
 }

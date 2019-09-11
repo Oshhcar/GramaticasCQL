@@ -26,7 +26,7 @@ namespace GramaticasCQL.Parsers.CQL
                 type_ = ToTerm("type"),
                 if_ = ToTerm("if"),
                 not_ = ToTerm("not"),
-                exist_ = ToTerm("exist"),
+                exists_ = ToTerm("exists"),
                 int_ = ToTerm("int"),
                 double_ = ToTerm("double"),
                 string_ = ToTerm("string"),
@@ -98,15 +98,16 @@ namespace GramaticasCQL.Parsers.CQL
                 log_ = ToTerm("log"),
                 throw_ = ToTerm("throw"),
                 try_ = ToTerm("try"),
-                catch_ = ToTerm("catch");
+                catch_ = ToTerm("catch"),
+                as_ = ToTerm("as");
 
-            MarkReservedWords("null", "true", "false", "type", "if", "not", "exist", "int", "double", "string", "boolean",
+            MarkReservedWords("null", "true", "false", "type", "if", "not", "exists", "int", "double", "string", "boolean",
                 "date", "time", "use", "create", "database", "drop", "table", "counter", "primary", "key", "alter", "add",
                 "truncate", "commit", "rollback", "user", "with", "password", "grant", "on", "revoke", "insert", "into",
                 "values", "update", "set", "where", "delete", "from", "select", "order", "by", "asc", "desc", "limit",
                 "begin", "batch", "apply", "count", "min", "max", "sum", "avg", "in", "else", "switch", "case", "default",
                 "while", "do", "for", "new", "map", "list", "procedure", "call", "break", "continue", "return", "cursor",
-                "is", "each", "open", "close", "log", "throw", "try", "catch");
+                "is", "each", "open", "close", "log", "throw", "try", "catch", "as");
 
             /* Relational operators */
             KeyTerm
@@ -181,7 +182,7 @@ namespace GramaticasCQL.Parsers.CQL
                 TYPE_COLLECTION = new NonTerminal("TYPE_COLLECTION"),
                 TYPEDEF = new NonTerminal("TYPEDEF"),
                 IFNOTEXIST = new NonTerminal("IFNOTEXIST"),
-                ATTRIBUTE_LIST = new NonTerminal("ATTRIBUTELIST"),
+                ATTRIBUTE_LIST = new NonTerminal("ATTRIBUTE_LIST"),
                 ATTRIBUTEREF = new NonTerminal("ATTRIBUTEREF"),
                 ATTRIBUTE = new NonTerminal("ATTRIBUTE"),
 
@@ -350,21 +351,22 @@ namespace GramaticasCQL.Parsers.CQL
                                     | list_ + menorque + TYPE_COLLECTION + mayorque
                                     | set_ + menorque + TYPE_COLLECTION + mayorque;
 
-            IFNOTEXIST.Rule = if_ + not_ + exist_;
+            IFNOTEXIST.Rule = if_ + not_ + exists_;
 
             TYPEDEF.Rule = create_ + type_ + identifier + leftPar + ATTRIBUTE_LIST + rightPar
                          | create_ + type_ + IFNOTEXIST + identifier + leftPar + ATTRIBUTE_LIST + rightPar;
 
             ATTRIBUTE_LIST.Rule = MakePlusRule(ATTRIBUTE_LIST, comma, ATTRIBUTE);
 
-            ATTRIBUTE.Rule = identifier + TYPE;
+            ATTRIBUTE.Rule = identifier + TYPE_COLLECTION;
 
             USE.Rule = use_ + identifier;
 
             DATABASEDEF.Rule = create_ + database_ + identifier
                             | create_ + database_ + IFNOTEXIST + identifier;
 
-            DROP.Rule = drop_ + database_ + identifier;
+            DROP.Rule = drop_ + database_ + identifier
+                        | drop_ + database_ + IFNOTEXIST + identifier;
 
             TABLEDEF.Rule = create_ + table_ + identifier + leftPar + COLUMN_LIST + rightPar
                            | create_ + table_ + IFNOTEXIST + identifier + leftPar + COLUMN_LIST + rightPar;
@@ -441,8 +443,25 @@ namespace GramaticasCQL.Parsers.CQL
 
             SENTENCIAS.Rule = MakePlusRule(SENTENCIAS, SENTENCIA);
 
-            SENTENCIA.Rule =
-                                EXPRESSION_STMT + semicolon
+            SENTENCIA.Rule =    USE + semicolon
+                              | DATABASEDEF + semicolon
+                              | DROP + semicolon
+                              | TABLEDEF + semicolon
+                              | TABLEALTER + semicolon
+                              | TABLEDROP + semicolon
+                              | TABLETRUNCATE + semicolon
+                              | COMMIT + semicolon
+                              | ROLLBACK + semicolon
+                              | USERDEF + semicolon
+                              | GRANT + semicolon
+                              | REVOKE + semicolon
+                              | INSERT + semicolon
+                              | UPDATE + semicolon
+                              | DELETE + semicolon
+                              | SELECT + semicolon
+                              | BATCH + semicolon
+
+                              | EXPRESSION_STMT + semicolon
                               | DECLARATION_STMT + semicolon
                               | ASSIGNMENT_STMT + semicolon
                               | AUGMENTED_ASSIGNMENT_STMT + semicolon
@@ -602,7 +621,8 @@ namespace GramaticasCQL.Parsers.CQL
 
             LIST_DISPLAY.Rule = leftCor + EXPRESSION_LIST + rightCor;
 
-            SET_DISPLAY.Rule = leftLla + EXPRESSION_LIST + rightLla; 
+            SET_DISPLAY.Rule = leftLla + EXPRESSION_LIST + rightLla
+                             | leftLla + EXPRESSION_LIST + rightLla + as_ + identifier; 
 
             FUNCALL.Rule = identifier + leftPar + rightPar
                        | identifier + leftPar + EXPRESSION_LIST + rightPar;

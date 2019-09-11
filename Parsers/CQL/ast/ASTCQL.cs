@@ -20,8 +20,11 @@ namespace GramaticasCQL.Parsers.CQL.ast
 
         public void Ejecutar(LinkedList<string> log, LinkedList<Error> errores)
         {
+            MasterBD master = new MasterBD(); //aqui iran todas las tablas
+
             Entorno global = new Entorno(null);
             global.Global = global;
+            global.Master = master;
 
             foreach (NodoASTCQL stmt in Sentencias)
             {

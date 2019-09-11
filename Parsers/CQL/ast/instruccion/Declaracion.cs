@@ -23,6 +23,25 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
         public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<string> log, LinkedList<Error> errores)
         {
+            if (Tipo.IsObject())
+            {
+                BD actual = e.Master.Actual;
+
+                if (actual != null)
+                {
+                    if (actual.GetUserType(Tipo.Objeto) == null)
+                    {
+                        errores.AddLast(new Error("Semántico", "No existe un User Type con el id: " + Tipo.Objeto + " en la base de datos.", Linea, Columna));
+                        return null;
+                    }
+                }
+                else
+                {
+                    errores.AddLast(new Error("Semántico", "No se ha seleccionado una base de datos, no se pudo buscar el User Type.", Linea, Columna));
+                    return null;
+                }
+            }
+
             foreach (Expresion target in Target)
             {
                 object valorExpr = null;

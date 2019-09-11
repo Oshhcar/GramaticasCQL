@@ -76,7 +76,52 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                 }
                 else if (Target is AtributoRef atributo)
                 {
+                    atributo.GetObjeto = true;
+                    Simbolo sim = (Simbolo)atributo.GetValor(e, log, errores);
 
+                    if (sim != null)
+                    {
+                        if (sim.Tipo.Equals(Expr.Tipo))
+                        {
+                            sim.Valor = valExpr;
+                            return null;
+                        }
+                        else
+                        {
+                            if (sim.Tipo.IsCollection() && Expr.Tipo.IsCollection())
+                            {
+                                if (sim.Tipo.EqualsCollection(Expr.Tipo))
+                                {
+                                    if (valExpr is Collection collection)
+                                    {
+                                        sim.Tipo.Clave = collection.Tipo.Clave;
+                                        sim.Tipo.Valor = collection.Tipo.Valor;
+                                        sim.Valor = collection;
+                                        return null;
+                                    }
+                                }
+
+                            }
+                            else
+                            {
+                                Casteo cast = new Casteo(sim.Tipo, new Literal(Expr.Tipo, valExpr, 0, 0), 0, 0)
+                                {
+                                    Mostrar = false
+                                };
+                                valExpr = cast.GetValor(e, log, errores);
+
+                                if (valExpr != null)
+                                {
+                                    sim.Valor = valExpr;
+                                    return null;
+                                }
+                            }
+                        }
+
+                        errores.AddLast(new Error("Semántico", "El valor no corresponde al tipo de la variable.", Linea, Columna));
+                        return null;
+                    }
+                    errores.AddLast(new Error("Semántico", "No se ha declarado una variable con el id: " + Target.GetId() + ".", Linea, Columna));
                 }
                 else if (Target is Acceso acceso)
                 {
@@ -92,16 +137,33 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                         }
                         else
                         {
-                            Casteo cast = new Casteo(acceso.Tipo, new Literal(Expr.Tipo, valExpr, 0, 0), 0, 0)
+                            if (acceso.Tipo.IsCollection() && Expr.Tipo.IsCollection())
                             {
-                                Mostrar = false
-                            };
-                            valExpr = cast.GetValor(e, log, errores);
+                                if (acceso.Tipo.EqualsCollection(Expr.Tipo))
+                                {/*probar esto*/
+                                    if (valExpr is Collection collection2)
+                                    {
+                                        acceso.Tipo.Clave = collection2.Tipo.Clave;
+                                        acceso.Tipo.Valor = collection2.Tipo.Valor;
+                                        collection.Valor = collection2;
+                                        return null;
+                                    }
+                                }
 
-                            if (valExpr != null)
+                            }
+                            else
                             {
-                                collection.Valor = valExpr;
-                                return null;
+                                Casteo cast = new Casteo(acceso.Tipo, new Literal(Expr.Tipo, valExpr, 0, 0), 0, 0)
+                                {
+                                    Mostrar = false
+                                };
+                                valExpr = cast.GetValor(e, log, errores);
+
+                                if (valExpr != null)
+                                {
+                                    collection.Valor = valExpr;
+                                    return null;
+                                }
                             }
                         }
 
