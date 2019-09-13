@@ -32,13 +32,53 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             return null;
         }
 
+        public Simbolo GetTabla(string id)
+        {
+            foreach (Simbolo sim in Simbolos)
+            {
+                if (sim.Id.Equals(id.ToLower()) && sim.Rol == Rol.TABLA)
+                    return sim;
+            }
+            return null;
+        }
+
+        public bool DropTabla(string id)
+        {
+            foreach (Simbolo sim in Simbolos)
+            {
+                if (sim.Id.Equals(id.ToLower()) && sim.Rol == Rol.TABLA)
+                {
+                    Simbolos.Remove(sim);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool TruncateTabla(string id)
+        {
+            foreach (Simbolo sim in Simbolos)
+            {
+                if (sim.Id.Equals(id.ToLower()) && sim.Rol == Rol.TABLA)
+                {
+                    ((Tabla)sim.Valor).Datos.Clear();
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public void Recorrer()
         {
             foreach (Simbolo sim in Simbolos)
             {
                 Console.WriteLine(sim.Id + " " + sim.Rol.ToString() + " " + sim.Valor.ToString());
-               /* if (sim.Valor is Entorno ent)
-                    ent.Recorrer();*/
+                /* if (sim.Valor is Entorno ent)
+                     ent.Recorrer();*/
+                if (sim.Valor is Tabla t)
+                {
+                    t.Recorrer();
+                }
 
             }
         }

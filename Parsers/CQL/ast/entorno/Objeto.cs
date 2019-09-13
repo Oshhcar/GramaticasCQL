@@ -15,6 +15,16 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         }
 
         public string Id { get; set; }
-        public Entorno Entorno { get; set; }
+        public Entorno Entorno { get; set; } /*Reconsiderar guardar solo una lista aquí*/
+
+        public Simbolo GetAtributo(string id)
+        {
+            foreach (Simbolo sim in Entorno.Simbolos)
+            {
+                if (sim.Id.Equals(id.ToLower()))// && sim.Rol == Rol.ATRIBUTO)
+                    return sim;
+            }
+            return null;
+        }
     }
 }

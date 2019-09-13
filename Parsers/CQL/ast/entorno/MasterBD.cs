@@ -11,9 +11,11 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         public MasterBD()
         {
             Data = new LinkedList<BD>();
+            Usuarios = new LinkedList<Usuario>();
         }
         
         public LinkedList<BD> Data { get; set; }
+        public LinkedList<Usuario> Usuarios { get; set; }
         public BD Actual { get; set; }
 
         public void Add(string id)
@@ -37,11 +39,36 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             {
                 if (bd.Id.Equals(id.ToLower()))
                 {
-                    bd.Simbolos.Clear();
+                    if (Actual.Equals(bd))
+                        Actual = null;
+
+                    //bd.Simbolos.Clear();
+                    Data.Remove(bd);
+
+                    foreach (Usuario usuario in Usuarios)
+                    {
+                        usuario.RevokePermiso(id);
+                    }
+
                     return true;
                 }
             }
             return false;
+        }
+
+        public void AddUsuario(string id, string password)
+        {
+            Usuarios.AddLast(new Usuario(id.ToLower(), password));
+        }
+
+        public Usuario GetUsuario(string id)
+        {
+            foreach (Usuario usuario in Usuarios)
+            {
+                if (usuario.Id.Equals(id.ToLower()))
+                    return usuario;
+            }
+            return null;
         }
 
         public void Recorrer()
@@ -54,6 +81,14 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             }
             if (Actual != null)
                 Console.WriteLine("\tActual: " + Actual.Id + "\n\n");
+
+            Console.WriteLine("*****************");
+            foreach (Usuario usuario in Usuarios)
+            {
+                Console.WriteLine("Usuario: " + usuario.Id + " Pass:" + usuario.Password);
+                usuario.Recorrer();
+            }
+            Console.WriteLine("\n\n\n");
         }
     }
 }

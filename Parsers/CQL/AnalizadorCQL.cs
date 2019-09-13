@@ -168,6 +168,86 @@ namespace GramaticasCQL.Parsers.CQL
                         return new BDBorrar(hijos[2].Token.Text, false, linea, columna);
                     else
                         return new BDBorrar(hijos[3].Token.Text, true, linea, columna);
+                case "TABLEDEF":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    TablaCrear tabla;
+                    if (hijos.Count() == 6)
+                    {
+                        tabla = (TablaCrear)GenerarArbol(hijos[4]);
+                        tabla.Id = hijos[2].Token.Text;
+                    }
+                    else
+                    {
+                        tabla = (TablaCrear)GenerarArbol(hijos[5]);
+                        tabla.IfNotExist = true;
+                        tabla.Id = hijos[3].Token.Text;
+                    }
+                    tabla.Linea = linea;
+                    tabla.Columna = columna;
+                    return tabla;
+                case "COLUMN_LIST":
+                    TablaCrear t = new TablaCrear();
+                    foreach (ParseTreeNode hijo in hijos)
+                    {
+                        object obj = GenerarArbol(hijo);
+                        if (obj is Simbolo)
+                            t.Simbolos.AddLast((Simbolo)obj);
+                        else
+                            t.Primary = (LinkedList<string>)obj;
+                    }
+                    return t;
+                case "COLUMN":
+                    if (hijos.Count() == 2)
+                        return new Simbolo((Tipo)GenerarArbol(hijos[1]), Rol.COLUMNA, hijos[0].Token.Text.ToLower());
+                    else if (hijos.Count() == 4)
+                        return new Simbolo((Tipo)GenerarArbol(hijos[1]), Rol.PRIMARY, hijos[0].Token.Text.ToLower());
+                    else
+                        return GenerarArbol(hijos[3]);
+                case "ID_LIST":
+                    LinkedList<string> idList = new LinkedList<string>();
+                    foreach (ParseTreeNode hijo in hijos)
+                    {
+                        idList.AddLast(hijo.Token.Text.ToLower());
+                    }
+                    return idList;
+                case "TABLEALTER":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos[3].Term.Name.Equals("add"))
+                        return new TablaModificar(hijos[2].Token.Text, (LinkedList<Simbolo>)GenerarArbol(hijos[4]), linea, columna);
+                    else
+                        return new TablaModificar(hijos[2].Token.Text, (LinkedList<string>)GenerarArbol(hijos[4]), linea, columna);
+                case "TABLEDROP":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 3)
+                        return new TablaBorrar(hijos[2].Token.Text, false, linea, columna);
+                    return new TablaBorrar(hijos[3].Token.Text, true, linea, columna);
+                case "TABLETRUNCATE":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new TablaTruncar(hijos[2].Token.Text, linea, columna);
+                case "COMMIT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new Commit(linea, columna);
+                case "ROLLBACK":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new Rollback(linea, columna);
+                case "USERDEF":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new UsuarioCrear(hijos[2].Token.Text, new Cadena(hijos[5].Token.Text), linea, columna);
+                case "GRANT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new UsuarioGrant(hijos[1].Token.Text, hijos[3].Token.Text, linea, columna);
+                case "REVOKE":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new UsuarioRevoke(hijos[1].Token.Text, hijos[3].Token.Text, linea, columna);
 
                 case "BLOQUE":
                     linea = hijos[0].Token.Location.Line + 1;

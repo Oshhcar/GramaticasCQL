@@ -21,7 +21,8 @@ namespace GramaticasCQL.Parsers.CQL.ast
         public void Ejecutar(LinkedList<string> log, LinkedList<Error> errores)
         {
             MasterBD master = new MasterBD(); //aqui iran todas las tablas
-
+            master.AddUsuario("admin", "admin");
+            
             Entorno global = new Entorno(null);
             global.Global = global;
             global.Master = master;

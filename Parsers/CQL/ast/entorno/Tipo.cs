@@ -132,6 +132,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         ATRIBUTO,
         USERTYPE,
         BD,
-        TABLA
+        TABLA,
+        COLUMNA,
+        PRIMARY
     }
 }

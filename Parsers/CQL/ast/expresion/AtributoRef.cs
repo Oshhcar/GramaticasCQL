@@ -879,7 +879,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                         {
                             Objeto obj = (Objeto)valorTarget;
 
-                            Simbolo sim = obj.Entorno.GetAtributo(Atributo.GetId());
+                            Simbolo sim = obj.GetAtributo(Atributo.GetId());
 
                             if (sim != null)
                             {

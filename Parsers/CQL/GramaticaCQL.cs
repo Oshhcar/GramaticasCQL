@@ -182,6 +182,7 @@ namespace GramaticasCQL.Parsers.CQL
                 TYPE_COLLECTION = new NonTerminal("TYPE_COLLECTION"),
                 TYPEDEF = new NonTerminal("TYPEDEF"),
                 IFNOTEXIST = new NonTerminal("IFNOTEXIST"),
+                IFEXIST = new NonTerminal("IFEXIST"),
                 ATTRIBUTE_LIST = new NonTerminal("ATTRIBUTE_LIST"),
                 ATTRIBUTEREF = new NonTerminal("ATTRIBUTEREF"),
                 ATTRIBUTE = new NonTerminal("ATTRIBUTE"),
@@ -346,12 +347,14 @@ namespace GramaticasCQL.Parsers.CQL
 
             TYPE_PRIMITIVE.Rule = int_ | double_ | string_ | boolean_ | date_ | time_ ;
 
-            TYPE_COLLECTION.Rule = int_ | double_ | string_ | boolean_ | date_ | time_ | identifier
+            TYPE_COLLECTION.Rule = int_ | double_ | string_ | boolean_ | date_ | time_ | identifier | counter_
                                     | map_ + menorque + TYPE_PRIMITIVE + comma + TYPE_COLLECTION + mayorque
                                     | list_ + menorque + TYPE_COLLECTION + mayorque
                                     | set_ + menorque + TYPE_COLLECTION + mayorque;
 
             IFNOTEXIST.Rule = if_ + not_ + exists_;
+
+            IFEXIST.Rule = if_ + exists_;
 
             TYPEDEF.Rule = create_ + type_ + identifier + leftPar + ATTRIBUTE_LIST + rightPar
                          | create_ + type_ + IFNOTEXIST + identifier + leftPar + ATTRIBUTE_LIST + rightPar;
@@ -373,8 +376,8 @@ namespace GramaticasCQL.Parsers.CQL
 
             COLUMN_LIST.Rule = MakePlusRule(COLUMN_LIST, comma, COLUMN);
 
-            COLUMN.Rule = identifier + TYPE
-                        | identifier + TYPE + primary_ + key_
+            COLUMN.Rule = identifier + TYPE_COLLECTION
+                        | identifier + TYPE_COLLECTION + primary_ + key_
                         | primary_ + key_ + leftPar + ID_LIST + rightPar;
 
             ID_LIST.Rule = MakePlusRule(ID_LIST, comma, identifier);
@@ -383,7 +386,7 @@ namespace GramaticasCQL.Parsers.CQL
                             | alter_ + table_ + identifier + drop_ + ID_LIST;
 
             TABLEDROP.Rule = drop_ + table_ + identifier
-                            | drop_ + table_ + IFNOTEXIST + identifier;
+                            | drop_ + table_ + IFEXIST + identifier;
 
             TABLETRUNCATE.Rule = truncate_ + table_ + identifier;
 
