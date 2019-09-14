@@ -109,9 +109,11 @@
     <Compile Include="Parsers\CQL\ast\instruccion\condicionales\SubIf.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\condicionales\Switch.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\Continue.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\ddl\Actualizar.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\BDCrear.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\BDBorrar.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\Commit.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\ddl\Insertar.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\Rollback.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\TablaBorrar.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\TablaCrear.cs" />

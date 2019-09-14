@@ -12,22 +12,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         {
             Cabecera = new Entorno(null, new LinkedList<Simbolo>());
             Datos = new LinkedList<Entorno>();
-            Contador = 0;
+            Contador = 1;
         }
 
         public Entorno Cabecera { get; set; }
         public LinkedList<Entorno> Datos {get; set;}
         public int Contador { get; set; }
-
-        public Simbolo GetColumna(string id)
-        {
-            foreach (Simbolo sim in Cabecera.Simbolos)
-            {
-                if (sim.Id.Equals(id.ToLower()))//&& sim.Rol == Rol.COLUMNA || sim.Rol == Rol.PRIMARY)
-                    return sim;
-            }
-            return null;
-        }
 
         public void Add(Simbolo columna)
         {
@@ -54,11 +44,68 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             return 3; // No se encontro
         }
 
+        public bool Insertar(Entorno dato, LinkedList<Simbolo> primary)
+        {
+            if (primary.Count() > 0)
+            {
+                bool bandera = false;
+                foreach (Simbolo sim in primary)
+                {
+                    if (!BuscarPrimaria(sim.Id, sim.Valor))
+                        bandera = true;
+                }
+
+                if (bandera)
+                {
+                    Datos.AddLast(dato);
+                    return true;
+                }
+            }
+            else
+            {
+                Datos.AddLast(dato);
+                return true;
+            }
+            return false;
+        }
+
+        public bool BuscarPrimaria(string id, object valor)
+        {
+            foreach (Entorno ent in Datos)
+            {
+                foreach (Simbolo sim in ent.Simbolos)
+                {
+                    if (sim.Id.Equals(id))
+                    {
+                        if (sim.Valor.Equals(valor))
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public Entorno GetNuevaFila()
+        {
+            Entorno fila = new Entorno(null, new LinkedList<Simbolo>());
+
+            foreach (Simbolo sim in Cabecera.Simbolos)
+            {
+                fila.Add(new Simbolo(sim.Tipo, sim.Rol, sim.Id, sim.Valor));
+            }
+
+            return fila;
+        }
+
         public void Recorrer()
         {
             foreach (Simbolo col in Cabecera.Simbolos)
             {
                 Console.WriteLine(col.Id + " " + col.Tipo.Type.ToString() + " " + col.Rol.ToString() + " " + col.Valor.ToString());
+            }
+            foreach (Entorno ent in Datos)
+            {
+                ent.Recorrer();
             }
         }
     }

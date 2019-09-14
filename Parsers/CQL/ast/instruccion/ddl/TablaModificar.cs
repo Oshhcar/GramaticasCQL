@@ -43,7 +43,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                         {
                             columna.Rol = Rol.COLUMNA;
 
-                            if (tabla.GetColumna(columna.Id) != null)
+                            if (tabla.Cabecera.GetCualquiera(columna.Id) != null)
                             {
                                 errores.AddLast(new Error("Semántico", "Ya existe una columna con el id: " + columna.Id + " en la Tabla.", Linea, Columna));
                                 continue;

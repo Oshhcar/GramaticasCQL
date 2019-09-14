@@ -249,6 +249,17 @@ namespace GramaticasCQL.Parsers.CQL
                     columna = hijos[0].Token.Location.Column + 1;
                     return new UsuarioRevoke(hijos[1].Token.Text, hijos[3].Token.Text, linea, columna);
 
+                case "INSERT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 7)
+                        return new Insertar(hijos[2].Token.Text,(LinkedList<Expresion>)GenerarArbol(hijos[5]), linea, columna);
+                    return new Insertar(hijos[2].Token.Text, (LinkedList<string>)GenerarArbol(hijos[4]), (LinkedList<Expresion>)GenerarArbol(hijos[8]), linea, columna);
+                case "UPDATE":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new Actualizar(hijos[1].Token.Text, (LinkedList<Asignacion>)GenerarArbol(hijos[3]), linea, columna);
+
                 case "BLOQUE":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
@@ -306,7 +317,13 @@ namespace GramaticasCQL.Parsers.CQL
                     linea = hijos[1].Token.Location.Line + 1;
                     columna = hijos[1].Token.Location.Column + 1;
                     return new Asignacion((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), linea, columna);
-
+                case "ASSIGNMENT_LIST":
+                    LinkedList<Asignacion> asignaLista = new LinkedList<Asignacion>();
+                    foreach (ParseTreeNode hijo in hijos)
+                    {
+                        asignaLista.AddLast((Asignacion)GenerarArbol(hijo));
+                    }
+                    return asignaLista;
                 case "AUGMENTED_ASSIGNMENT_STMT":
                     linea = hijos[1].ChildNodes.ToArray()[0].Token.Location.Line + 1;
                     columna = hijos[1].ChildNodes.ToArray()[0].Token.Location.Column + 1;

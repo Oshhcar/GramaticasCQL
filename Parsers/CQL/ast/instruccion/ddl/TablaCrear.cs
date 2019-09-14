@@ -70,7 +70,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                                 another = true;
                         }
 
-                        if (tabla.GetColumna(sim.Id) != null)
+                        if (tabla.Cabecera.GetCualquiera(sim.Id) != null)
                         {
                             errores.AddLast(new Error("Semántico", "Ya existe una columna con el id: " + sim.Id + " en la Tabla.", Linea, Columna));
                             continue;
