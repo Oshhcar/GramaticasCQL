@@ -17,6 +17,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         public LinkedList<BD> Data { get; set; }
         public LinkedList<Usuario> Usuarios { get; set; }
         public BD Actual { get; set; }
+        public Entorno EntornoActual { get; set; }
 
         public void Add(string id)
         {

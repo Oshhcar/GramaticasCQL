@@ -97,6 +97,7 @@
     <Compile Include="Parsers\CQL\ast\expresion\operacion\Unario.cs" />
     <Compile Include="Parsers\CQL\ast\expresion\SetDisplay.cs" />
     <Compile Include="Parsers\CQL\ast\expresion\Ternario.cs" />
+    <Compile Include="Parsers\CQL\ast\expresion\Where.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\Asignacion.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\AsignacionOperacion.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\Bloque.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\BDCrear.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\BDBorrar.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\Commit.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\ddl\Eliminar.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\Insertar.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\Rollback.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\TablaBorrar.cs" />

@@ -138,7 +138,7 @@ namespace GramaticasCQL.Parsers.CQL
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
                     if (hijos.Count() == 6)
-                        return new TypeCrear(hijos[2].Token.Text, false,(LinkedList<Simbolo>)GenerarArbol(hijos[4]), linea, columna);
+                        return new TypeCrear(hijos[2].Token.Text, false, (LinkedList<Simbolo>)GenerarArbol(hijos[4]), linea, columna);
                     else
                         return new TypeCrear(hijos[3].Token.Text, true, (LinkedList<Simbolo>)GenerarArbol(hijos[5]), linea, columna);
                 case "ATTRIBUTE_LIST":
@@ -248,17 +248,30 @@ namespace GramaticasCQL.Parsers.CQL
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
                     return new UsuarioRevoke(hijos[1].Token.Text, hijos[3].Token.Text, linea, columna);
-
+                case "WHERE":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 2)
+                        return new Where((Expresion)GenerarArbol(hijos[1]), linea, columna);
+                    return new Where((Expresion)GenerarArbol(hijos[1]), (LinkedList<Expresion>)GenerarArbol(hijos[4]), linea, columna);
                 case "INSERT":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
                     if (hijos.Count() == 7)
-                        return new Insertar(hijos[2].Token.Text,(LinkedList<Expresion>)GenerarArbol(hijos[5]), linea, columna);
+                        return new Insertar(hijos[2].Token.Text, (LinkedList<Expresion>)GenerarArbol(hijos[5]), linea, columna);
                     return new Insertar(hijos[2].Token.Text, (LinkedList<string>)GenerarArbol(hijos[4]), (LinkedList<Expresion>)GenerarArbol(hijos[8]), linea, columna);
                 case "UPDATE":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
-                    return new Actualizar(hijos[1].Token.Text, (LinkedList<Asignacion>)GenerarArbol(hijos[3]), linea, columna);
+                    if(hijos.Count() == 4)
+                        return new Actualizar(hijos[1].Token.Text, (LinkedList<Asignacion>)GenerarArbol(hijos[3]), linea, columna);
+                    return new Actualizar(hijos[1].Token.Text, (LinkedList<Asignacion>)GenerarArbol(hijos[3]),(Where)GenerarArbol(hijos[4]), linea, columna);
+                case "DELETE":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 3)
+                        return new Eliminar(hijos[2].Token.Text, linea, columna);
+                    return new Eliminar(hijos[2].Token.Text, (Where)GenerarArbol(hijos[3]), linea, columna);
 
                 case "BLOQUE":
                     linea = hijos[0].Token.Location.Line + 1;
@@ -284,9 +297,13 @@ namespace GramaticasCQL.Parsers.CQL
                     }
                     return target;
                 case "TARGET":
-                    if (hijos[0].Term.Name.Equals("identifier") || hijos[0].Term.Name.Equals("identifier2"))
+                    if (hijos[0].Term.Name.Equals("identifier"))
                     {
                         return new Identificador(hijos[0].Token.Text, hijos[0].Token.Location.Line + 1, hijos[0].Token.Location.Column + 1);
+                    }
+                    else if (hijos[0].Term.Name.Equals("identifier2"))
+                    {
+                        return new Identificador(hijos[0].Token.Text, true, hijos[0].Token.Location.Line + 1, hijos[0].Token.Location.Column + 1);
                     }
                     else
                     {
@@ -592,12 +609,18 @@ namespace GramaticasCQL.Parsers.CQL
                 case "PRIMARY":
                     return GenerarArbol(hijos[0]);
                 case "ATOM":
-                    if (hijos[0].Term.Name.Equals("identifier2") || hijos[0].Term.Name.Equals("identifier"))
+                    if (hijos[0].Term.Name.Equals("identifier"))
                     {
                         linea = hijos[0].Token.Location.Line + 1;
                         columna = hijos[0].Token.Location.Column + 1;
                         return new Identificador(hijos[0].Token.Text, linea, columna);
 
+                    }
+                    else if (hijos[0].Term.Name.Equals("identifier2"))
+                    {
+                        linea = hijos[0].Token.Location.Line + 1;
+                        columna = hijos[0].Token.Location.Column + 1;
+                        return new Identificador(hijos[0].Token.Text, true, linea, columna);
                     }
                     return GenerarArbol(hijos[0]);
                 case "LITERAL":

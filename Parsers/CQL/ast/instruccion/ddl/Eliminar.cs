@@ -8,23 +8,20 @@ using GramaticasCQL.Parsers.CQL.ast.expresion;
 
 namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 {
-    class Actualizar : Instruccion
+    class Eliminar : Instruccion
     {
-        public Actualizar(string id, LinkedList<Asignacion> asignaciones, int linea, int columna) : base(linea, columna)
+        public Eliminar(string id, int linea, int columna) : base(linea, columna)
         {
             Id = id;
-            Asignaciones = asignaciones;
         }
 
-        public Actualizar(string id, LinkedList<Asignacion> asignaciones, Where where, int linea, int columna) : base(linea, columna)
+        public Eliminar(string id, Where where, int linea, int columna) : base(linea, columna)
         {
             Id = id;
-            Asignaciones = asignaciones;
             Where = where;
         }
 
         public string Id { get; set; }
-        public LinkedList<Asignacion> Asignaciones { get; set; }
         public Where Where { get; set; }
 
         public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<string> log, LinkedList<Error> errores)
@@ -39,12 +36,18 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                 {
                     Tabla tabla = (Tabla)sim.Valor;
 
-                    foreach (Entorno ent in tabla.Datos)
+                    if (Where == null)
                     {
-                        e.Master.EntornoActual = ent;
+                        tabla.Datos.Clear();
+                    }
+                    else
+                    {
+                        LinkedList<Entorno> delete = new LinkedList<Entorno>();
 
-                        if (Where != null)
+                        foreach (Entorno ent in tabla.Datos)
                         {
+                            e.Master.EntornoActual = ent;
+
                             object valWhere = Where.GetValor(e, log, errores);
                             if (valWhere != null)
                             {
@@ -61,11 +64,13 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                             }
                             else
                                 return null;
+
+                            delete.AddLast(ent);
                         }
 
-                        foreach (Asignacion asigna in Asignaciones)
+                        foreach (Entorno ent in delete)
                         {
-                            asigna.Ejecutar(e, funcion, ciclo, sw, log, errores);
+                            tabla.Datos.Remove(ent);
                         }
                     }
                 }
