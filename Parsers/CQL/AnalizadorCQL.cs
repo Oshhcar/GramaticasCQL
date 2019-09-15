@@ -253,6 +253,8 @@ namespace GramaticasCQL.Parsers.CQL
                     columna = hijos[0].Token.Location.Column + 1;
                     if (hijos.Count() == 2)
                         return new Where((Expresion)GenerarArbol(hijos[1]), linea, columna);
+                    else if (hijos.Count() == 4)
+                        return new Where((Expresion)GenerarArbol(hijos[1]), (LinkedList<Expresion>)GenerarArbol(hijos[3]), linea, columna);
                     return new Where((Expresion)GenerarArbol(hijos[1]), (LinkedList<Expresion>)GenerarArbol(hijos[4]), linea, columna);
                 case "INSERT":
                     linea = hijos[0].Token.Location.Line + 1;

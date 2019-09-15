@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GramaticasCQL.Parsers.CQL.ast.entorno;
+using Type = GramaticasCQL.Parsers.CQL.ast.entorno.Type;
 
 namespace GramaticasCQL.Parsers.CQL.ast.expresion
 {
@@ -25,14 +26,46 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
         public override object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores)
         {
-            if (InExpr == null)
-            {
-                object valExpr = Expr.GetValor(e, log, errores);
+            object valExpr = Expr.GetValor(e, log, errores);
 
-                if (valExpr != null)
+            if (valExpr != null)
+            {
+                if (InExpr == null)
                 {
                     Tipo = Expr.Tipo;
                     return valExpr;
+                }
+                else
+                {
+                    Tipo = new Tipo(Type.BOOLEAN);
+
+                    foreach (Expresion exprActual in InExpr)
+                    {
+                        object valExprActual = exprActual.GetValor(e, log, errores);
+
+                        if (valExprActual != null)
+                        {
+                            if (exprActual.Tipo.IsCollection())
+                            {
+                                Collection collection = (Collection)valExprActual;
+                                if (Expr.Tipo.Equals(collection.Tipo.Valor))
+                                {
+                                    foreach (CollectionValue value in collection.Valores)
+                                    {
+                                        if (valExpr.Equals(value.Valor))
+                                            return true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if(Expr.Tipo.Equals(exprActual.Tipo))
+                                    if(valExpr.Equals(valExprActual))
+                                        return true;
+                            }
+                        }
+                    }
+                    return false;
                 }
             }
             return null;

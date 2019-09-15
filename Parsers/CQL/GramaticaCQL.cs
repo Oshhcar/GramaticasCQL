@@ -403,6 +403,7 @@ namespace GramaticasCQL.Parsers.CQL
             REVOKE.Rule = revoke_ + identifier + on_ + identifier;
 
             WHERE.Rule = where_ + EXPRESSION
+                        | where_ + EXPRESSION + in_ + EXPRESSION_LIST
                         | where_ + EXPRESSION + in_ + leftPar + EXPRESSION_LIST + rightPar;
 
             INSERT.Rule = insert_ + into_ + identifier + values_ + leftPar + EXPRESSION_LIST + rightPar

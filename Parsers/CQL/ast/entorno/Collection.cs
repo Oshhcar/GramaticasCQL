@@ -19,6 +19,49 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         public LinkedList<CollectionValue> Valores { get; set; }
         public int Posicion { get; set; }
 
+        public override string ToString()
+        {
+            string cad = "";
+            if (Tipo.IsMap())
+            {
+                cad = "[";
+                foreach (CollectionValue value in Valores)
+                {
+                    cad += value.Clave.ToString() + " : " + value.Valor.ToString();
+
+                    if (!Valores.Last.Value.Equals(value))
+                        cad += ", ";
+                }
+                cad += "]";
+                return cad;
+            }
+            else if (Tipo.IsList())
+            {
+                cad = "[";
+                foreach (CollectionValue value in Valores)
+                {
+                    cad += value.Valor.ToString();
+                    if (!Valores.Last.Value.Equals(value))
+                        cad += ", ";
+                }
+                cad += "]";
+                return cad;
+            }
+            else if (Tipo.IsSet())
+            {
+                cad = "{";
+                foreach (CollectionValue value in Valores)
+                {
+                    cad += value.Valor.ToString();
+                    if (!Valores.Last.Value.Equals(value))
+                        cad += ", ";
+                }
+                cad = "}";
+                return cad;
+            }
+            return base.ToString();
+        }
+
         public void Insert(object clave, object valor)
         {
             Valores.AddLast(new CollectionValue(clave.ToString(), valor ?? Predefinido()));
