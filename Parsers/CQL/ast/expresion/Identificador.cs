@@ -23,7 +23,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
         public string Id { get; set; }
         public bool IsId2 { get; set; }
-        public override object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores)
+        public override object GetValor(Entorno e, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             if (IsId2)
             {

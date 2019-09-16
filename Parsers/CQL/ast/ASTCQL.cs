@@ -18,7 +18,7 @@ namespace GramaticasCQL.Parsers.CQL.ast
 
         public LinkedList<NodoASTCQL> Sentencias;
 
-        public void Ejecutar(LinkedList<string> log, LinkedList<Error> errores)
+        public void Ejecutar(LinkedList<Salida> log, LinkedList<Error> errores)
         {
             MasterBD master = new MasterBD(); //aqui iran todas las tablas
             master.AddUsuario("admin", "admin");

@@ -17,12 +17,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
         public Expresion Expr { get; set; }
 
-        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<string> log, LinkedList<Error> errores)
+        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             object valorExpr = Expr.GetValor(e, log, errores);
 
             if (valorExpr != null)
-                log.AddLast(valorExpr.ToString());
+                log.AddLast(new Salida(1, valorExpr.ToString()));
 
             e.Master.Recorrer();
             //e.Recorrer();

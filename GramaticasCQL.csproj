@@ -134,6 +134,7 @@
     <Compile Include="Parsers\CQL\ast\NodoASTCQL.cs" />
     <Compile Include="Parsers\CQL\GramaticaCQL.cs" />
     <Compile Include="Parsers\Error.cs" />
+    <Compile Include="Parsers\Salida.cs" />
     <Compile Include="Parsers\LUP\AnalizadorLUP.cs" />
     <Compile Include="Parsers\LUP\GramaticaLUP.cs" />
     <Compile Include="Program.cs" />

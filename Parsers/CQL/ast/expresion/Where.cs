@@ -24,7 +24,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
         public Expresion Expr { get; set; }
         public LinkedList<Expresion> InExpr { get; set; }
 
-        public override object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores)
+        public override object GetValor(Entorno e, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             object valExpr = Expr.GetValor(e, log, errores);
 

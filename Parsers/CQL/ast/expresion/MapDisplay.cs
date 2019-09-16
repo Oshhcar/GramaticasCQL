@@ -17,7 +17,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
         public LinkedList<CollectionValue> Collection { get; set; }
 
-        public override object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores)
+        public override object GetValor(Entorno e, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             Expresion clave = (Expresion)Collection.ElementAt(0).Clave;
             Expresion valor = (Expresion)Collection.ElementAt(0).Valor;

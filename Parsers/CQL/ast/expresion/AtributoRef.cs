@@ -21,7 +21,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
         public Expresion Atributo;
         public bool GetObjeto;
 
-        public override object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores)
+        public override object GetValor(Entorno e, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             object valorTarget = Target.GetValor(e, log, errores);
 

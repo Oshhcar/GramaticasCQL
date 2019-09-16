@@ -14,7 +14,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
 
         public Logica(Expresion op1, int linea, int columna) : base(op1, null, Operador.NOT, linea, columna) { }
 
-        public override object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores)
+        public override object GetValor(Entorno e, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             object valOp1 = Op1.GetValor(e, log, errores);
 

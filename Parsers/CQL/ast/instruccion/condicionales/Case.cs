@@ -30,7 +30,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.condicionales
         public Expresion ExprSwitch { get; set; }
         public bool Default { get; set; }
         public bool Continuar { get; set; }
-        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<string> log, LinkedList<Error> errores)
+        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             if (!Default)
             {

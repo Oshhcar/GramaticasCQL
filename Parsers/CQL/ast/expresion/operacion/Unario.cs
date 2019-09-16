@@ -12,7 +12,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
     {
         public Unario(Expresion op1, Operador op, int linea, int columna) : base(op1, null, op, linea, columna) { }
 
-        public override object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores)
+        public override object GetValor(Entorno e, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             if (Op == Operador.AUMENTO || Op == Operador.DECREMENTO)
             {

@@ -21,7 +21,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
         public bool IfNotExist { get; set; }
         public LinkedList<Simbolo> Atributos { get; set; }
 
-        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<string> log, LinkedList<Error> errores)
+        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             BD actual = e.Master.Actual;
             if (actual != null)

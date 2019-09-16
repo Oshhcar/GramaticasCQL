@@ -24,7 +24,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
         public string Id { get; set; }
         public Where Where { get; set; }
 
-        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<string> log, LinkedList<Error> errores)
+        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             BD actual = e.Master.Actual;
 

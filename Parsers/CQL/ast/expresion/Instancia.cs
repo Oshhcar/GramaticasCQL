@@ -32,7 +32,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
         public Tipo Tipo1 { get; set; }
         public Tipo Tipo2 { get; set; }
 
-        public override object GetValor(Entorno e, LinkedList<string> log, LinkedList<Error> errores)
+        public override object GetValor(Entorno e, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             switch (Id.ToLower())
             {

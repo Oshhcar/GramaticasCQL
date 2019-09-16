@@ -11,7 +11,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
     {
         public Commit(int linea, int columna) : base(linea, columna) { }
 
-        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<string> log, LinkedList<Error> errores)
+        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             throw new NotImplementedException();
         }

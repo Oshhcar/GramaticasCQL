@@ -42,7 +42,7 @@ namespace GramaticasCQL
                         //MessageBox.Show("Documento ok.", "Mensaje");
                         ReporteErrores(analizador.Raiz);
 
-                        LinkedList<string> log = new LinkedList<string>();
+                        LinkedList<Salida> log = new LinkedList<Salida>();
                         LinkedList<Error> errores = new LinkedList<Error>();
 
                         ast.Ejecutar(log, errores);
@@ -51,9 +51,9 @@ namespace GramaticasCQL
                         {
                             tabBottom.SelectedTab = pageLanguage;
 
-                            foreach (string l in log)
+                            foreach (Salida l in log)
                             {
-                                rtbSalida.Text += l + "\n";
+                                rtbSalida.Text += l.Contenido + "\n";
                             }
                         }
 
