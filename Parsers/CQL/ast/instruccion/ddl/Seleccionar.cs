@@ -30,10 +30,51 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
             Order = order;
         }
 
+        public Seleccionar(LinkedList<Expresion> columnas, string id, Where where, LinkedList<Identificador> order, int linea, int columna) : base(linea, columna)
+        {
+            Columnas = columnas;
+            Id = id;
+            Where = where;
+            Order = order;
+        }
+
+        public Seleccionar(LinkedList<Expresion> columnas, string id, Expresion limit, int linea, int columna) : base(linea, columna)
+        {
+            Columnas = columnas;
+            Id = id;
+            Limit = limit;
+        }
+
+        public Seleccionar(LinkedList<Expresion> columnas, string id, Where where, Expresion limit, int linea, int columna) : base(linea, columna)
+        {
+            Columnas = columnas;
+            Id = id;
+            Where = where;
+            Limit = limit;
+        }
+
+        public Seleccionar(LinkedList<Expresion> columnas, string id, LinkedList<Identificador> order, Expresion limit, int linea, int columna) : base(linea, columna)
+        {
+            Columnas = columnas;
+            Id = id;
+            Order = order;
+            Limit = limit;
+        }
+
+        public Seleccionar(LinkedList<Expresion> columnas, string id, Where where, LinkedList<Identificador> order, Expresion limit, int linea, int columna) : base(linea, columna)
+        {
+            Columnas = columnas;
+            Id = id;
+            Where = where;
+            Order = order;
+            Limit = limit;
+        }
+
         public LinkedList<Expresion> Columnas;
         public string Id { get; set; }
         public Where Where { get; set; }
         public LinkedList<Identificador> Order { get; set; }
+        public Expresion Limit { get; set; }
 
         public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
         {
@@ -66,8 +107,10 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
                             e.Master.EntornoActual = tabla.Datos.ElementAt(0);
 
-                            foreach (Identificador ident in Order)
+                            if (Order.Count() == 1)
                             {
+                                Identificador ident = Order.ElementAt(0);
+
                                 LinkedList<Entorno> tmp = new LinkedList<Entorno>();
                                 IEnumerable<Entorno> ordered;
 
@@ -104,8 +147,53 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                                     datos = tmp;
                                 }
                                 else
-                                    continue;//return null;
-                                break;
+                                    return null;
+                            }
+                            else if (Order.Count() >= 2)
+                            {
+                                Identificador ident = Order.ElementAt(0);
+                                Identificador ident2 = Order.ElementAt(1);
+
+                                LinkedList<Entorno> tmp = new LinkedList<Entorno>();
+                                IEnumerable<Entorno> ordered;
+
+                                object identValor = ident.GetValor(e, log, errores);
+                                object identValor2 = ident2.GetValor(e, log, errores);
+
+                                if (identValor != null && identValor2 != null)
+                                {
+                                    if (ident.Tipo.IsString() || ident.Tipo.IsDate() || ident.Tipo.IsTime() || ident.Tipo.IsInt() || ident.Tipo.IsDouble())
+                                        if(ident2.Tipo.IsString() || ident2.Tipo.IsDate() || ident2.Tipo.IsTime() || ident2.Tipo.IsInt() || ident2.Tipo.IsDouble())
+                                            ordered = datos.OrderBy(p => Tuple.Create(p.GetCualquiera(ident.GetId()).Valor.ToString(), p.GetCualquiera(ident2.GetId()).Valor.ToString()), new ComparaTupla()).AsEnumerable();
+                                        else
+                                        {
+                                            errores.AddLast(new Error("Semántico", "Solo se puede usar la cláusula Order By sobre datos primitivos.", Linea, Columna));
+                                            return null;
+                                        }
+                                    else
+                                    {
+                                        errores.AddLast(new Error("Semántico", "Solo se puede usar la cláusula Order By sobre datos primitivos.", Linea, Columna));
+                                        return null;
+                                    }
+
+                                    if (ident.IsASC)
+                                    {
+                                        foreach (Entorno eTmp in ordered)
+                                        {
+                                            tmp.AddLast(eTmp);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        for (int i = ordered.Count() - 1; i >= 0; i--)
+                                        {
+                                            tmp.AddLast(ordered.ElementAt(i));
+                                        }
+                                    }
+                                    datos = tmp;
+                                }
+                                else
+                                    return null;
                             }
                         }
                         else
@@ -189,6 +277,49 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
                     e.Master.EntornoActual = null;
 
+                    int limite;
+
+                    if (Limit != null)
+                    {
+                        object valLimit = Limit.GetValor(e, log, errores);
+                        if (valLimit != null)
+                        {
+                            if (Limit.Tipo.IsInt())
+                            {
+                                limite = (int)valLimit-1;
+
+                                if((int)valLimit < 0)
+                                    errores.AddLast(new Error("Semántico", "El Límite debe ser entero positivo.", Linea, Columna));
+                            }
+                            else
+                            {
+                                Casteo cast = new Casteo(new Tipo(entorno.Type.INT), new Literal(Limit.Tipo, valLimit, 0, 0), 0, 0)
+                                {
+                                    Mostrar = false
+                                };
+                                valLimit = cast.GetValor(e, log, errores);
+
+                                if (valLimit != null)
+                                {
+                                    limite = (int)valLimit-1;
+                                    if((int)valLimit < 0)
+                                        errores.AddLast(new Error("Semántico", "El Límite debe ser entero positivo.", Linea, Columna));
+                                }
+                                else
+                                {
+                                    errores.AddLast(new Error("Semántico", "El Límite debe ser de tipo Entero.", Linea, Columna));
+                                    return null;
+                                }
+                            }
+                        }
+                        else
+                            return null;
+                    }
+                    else
+                        limite = data.Count()-1;
+
+                    limite = limite > data.Count() - 1 ? data.Count() - 1 : limite;
+
                     string salida;
 
                     if (data.Count() >= 1)
@@ -204,8 +335,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
                         salida += "</tr>\n";
 
-                        foreach (Entorno ent in data)
+                        for (int i = 0; i <= limite; i++)
                         {
+                            Entorno ent = data.ElementAt(i);
                             salida += "<tr>\n";
 
                             foreach (Simbolo col in ent.Simbolos)
@@ -234,6 +366,20 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                 errores.AddLast(new Error("Semántico", "No se ha seleccionado una base de datos, no se pudo Actualizar.", Linea, Columna));
 
             return null;
+        }
+
+        class ComparaTupla : IComparer<Tuple<string, string>>
+        {
+            public int Compare(Tuple<string, string> x, Tuple<string, string> y)
+            {
+                if (x.Item1.ToString().Equals(y.Item1.ToString()))
+                {
+                    if (x.Item2.ToString().Equals(y.Item2.ToString()))
+                        return 0;
+                    return x.Item2.ToString().CompareTo(y.Item2.ToString());
+                }
+                return x.Item1.ToString().CompareTo(y.Item1.ToString());
+            }
         }
     }
 }

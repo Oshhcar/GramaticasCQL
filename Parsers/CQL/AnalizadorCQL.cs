@@ -281,9 +281,20 @@ namespace GramaticasCQL.Parsers.CQL
                         return new Seleccionar((LinkedList<Expresion>)GenerarArbol(hijos[1]), hijos[3].Token.Text, linea, columna);
                     else if (hijos.Count() == 5)
                         return new Seleccionar((LinkedList<Expresion>)GenerarArbol(hijos[1]), hijos[3].Token.Text, (Where)GenerarArbol(hijos[4]), linea, columna);
+                    else if (hijos.Count() == 6)
+                        return new Seleccionar((LinkedList<Expresion>)GenerarArbol(hijos[1]), hijos[3].Token.Text, (Expresion)GenerarArbol(hijos[5]), linea, columna);
                     else if (hijos.Count() == 7)
-                        return new Seleccionar((LinkedList<Expresion>)GenerarArbol(hijos[1]), hijos[3].Token.Text, (LinkedList<Identificador>)GenerarArbol(hijos[6]), linea, columna);
-                    return null;
+                    {
+                        if(hijos[5].Term.Name.Equals("limit"))
+                            return new Seleccionar((LinkedList<Expresion>)GenerarArbol(hijos[1]), hijos[3].Token.Text, (Where)GenerarArbol(hijos[4]), (Expresion)GenerarArbol(hijos[6]), linea, columna);
+                        else
+                            return new Seleccionar((LinkedList<Expresion>)GenerarArbol(hijos[1]), hijos[3].Token.Text, (LinkedList<Identificador>)GenerarArbol(hijos[6]), linea, columna);
+                    }
+                    else if (hijos.Count() == 8)
+                        return new Seleccionar((LinkedList<Expresion>)GenerarArbol(hijos[1]), hijos[3].Token.Text, (Where)GenerarArbol(hijos[4]), (LinkedList<Identificador>)GenerarArbol(hijos[7]), linea, columna);
+                    else if (hijos.Count() == 9)
+                        return new Seleccionar((LinkedList<Expresion>)GenerarArbol(hijos[1]), hijos[3].Token.Text, (LinkedList<Identificador>)GenerarArbol(hijos[6]), (Expresion)GenerarArbol(hijos[8]), linea, columna);
+                    return new Seleccionar((LinkedList<Expresion>)GenerarArbol(hijos[1]), hijos[3].Token.Text, (Where)GenerarArbol(hijos[4]), (LinkedList<Identificador>)GenerarArbol(hijos[7]), (Expresion)GenerarArbol(hijos[9]), linea, columna);
                 case "SELECT_EXP":
                     if (hijos[0].Term.Name.Equals("por"))
                         return null;
