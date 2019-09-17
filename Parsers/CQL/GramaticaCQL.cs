@@ -211,7 +211,7 @@ namespace GramaticasCQL.Parsers.CQL
                 DELETE = new NonTerminal("DELETE"),
                 SELECT = new NonTerminal("SELECT"),
                 SELECT_EXP = new NonTerminal("SELECT_EXP"),
-                ORDER_LIST = new NonTerminal("ORDER_LSIT"),
+                ORDER_LIST = new NonTerminal("ORDER_LIST"),
                 ORDER = new NonTerminal("ORDER"),
                 BATCH = new NonTerminal("BATCH"),
                 DML_LIST = new NonTerminal("DML_LIST"),

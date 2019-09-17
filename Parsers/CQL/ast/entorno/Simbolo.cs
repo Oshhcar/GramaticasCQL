@@ -33,6 +33,10 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             Valor = valor;
         }
 
+        public Simbolo()
+        {
+        }
+
         public Tipo Tipo { get; set; }
         public Rol Rol { get; set; }
         public string Id { get; set; }

@@ -68,6 +68,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                             asigna.Ejecutar(e, funcion, ciclo, sw, log, errores);
                         }
                     }
+                    e.Master.EntornoActual = null;
                 }
                 else
                     errores.AddLast(new Error("Semántico", "No existe una Tabla con el id: " + Id + " en la base de datos.", Linea, Columna));

@@ -68,6 +68,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                             delete.AddLast(ent);
                         }
 
+                        e.Master.EntornoActual = null;
+
                         foreach (Entorno ent in delete)
                         {
                             tabla.Datos.Remove(ent);
@@ -78,7 +80,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                     errores.AddLast(new Error("Semántico", "No existe una Tabla con el id: " + Id + " en la base de datos.", Linea, Columna));
             }
             else
-                errores.AddLast(new Error("Semántico", "No se ha seleccionado una base de datos, no se pudo Actualizar.", Linea, Columna));
+                errores.AddLast(new Error("Semántico", "No se ha seleccionado una base de datos, no se pudo Eliminar.", Linea, Columna));
 
             return null;
         }

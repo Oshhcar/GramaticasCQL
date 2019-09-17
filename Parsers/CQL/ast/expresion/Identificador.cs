@@ -13,16 +13,27 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
         {
             Id = id;
             IsId2 = false;
+            IsASC = true;
         }
 
         public Identificador(string id, bool isId2, int linea, int columna) : base(linea, columna)
         {
             Id = id;
             IsId2 = isId2;
+            IsASC = true;
+        }
+
+        public Identificador(string id, bool isId2, bool isAsc, int linea, int columna) : base(linea, columna)
+        {
+            Id = id;
+            IsId2 = isId2;
+            IsASC = isAsc;
         }
 
         public string Id { get; set; }
         public bool IsId2 { get; set; }
+        public bool IsASC { get; set; }
+
         public override object GetValor(Entorno e, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             if (IsId2)

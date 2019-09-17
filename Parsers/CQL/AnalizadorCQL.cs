@@ -274,6 +274,34 @@ namespace GramaticasCQL.Parsers.CQL
                     if (hijos.Count() == 3)
                         return new Eliminar(hijos[2].Token.Text, linea, columna);
                     return new Eliminar(hijos[2].Token.Text, (Where)GenerarArbol(hijos[3]), linea, columna);
+                case "SELECT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 4)
+                        return new Seleccionar((LinkedList<Expresion>)GenerarArbol(hijos[1]), hijos[3].Token.Text, linea, columna);
+                    else if (hijos.Count() == 5)
+                        return new Seleccionar((LinkedList<Expresion>)GenerarArbol(hijos[1]), hijos[3].Token.Text, (Where)GenerarArbol(hijos[4]), linea, columna);
+                    else if (hijos.Count() == 7)
+                        return new Seleccionar((LinkedList<Expresion>)GenerarArbol(hijos[1]), hijos[3].Token.Text, (LinkedList<Identificador>)GenerarArbol(hijos[6]), linea, columna);
+                    return null;
+                case "SELECT_EXP":
+                    if (hijos[0].Term.Name.Equals("por"))
+                        return null;
+                    return GenerarArbol(hijos[0]);
+                case "ORDER_LIST":
+                    LinkedList<Identificador> order = new LinkedList<Identificador>();
+                    foreach (ParseTreeNode hijo in hijos)
+                    {
+                        order.AddLast((Identificador)GenerarArbol(hijo));
+                    }
+                    return order;
+                case "ORDER":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 2)
+                        if(hijos[1].Term.Name.Equals("desc"))
+                            return new Identificador(hijos[0].Token.Text, false, false, linea, columna);
+                    return new Identificador(hijos[0].Token.Text, linea, columna);
 
                 case "BLOQUE":
                     linea = hijos[0].Token.Location.Line + 1;

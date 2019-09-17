@@ -117,6 +117,7 @@
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\Eliminar.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\Insertar.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\Rollback.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\ddl\Seleccionar.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\TablaBorrar.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\TablaCrear.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\TablaModificar.cs" />
