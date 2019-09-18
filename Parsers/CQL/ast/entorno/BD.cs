@@ -32,6 +32,16 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             return null;
         }
 
+        public Simbolo GetProcedimiento(string id)
+        {
+            foreach (Simbolo sim in Simbolos)
+            {
+                if (sim.Id.Equals(id.ToLower()) && sim.Rol == Rol.PROCEDIMIENTO)
+                    return sim;
+            }
+            return null;
+        }
+
         public Simbolo GetTabla(string id)
         {
             foreach (Simbolo sim in Simbolos)

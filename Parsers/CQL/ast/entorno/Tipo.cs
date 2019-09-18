@@ -123,7 +123,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         LIST,
         SET,
         NULL,
-        CURSOR
+        CURSOR,
+        VOID
     }
 
     public enum Rol
@@ -136,6 +137,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         BD,
         TABLA,
         COLUMNA,
-        PRIMARY
+        PRIMARY,
+        PROCEDIMIENTO
     }
 }

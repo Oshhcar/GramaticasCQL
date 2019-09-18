@@ -222,6 +222,7 @@ namespace GramaticasCQL.Parsers.CQL
 
                 EXPRESSION_STMT = new NonTerminal("EXPRESSION_STMT"),
                 ASSIGNMENT_STMT = new NonTerminal("ASSIGNMENT_STMT"),
+                ASSIGNMENT_CALL = new NonTerminal("ASSIGNMENT_CALL"),
                 ASSIGNMENT_LIST = new NonTerminal("ASSIGNMENT_LIST"),
 
                 DECLARATION_STMT = new NonTerminal("DECLARATION_STMT"),
@@ -324,6 +325,7 @@ namespace GramaticasCQL.Parsers.CQL
                               | EXPRESSION_STMT + semicolon
                               | DECLARATION_STMT + semicolon
                               | ASSIGNMENT_STMT + semicolon
+                              | ASSIGNMENT_CALL + semicolon
                               | AUGMENTED_ASSIGNMENT_STMT + semicolon
                               | IF_STMT
                               | SWITCH_STMT
@@ -468,6 +470,7 @@ namespace GramaticasCQL.Parsers.CQL
                               | EXPRESSION_STMT + semicolon
                               | DECLARATION_STMT + semicolon
                               | ASSIGNMENT_STMT + semicolon
+                              | ASSIGNMENT_CALL + semicolon
                               | AUGMENTED_ASSIGNMENT_STMT + semicolon
                               | IF_STMT
                               | SWITCH_STMT
@@ -499,7 +502,10 @@ namespace GramaticasCQL.Parsers.CQL
             DECLARATION_STMT.Rule = TYPE + TARGET_LIST
                                    | TYPE + TARGET_LIST + equal + EXPRESSION;
 
-            ASSIGNMENT_STMT.Rule = TARGET + equal + EXPRESSION;
+            ASSIGNMENT_STMT.Rule = TARGET + equal + EXPRESSION
+                                  | TARGET + equal + CALL;
+
+            ASSIGNMENT_CALL.Rule = TARGET_LIST + equal + CALL;
 
             ASSIGNMENT_LIST.Rule = MakePlusRule(ASSIGNMENT_LIST, comma, ASSIGNMENT_STMT);
 
@@ -540,7 +546,7 @@ namespace GramaticasCQL.Parsers.CQL
             PROCDEF.Rule = procedure_ + identifier + leftPar + PARAMETER_LIST + rightPar + comma + leftPar + PARAMETER_LIST + rightPar + BLOQUE
                           | procedure_ + identifier + leftPar + rightPar + comma + leftPar + rightPar + BLOQUE
                           | procedure_ + identifier + leftPar + PARAMETER_LIST + rightPar + comma + leftPar + rightPar + BLOQUE
-                          | procedure_ + identifier + leftPar + rightPar + comma + leftPar + PARAMETER_LIST + rightPar + BLOQUE; ;
+                          | procedure_ + identifier + leftPar + rightPar + comma + leftPar + PARAMETER_LIST + rightPar + BLOQUE;
 
             BREAK_STMT.Rule = break_;
 
@@ -601,7 +607,7 @@ namespace GramaticasCQL.Parsers.CQL
 
             SHIFT_EXPR.Rule = PRIMARY | SHIFT_EXPR + leftShift | SHIFT_EXPR + rightShift;
 
-            PRIMARY.Rule = ATOM | ATTRIBUTEREF | AGGREGATION | FUNCALL | CALL | ACCESS; 
+            PRIMARY.Rule = ATOM | ATTRIBUTEREF | AGGREGATION | FUNCALL | ACCESS; 
 
             ATOM.Rule = identifier | identifier2 | LITERAL | ENCLOSURE;
 

@@ -42,6 +42,9 @@ namespace GramaticasCQL.Parsers.CQL.ast
                 }
                 else  if(stmt is Expresion expr)
                 {
+                    if (expr is FuncionCall fun)
+                        fun.IsExpresion = false;
+
                     expr.GetValor(global, log, errores);
                 }
 

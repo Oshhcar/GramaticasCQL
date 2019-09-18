@@ -15,21 +15,25 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
         {
             Id = id;
             Parametro = null;
+            IsExpresion = true;
         }
 
         public FuncionCall(string id, LinkedList<Expresion> parametro, int linea, int columna) : base(linea, columna)
         {
             Id = id;
             Parametro = parametro;
+            IsExpresion = true;
         }
 
         public string Id { get; set; }
         public LinkedList<Expresion> Parametro { get; set; }
+        public bool IsExpresion { get; set; }
 
         public override object GetValor(Entorno e, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             string firma = Id;
             Entorno local = new Entorno(e.Global);
+
             LinkedList<Literal> parametros = new LinkedList<Literal>();
 
             if (Id.ToLower().Equals("today"))
@@ -107,11 +111,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                     }
                 }
 
-                errores.AddLast(new Error("Semántico", "Se esperaba un return en funcion " + Id +".", Linea, Columna));
+                if(IsExpresion)
+                    errores.AddLast(new Error("Semántico", "Se esperaba un return en funcion " + Id +".", Linea, Columna));
                 return null;
             }
 
-            errores.AddLast(new Error("Semántico", "No se ha definico una funcion con la firma: " + firma + ".", Linea, Columna));
+            errores.AddLast(new Error("Semántico", "No se ha definico una funcion con la firma: " + firma.ToLower() + ".", Linea, Columna));
             return null;
         }
     }

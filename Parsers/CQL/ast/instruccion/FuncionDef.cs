@@ -52,7 +52,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                 e.Add(sim);
             }
             else
-                errores.AddLast(new Error("Semántico", "Ya se ha declarado una función con la misma firma: " + firma + ".", Linea, Columna));
+                errores.AddLast(new Error("Semántico", "Ya se ha declarado una función con la misma firma: " + firma.ToLower() + ".", Linea, Columna));
 
             return null;
         }

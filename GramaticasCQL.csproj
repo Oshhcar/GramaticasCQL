@@ -73,6 +73,7 @@
     <Compile Include="Parsers\CQL\ast\entorno\Collection.cs" />
     <Compile Include="Parsers\CQL\ast\entorno\MasterBD.cs" />
     <Compile Include="Parsers\CQL\ast\entorno\Null.cs" />
+    <Compile Include="Parsers\CQL\ast\entorno\Procedimiento.cs" />
     <Compile Include="Parsers\CQL\ast\entorno\Simbolo.cs" />
     <Compile Include="Parsers\CQL\ast\entorno\Cadena.cs" />
     <Compile Include="Parsers\CQL\ast\entorno\Tabla.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Parsers\CQL\ast\expresion\Acceso.cs" />
     <Compile Include="Parsers\CQL\ast\expresion\Agregacion.cs" />
     <Compile Include="Parsers\CQL\ast\expresion\AtributoRef.cs" />
+    <Compile Include="Parsers\CQL\ast\expresion\Call.cs" />
     <Compile Include="Parsers\CQL\ast\expresion\Casteo.cs" />
     <Compile Include="Parsers\CQL\ast\expresion\Expresion.cs" />
     <Compile Include="Parsers\CQL\ast\expresion\FuncionCall.cs" />
@@ -101,6 +103,7 @@
     <Compile Include="Parsers\CQL\ast\expresion\Ternario.cs" />
     <Compile Include="Parsers\CQL\ast\expresion\Where.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\Asignacion.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\AsignacionCall.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\AsignacionOperacion.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\Bloque.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\Break.cs" />
@@ -138,6 +141,7 @@
     <Compile Include="Parsers\CQL\ast\instruccion\Instruccion.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\Log.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\Open.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\ProcedimientoDef.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\Return.cs" />
     <Compile Include="Parsers\CQL\ast\NodoASTCQL.cs" />
     <Compile Include="Parsers\CQL\GramaticaCQL.cs" />

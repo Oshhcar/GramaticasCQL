@@ -386,7 +386,17 @@ namespace GramaticasCQL.Parsers.CQL
                 case "ASSIGNMENT_STMT":
                     linea = hijos[1].Token.Location.Line + 1;
                     columna = hijos[1].Token.Location.Column + 1;
+                    if (hijos[2].Term.Name.Equals("CALL"))
+                    {
+                        LinkedList<Expresion> targetList = new LinkedList<Expresion>();
+                        targetList.AddLast((Expresion)GenerarArbol(hijos[0]));
+                        return new AsignacionCall(targetList, (Call)GenerarArbol(hijos[2]), linea, columna);
+                    }
                     return new Asignacion((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), linea, columna);
+                case "ASSIGNMENT_CALL":
+                    linea = hijos[1].Token.Location.Line + 1;
+                    columna = hijos[1].Token.Location.Column + 1;
+                    return new AsignacionCall((LinkedList<Expresion>)GenerarArbol(hijos[0]), (Call)GenerarArbol(hijos[2]), linea, columna);
                 case "ASSIGNMENT_LIST":
                     LinkedList<Asignacion> asignaLista = new LinkedList<Asignacion>();
                     foreach (ParseTreeNode hijo in hijos)
@@ -511,7 +521,20 @@ namespace GramaticasCQL.Parsers.CQL
                         parametro.AddLast(id);
                         return parametro;
                     }
-
+                case "PROCDEF":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 10)
+                        return new ProcedimientoDef(hijos[1].Token.Text, (LinkedList<Identificador>)GenerarArbol(hijos[3]), (LinkedList<Identificador>)GenerarArbol(hijos[7]), (Bloque)GenerarArbol(hijos[9]), linea, columna);
+                    else if (hijos.Count() == 8)
+                        return new ProcedimientoDef(hijos[1].Token.Text, null, null, (Bloque)GenerarArbol(hijos[7]), linea, columna);
+                    else
+                    {
+                        if(hijos[4].Term.Name.Equals(","))
+                            return new ProcedimientoDef(hijos[1].Token.Text, null, (LinkedList<Identificador>)GenerarArbol(hijos[6]), (Bloque)GenerarArbol(hijos[8]), linea, columna);
+                        else
+                            return new ProcedimientoDef(hijos[1].Token.Text, (LinkedList<Identificador>)GenerarArbol(hijos[3]), null, (Bloque)GenerarArbol(hijos[8]), linea, columna);
+                    }
                 case "BREAK_STMT":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
@@ -805,7 +828,12 @@ namespace GramaticasCQL.Parsers.CQL
                         return new FuncionCall(hijos[0].Token.Text, linea, columna);
                     else
                         return new FuncionCall(hijos[0].Token.Text, (LinkedList<Expresion>)GenerarArbol(hijos[2]), linea, columna);
-
+                case "CALL":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 4)
+                        return new Call(hijos[1].Token.Text, linea, columna);
+                    return new Call(hijos[1].Token.Text, (LinkedList<Expresion>)GenerarArbol(hijos[3]), linea, columna);
                 case "ACCESS":
                     linea = hijos[1].Token.Location.Line + 1;
                     columna = hijos[1].Token.Location.Column + 1;

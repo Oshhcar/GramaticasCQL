@@ -54,6 +54,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                     }
                     else if (bloque is Expresion expr)
                     {
+                        if (expr is FuncionCall fun)
+                            fun.IsExpresion = false;
+
                         expr.GetValor(e, log, errores);
                     }
                 }
