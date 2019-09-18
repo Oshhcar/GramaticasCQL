@@ -313,7 +313,19 @@ namespace GramaticasCQL.Parsers.CQL
                         if(hijos[1].Term.Name.Equals("desc"))
                             return new Identificador(hijos[0].Token.Text, false, false, linea, columna);
                     return new Identificador(hijos[0].Token.Text, linea, columna);
-
+                case "BATCH":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new Batch((LinkedList<Instruccion>)GenerarArbol(hijos[2]), linea, columna);
+                case "DML_LIST":
+                    LinkedList<Instruccion> dmlList = new LinkedList<Instruccion>();
+                    foreach (ParseTreeNode hijo in hijos)
+                    {
+                        dmlList.AddLast((Instruccion)GenerarArbol(hijo));
+                    }
+                    return dmlList;
+                case "DML":
+                    return GenerarArbol(hijos[0]);
                 case "BLOQUE":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
@@ -712,7 +724,24 @@ namespace GramaticasCQL.Parsers.CQL
                         return new AtributoRef((Expresion)GenerarArbol(hijos[0]), new Identificador(hijos[2].Token.Text, linea, columna), linea, columna);
                     else
                         return new AtributoRef((Expresion)GenerarArbol(hijos[0]), (Expresion)GenerarArbol(hijos[2]), linea, columna);
-
+                case "AGGREGATION":
+                    linea = hijos[0].ChildNodes.ToArray()[0].Token.Location.Line + 1;
+                    columna = hijos[0].ChildNodes.ToArray()[0].Token.Location.Column + 1;
+                    return new Agregacion((Aggregation)GenerarArbol(hijos[0]), (Seleccionar)GenerarArbol(hijos[3]), linea, columna);
+                case "AGGREGATION_FUN":
+                    switch (hijos[0].Term.Name)
+                    {
+                        case "count":
+                            return Aggregation.COUNT;
+                        case "min":
+                            return Aggregation.MIN;
+                        case "max":
+                            return Aggregation.MAX;
+                        case "sum":
+                            return Aggregation.SUM;
+                        default:
+                            return Aggregation.AVG;
+                    }
                 case "ENCLOSURE":
                     return GenerarArbol(hijos[0]);
                 case "PARENTH_FORM":

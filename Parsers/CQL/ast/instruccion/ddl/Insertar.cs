@@ -26,6 +26,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
         public string Id { get; set; }
         public LinkedList<Expresion> Valores { get; set; }
         public LinkedList<string> Columnas { get; set; }
+        public bool Correcto { get; set; }
 
         public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
         {
@@ -120,9 +121,15 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                                 }
                             }
 
-                            tabla.Contador++;
+                            
                             if (!tabla.Insertar(datos, primary))
                                 errores.AddLast(new Error("Semántico", "No se pueden insertar valores con la misma llave primaria.", Linea, Columna));
+                            else
+                            {
+                                tabla.Contador++;
+                                Correcto = true;
+                            }
+
                             return null;
                         }
                         else
@@ -182,6 +189,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
                             if (!tabla.Insertar(datos, primary))
                                 errores.AddLast(new Error("Semántico", "No se pueden insertar valores con la misma llave primaria.", Linea, Columna));
+                            else
+                                Correcto = true;
                             return null;
                         }
                         else

@@ -14,6 +14,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
         {
             Columnas = columnas;
             Id = id;
+            Mostrar = true;
         }
 
         public Seleccionar(LinkedList<Expresion> columnas, string id, Where where, int linea, int columna) : base(linea, columna)
@@ -21,6 +22,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
             Columnas = columnas;
             Id = id;
             Where = where;
+            Mostrar = true;
         }
 
         public Seleccionar(LinkedList<Expresion> columnas, string id, LinkedList<Identificador> order, int linea, int columna) : base(linea, columna)
@@ -28,6 +30,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
             Columnas = columnas;
             Id = id;
             Order = order;
+            Mostrar = true;
         }
 
         public Seleccionar(LinkedList<Expresion> columnas, string id, Where where, LinkedList<Identificador> order, int linea, int columna) : base(linea, columna)
@@ -36,6 +39,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
             Id = id;
             Where = where;
             Order = order;
+            Mostrar = true;
         }
 
         public Seleccionar(LinkedList<Expresion> columnas, string id, Expresion limit, int linea, int columna) : base(linea, columna)
@@ -43,6 +47,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
             Columnas = columnas;
             Id = id;
             Limit = limit;
+            Mostrar = true;
         }
 
         public Seleccionar(LinkedList<Expresion> columnas, string id, Where where, Expresion limit, int linea, int columna) : base(linea, columna)
@@ -51,6 +56,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
             Id = id;
             Where = where;
             Limit = limit;
+            Mostrar = true;
         }
 
         public Seleccionar(LinkedList<Expresion> columnas, string id, LinkedList<Identificador> order, Expresion limit, int linea, int columna) : base(linea, columna)
@@ -59,6 +65,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
             Id = id;
             Order = order;
             Limit = limit;
+            Mostrar = true;
         }
 
         public Seleccionar(LinkedList<Expresion> columnas, string id, Where where, LinkedList<Identificador> order, Expresion limit, int linea, int columna) : base(linea, columna)
@@ -68,6 +75,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
             Where = where;
             Order = order;
             Limit = limit;
+            Mostrar = true;
         }
 
         public LinkedList<Expresion> Columnas;
@@ -75,6 +83,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
         public Where Where { get; set; }
         public LinkedList<Identificador> Order { get; set; }
         public Expresion Limit { get; set; }
+        public bool Mostrar { get; set; }
 
         public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
         {
@@ -250,11 +259,11 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
                                     if (colExp is Identificador iden)
                                     {
-                                        simActual.Id = iden.GetId();
+                                        simActual.Id = iden.GetId().ToLower();
                                     }
                                     else
                                     {
-                                        simActual.Id = "Columna " + numCol++;
+                                        simActual.Id = "columna" + numCol++;
                                     }
                                     simActual.Valor = valColExp;
                                 }
@@ -320,44 +329,49 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
                     limite = limite > data.Count() - 1 ? data.Count() - 1 : limite;
 
-                    string salida;
-
-                    if (data.Count() >= 1)
+                    if (Mostrar)
                     {
-                        salida = "<table> \n";
+                        string salida;
 
-                        salida += "<tr> \n";
-
-                        foreach (Simbolo col in data.ElementAt(0).Simbolos)
+                        if (data.Count() >= 1)
                         {
-                            salida += "\t<th>" + col.Id + "</th>\n";
-                        }
+                            salida = "<table> \n";
 
-                        salida += "</tr>\n";
+                            salida += "<tr> \n";
 
-                        for (int i = 0; i <= limite; i++)
-                        {
-                            Entorno ent = data.ElementAt(i);
-                            salida += "<tr>\n";
-
-                            foreach (Simbolo col in ent.Simbolos)
+                            foreach (Simbolo col in data.ElementAt(0).Simbolos)
                             {
-                                salida += "\t<td>" + col.Valor.ToString() + "</td>\n";
+                                salida += "\t<th>" + col.Id + "</th>\n";
                             }
 
                             salida += "</tr>\n";
+
+                            for (int i = 0; i <= limite; i++)
+                            {
+                                Entorno ent = data.ElementAt(i);
+                                salida += "<tr>\n";
+
+                                foreach (Simbolo col in ent.Simbolos)
+                                {
+                                    salida += "\t<td>" + col.Valor.ToString() + "</td>\n";
+                                }
+
+                                salida += "</tr>\n";
+                            }
+
+                            salida += "</table>\n\n\n";
+
+                        }
+                        else
+                        {
+                            salida = "No hay datos en la consulta.\n\n";
                         }
 
-                        salida += "</table>\n\n\n";
-
+                        log.AddLast(new Salida(2, salida));
+                        return null;
                     }
                     else
-                    {
-                        salida = "No hay datos en la consulta.\n\n";
-                    }
-
-                    log.AddLast(new Salida(2, salida));
-                    return null;
+                        return data;
                 }
                 else
                     errores.AddLast(new Error("Semántico", "No existe una Tabla con el id: " + Id + " en la base de datos.", Linea, Columna));

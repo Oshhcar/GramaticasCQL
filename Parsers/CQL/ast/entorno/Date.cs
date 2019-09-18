@@ -51,5 +51,45 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         {
             return base.GetHashCode();
         }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is Date date)
+            {
+                if (Year == date.Year)
+                {
+                    if (Month == date.Month)
+                    {
+                        if (Day == date.Day)
+                        {
+                            return 0;
+                        }
+                        else
+                        {
+                            if (Day > date.Day)
+                                return 1;
+                            else
+                                return -1;
+                        }
+                    }
+                    else
+                    {
+                        if (Month > date.Month)
+                            return 1;
+                        else
+                            return -1;
+                    }
+                }
+                else
+                {
+                    if (Year > date.Year)
+                        return 1;
+                    else
+                        return -1;
+                }
+            }
+
+            return 2;
+        }
     }
 }

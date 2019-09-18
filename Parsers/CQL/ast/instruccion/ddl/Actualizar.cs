@@ -26,6 +26,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
         public string Id { get; set; }
         public LinkedList<Asignacion> Asignaciones { get; set; }
         public Where Where { get; set; }
+        public bool Correcto { get; set; }
 
         public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
         {
@@ -69,6 +70,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                         }
                     }
                     e.Master.EntornoActual = null;
+                    Correcto = true;
                 }
                 else
                     errores.AddLast(new Error("Semántico", "No existe una Tabla con el id: " + Id + " en la base de datos.", Linea, Columna));

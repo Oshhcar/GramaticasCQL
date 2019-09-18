@@ -80,6 +80,7 @@
     <Compile Include="Parsers\CQL\ast\entorno\Objeto.cs" />
     <Compile Include="Parsers\CQL\ast\entorno\Usuario.cs" />
     <Compile Include="Parsers\CQL\ast\expresion\Acceso.cs" />
+    <Compile Include="Parsers\CQL\ast\expresion\Agregacion.cs" />
     <Compile Include="Parsers\CQL\ast\expresion\AtributoRef.cs" />
     <Compile Include="Parsers\CQL\ast\expresion\Casteo.cs" />
     <Compile Include="Parsers\CQL\ast\expresion\Expresion.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="Parsers\CQL\ast\instruccion\condicionales\Switch.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\Continue.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\Actualizar.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\ddl\Batch.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\BDCrear.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\BDBorrar.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\Commit.cs" />

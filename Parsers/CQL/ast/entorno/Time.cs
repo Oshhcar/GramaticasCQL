@@ -50,5 +50,44 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         {
             return base.GetHashCode();
         }
+
+        public int CompareTo(object obj)
+        {
+            if(obj is Time time)
+            {
+                if (Hours == time.Hours)
+                {
+                    if (Minutes == time.Minutes)
+                    {
+                        if (Seconds == time.Seconds)
+                        {
+                            return 0;
+                        }
+                        else
+                        {
+                            if (Seconds > time.Seconds)
+                                return 1;
+                            else
+                                return -1;
+                        }
+                    }
+                    else
+                    {
+                        if (Minutes > time.Minutes)
+                            return 1;
+                        else
+                            return -1;
+                    }
+                }
+                else
+                {
+                    if (Hours > time.Hours)
+                        return 1;
+                    else
+                        return -1;
+                }
+            }
+            return 2;
+        }
     }
 }
