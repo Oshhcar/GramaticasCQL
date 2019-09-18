@@ -83,7 +83,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                     }
                 }
 
-                object obj = proc.Bloque.Ejecutar(local, true, false, false, log, errores);
+                object obj = proc.Bloque.Ejecutar(local, true, false, false, false, log, errores);
 
                 if (obj != null)
                 {

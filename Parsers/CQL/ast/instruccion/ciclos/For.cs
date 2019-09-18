@@ -22,11 +22,11 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ciclos
         public Expresion Expr { get; set; }
         public NodoASTCQL Update { get; set; }
         public Bloque Bloque { get; set; }
-        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
+        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, bool tc, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             Entorno local = new Entorno(e);
 
-            Init.Ejecutar(local, funcion, ciclo, sw, log, errores);
+            Init.Ejecutar(local, funcion, ciclo, sw, tc, log, errores);
 
             object valExpr = Expr.GetValor(local, log, errores);
 
@@ -38,7 +38,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ciclos
 
                     while (condicion)
                     {
-                        object obj = Bloque.Ejecutar(local, funcion, true, sw, log, errores);
+                        object obj = Bloque.Ejecutar(local, funcion, true, sw, tc, log, errores);
 
                         if (obj is Break)
                             break;
@@ -47,7 +47,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ciclos
 
                         if (Update is Instruccion instr)
                         {
-                            instr.Ejecutar(local, funcion, ciclo, sw, log, errores);
+                            instr.Ejecutar(local, funcion, ciclo, sw, tc, log, errores);
                         }
                         else if (Update is Expresion expr)
                         {

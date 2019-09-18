@@ -30,7 +30,7 @@ namespace GramaticasCQL.Parsers.CQL.ast
             foreach (NodoASTCQL stmt in Sentencias)
             {
                 if (stmt is FuncionDef fun)
-                    fun.Ejecutar(global, false, false, false, log, errores);
+                    fun.Ejecutar(global, false, false, false, false, log, errores);
             }
 
             foreach (NodoASTCQL stmt in Sentencias)
@@ -38,7 +38,7 @@ namespace GramaticasCQL.Parsers.CQL.ast
                 if (stmt is Instruccion instr)
                 {
                     if(!(stmt is FuncionDef))
-                        instr.Ejecutar(global, false, false, false, log, errores);
+                        instr.Ejecutar(global, false, false, false, false, log, errores);
                 }
                 else  if(stmt is Expresion expr)
                 {

@@ -24,7 +24,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
         public override object GetValor(Entorno e, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             Select.Mostrar = false;
-            LinkedList<Entorno> data = (LinkedList<Entorno>) Select.Ejecutar(e, false, false, false, log, errores);
+            LinkedList<Entorno> data = (LinkedList<Entorno>) Select.Ejecutar(e, false, false, false, false, log, errores);
 
             if (data != null)
             {

@@ -19,7 +19,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.condicionales
         public Expresion Expr { get; set; }
         public LinkedList<Case> Cases { get; set; }
 
-        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
+        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, bool tc, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             object valExp = Expr.GetValor(e, log, errores);
 
@@ -33,7 +33,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.condicionales
                     caso.ExprSwitch = exprSwitch;
                     caso.Continuar = continuar;
 
-                    object obj = caso.Ejecutar(e, funcion, ciclo, true, log, errores);
+                    object obj = caso.Ejecutar(e, funcion, ciclo, true, tc, log, errores);
                     continuar = caso.Continuar;
 
                     if (obj != null)

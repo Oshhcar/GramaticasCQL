@@ -17,7 +17,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
         public LinkedList<NodoASTCQL> Bloques { get; set; }
 
-        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
+        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, bool tc, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             if (Bloques != null)
             {
@@ -25,7 +25,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                 {
                     if (bloque is Instruccion inst)
                     {
-                        object obj = inst.Ejecutar(e, funcion, ciclo, sw, log, errores);
+                        object obj = inst.Ejecutar(e, funcion, ciclo, sw, tc, log, errores);
 
                         if (obj is Break)
                         {

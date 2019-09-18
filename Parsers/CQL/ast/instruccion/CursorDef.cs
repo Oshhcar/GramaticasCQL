@@ -20,7 +20,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
         public string Id { get; set; }
         public Seleccionar Select { get; set; }
 
-        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
+        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, bool tc, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             Simbolo sim = e.GetLocal(Id);
 

@@ -15,7 +15,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
         }
         public string Id { get; set; }
 
-        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
+        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, bool tc, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             Simbolo sim = e.Get(Id);
 
@@ -24,7 +24,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                 if (sim.Tipo.IsCursor())
                 {
                     Cursor cursor = (Cursor)sim.Valor;
-                    cursor.Data = (LinkedList<Entorno>)cursor.Select.Ejecutar(e, funcion, ciclo, sw, log, errores);
+                    cursor.Data = (LinkedList<Entorno>)cursor.Select.Ejecutar(e, funcion, ciclo, sw, tc, log, errores);
                 }
                 else
                     errores.AddLast(new Error("Semántico", "La variable: " + Id + " no es un Cursor.", Linea, Columna));

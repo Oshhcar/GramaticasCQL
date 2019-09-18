@@ -28,7 +28,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
         public Where Where { get; set; }
         public bool Correcto { get; set; }
 
-        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
+        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, bool tc, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             BD actual = e.Master.Actual;
 
@@ -66,7 +66,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
                         foreach (Asignacion asigna in Asignaciones)
                         {
-                            asigna.Ejecutar(e, funcion, ciclo, sw, log, errores);
+                            asigna.Ejecutar(e, funcion, ciclo, sw, tc, log, errores);
                         }
                     }
                     e.Master.EntornoActual = null;

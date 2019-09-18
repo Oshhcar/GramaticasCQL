@@ -11,6 +11,6 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
     {
         public Instruccion(int linea, int columna) : base(linea, columna) { }
 
-        public abstract Object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores);
+        public abstract Object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, bool tc, LinkedList<Salida> log, LinkedList<Error> errores);
     }
 }

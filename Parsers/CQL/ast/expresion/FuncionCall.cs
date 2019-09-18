@@ -83,7 +83,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                         local.Add(new Simbolo(parametros.ElementAt(i).Tipo, Rol.VARIABLE, fun.Parametro.ElementAt(i).Id, parametros.ElementAt(i).Valor));
                     }
                 }
-                object obj = fun.Bloque.Ejecutar(local, true, false, false, log, errores);
+                object obj = fun.Bloque.Ejecutar(local, true, false, false, false, log, errores);
 
                 if (obj != null)
                 {

@@ -17,7 +17,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
         public Expresion Expr { get; set; }
 
-        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
+        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, bool tc, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             object valorExpr = Expr.GetValor(e, log, errores);
 

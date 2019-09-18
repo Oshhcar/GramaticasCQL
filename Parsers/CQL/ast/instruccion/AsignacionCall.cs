@@ -19,7 +19,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
         public LinkedList<Expresion> Target { get; set; }
         public Call Call { get; set; }
 
-        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
+        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, bool tc, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             Simbolo sim = Call.GetSimbolo(e, log, errores);
 

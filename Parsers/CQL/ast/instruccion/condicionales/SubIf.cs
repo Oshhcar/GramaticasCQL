@@ -31,7 +31,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.condicionales
         public bool Else { get; set; }
         public bool Entra { get; set; }
 
-        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
+        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, bool tc, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             if (!Else)
             {
@@ -54,7 +54,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.condicionales
             if (Else || Entra)
             {
                 Entorno local = new Entorno(e);
-                return Bloque.Ejecutar(local, funcion, ciclo, sw, log, errores);
+                return Bloque.Ejecutar(local, funcion, ciclo, sw, tc, log, errores);
             }
 
             return null;

@@ -24,7 +24,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
         public LinkedList<Identificador> Retorno { get; set; }
         public Bloque Bloque { get; set; }
 
-        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
+        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, bool tc, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             BD actual = e.Master.Actual;
 

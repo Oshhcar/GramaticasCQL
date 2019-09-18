@@ -16,13 +16,13 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
         public LinkedList<Instruccion> Inst { get; set; }
 
-        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
+        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, bool tc, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             foreach (Instruccion inst in Inst)
             {
                 if (inst is Actualizar act)
                 {
-                    act.Ejecutar(e, funcion, ciclo, sw, log, errores);
+                    act.Ejecutar(e, funcion, ciclo, sw, tc, log, errores);
                     if (!act.Correcto)
                     {
                         errores.AddLast(new Error("Semántico", "Error en Batch.", Linea, Columna));
@@ -31,7 +31,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                 }
                 else if (inst is Insertar inser)
                 {
-                    inser.Ejecutar(e, funcion, ciclo, sw, log, errores);
+                    inser.Ejecutar(e, funcion, ciclo, sw, tc, log, errores);
                     if (!inser.Correcto)
                     {
                         errores.AddLast(new Error("Semántico", "Error en Batch.", Linea, Columna));
@@ -40,7 +40,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                 }
                 else if (inst is Eliminar eli)
                 {
-                    eli.Ejecutar(e, funcion, ciclo, sw, log, errores);
+                    eli.Ejecutar(e, funcion, ciclo, sw, tc, log, errores);
                     if (!eli.Correcto)
                     {
                         errores.AddLast(new Error("Semántico", "Error en Batch.", Linea, Columna));

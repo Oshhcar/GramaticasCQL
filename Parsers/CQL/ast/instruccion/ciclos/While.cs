@@ -18,7 +18,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ciclos
 
         public Expresion Expr { get; set; }
         public Bloque Bloque { get; set; }
-        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, LinkedList<Salida> log, LinkedList<Error> errores)
+        public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, bool tc, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             object valExpr = Expr.GetValor(e, log, errores);
 
@@ -30,7 +30,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ciclos
 
                     while (condicion)
                     {
-                        object obj = Bloque.Ejecutar(e, funcion, true, sw, log, errores);
+                        object obj = Bloque.Ejecutar(e, funcion, true, sw, tc, log, errores);
 
                         if (obj is Break)
                             break;
