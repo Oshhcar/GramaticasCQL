@@ -47,92 +47,22 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
                     Date op1 = (Date)valOp1;
                     Date op2 = (Date)valOp2;
 
+                    int res = op1.CompareTo(op2);
+
                     switch (Op)
                     {
                         case Operador.MAYORQUE:
-                            if (op1.Year != op2.Year)
-                            {
-                                return op1.Year > op2.Year;
-                            }
-                            else if (op1.Month != op2.Month)
-                            {
-                                return op1.Month > op2.Month;
-                            }
-                            else if (op1.Day != op2.Day)
-                            {
-                                return op1.Day > op2.Day;
-                            }
-                            return false;
+                            return res == 1;
                         case Operador.MENORQUE:
-                            if (op1.Year != op2.Year)
-                            {
-                                return op1.Year < op2.Year;
-                            }
-                            else if (op1.Month != op2.Month)
-                            {
-                                return op1.Month < op2.Month;
-                            }
-                            else if (op1.Day != op2.Day)
-                            {
-                                return op1.Day < op2.Day;
-                            }
-                            return false;
+                            return res == -1;
                         case Operador.IGUAL:
-                            if (op1.Year != op2.Year)
-                            {
-                                return false;
-                            }
-                            else if (op1.Month != op2.Month)
-                            {
-                                return false;
-                            }
-                            else if (op1.Day != op2.Day)
-                            {
-                                return false;
-                            }
-                            return true;
+                            return res == 0;
                         case Operador.MENORIGUAL:
-                            if (op1.Year != op2.Year)
-                            {
-                                return op1.Year < op2.Year;
-                            }
-                            else if (op1.Month != op2.Month)
-                            {
-                                return op1.Month < op2.Month;
-                            }
-                            else if (op1.Day != op2.Day)
-                            {
-                                return op1.Day < op2.Day;
-                            }
-                            return true;
+                            return res == -1 || res == 0;
                         case Operador.MAYORIGUAL:
-                            if (op1.Year != op2.Year)
-                            {
-                                return op1.Year > op2.Year;
-                            }
-                            else if (op1.Month != op2.Month)
-                            {
-                                return op1.Month > op2.Month;
-                            }
-                            else if (op1.Day != op2.Day)
-                            {
-                                return op1.Day > op2.Day;
-                            }
-                            return true;
+                            return res == 1 || res == 0;
                         case Operador.DIFERENTE:
-                            if (op1.Year != op2.Year)
-                            {
-                                return true;
-                            }
-                            else if (op1.Month != op2.Month)
-                            {
-                                return true;
-                            }
-                            else if (op1.Day != op2.Day)
-                            {
-                                return true;
-                            }
-                            return false;
+                            return !(res == 0);
                     }
 
                 }
@@ -141,92 +71,22 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
                     Time op1 = (Time)valOp1;
                     Time op2 = (Time)valOp2;
 
+                    int res = op1.CompareTo(op2);
+
                     switch (Op)
                     {
                         case Operador.MAYORQUE:
-                            if (op1.Hours != op2.Hours)
-                            {
-                                return op1.Hours > op2.Hours;
-                            }
-                            else if (op1.Minutes != op2.Minutes)
-                            {
-                                return op1.Minutes > op2.Minutes;
-                            }
-                            else if (op1.Seconds != op2.Seconds)
-                            {
-                                return op1.Seconds > op2.Seconds;
-                            }
-                            return false;
+                            return res == 1;
                         case Operador.MENORQUE:
-                            if (op1.Hours != op2.Hours)
-                            {
-                                return op1.Hours < op2.Hours;
-                            }
-                            else if (op1.Minutes != op2.Minutes)
-                            {
-                                return op1.Minutes < op2.Minutes;
-                            }
-                            else if (op1.Seconds != op2.Seconds)
-                            {
-                                return op1.Seconds < op2.Seconds;
-                            }
-                            return false;
+                            return res == -1;
                         case Operador.IGUAL:
-                            if (op1.Hours != op2.Hours)
-                            {
-                                return false;
-                            }
-                            else if (op1.Minutes != op2.Minutes)
-                            {
-                                return false;
-                            }
-                            else if (op1.Seconds != op2.Seconds)
-                            {
-                                return false;
-                            }
-                            return true;
+                            return res == 0;
                         case Operador.MENORIGUAL:
-                            if (op1.Hours != op2.Hours)
-                            {
-                                return op1.Hours < op2.Hours;
-                            }
-                            else if (op1.Minutes != op2.Minutes)
-                            {
-                                return op1.Minutes < op2.Minutes;
-                            }
-                            else if (op1.Seconds != op2.Seconds)
-                            {
-                                return op1.Seconds < op2.Seconds;
-                            }
-                            return true;
+                            return res == -1 || res == 0;
                         case Operador.MAYORIGUAL:
-                            if (op1.Hours != op2.Hours)
-                            {
-                                return op1.Hours > op2.Hours;
-                            }
-                            else if (op1.Minutes != op2.Minutes)
-                            {
-                                return op1.Minutes > op2.Minutes;
-                            }
-                            else if (op1.Seconds != op2.Seconds)
-                            {
-                                return op1.Seconds > op2.Seconds;
-                            }
-                            return true;
+                            return res == 1 || res == 0;
                         case Operador.DIFERENTE:
-                            if (op1.Hours != op2.Hours)
-                            {
-                                return true;
-                            }
-                            else if (op1.Minutes != op2.Minutes)
-                            {
-                                return true;
-                            }
-                            else if (op1.Seconds != op2.Seconds)
-                            {
-                                return true;
-                            }
-                            return false;
+                            return !(res == 0);
                     }
                 }
                 else if ((Op1.Tipo.IsBoolean() && Op2.Tipo.IsBoolean()) || (Op1.Tipo.IsString() && Op2.Tipo.IsString()))
