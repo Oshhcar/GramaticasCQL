@@ -53,12 +53,13 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         public bool IsNumeric() { return IsInt() || IsDouble(); }
         public bool IsCollection() { return IsMap() || IsList() || IsSet(); }
         public bool IsNullable() { return IsString() || IsObject() || IsMap() || IsList() || IsSet() || IsNull(); }
+        public bool IsCursor() { return Type == Type.CURSOR; }
 
         public override bool Equals(object obj)
         {
             if (obj is Tipo t)
             {
-                if (IsInt() || IsDouble() || IsBoolean())
+                if (IsInt() || IsDouble() || IsBoolean() || IsCursor())
                 {
                     return Type == t.Type;
                 }
@@ -121,7 +122,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         MAP,
         LIST,
         SET,
-        NULL
+        NULL,
+        CURSOR
     }
 
     public enum Rol

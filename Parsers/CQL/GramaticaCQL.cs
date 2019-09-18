@@ -551,7 +551,8 @@ namespace GramaticasCQL.Parsers.CQL
 
             CURSOR_STMT.Rule = cursor_ + identifier2 + is_ + SELECT;
 
-            FOREACH_STMT.Rule = for_ + each_ + leftPar + PARAMETER_LIST + rightPar + in_ + identifier2 + BLOQUE;
+            FOREACH_STMT.Rule = for_ + each_ + leftPar + PARAMETER_LIST + rightPar + in_ + identifier2 + BLOQUE
+                               |for_ + each_ + leftPar + rightPar + in_ + identifier2 + BLOQUE;
 
             OPEN_STMT.Rule = open_ + identifier2;
 

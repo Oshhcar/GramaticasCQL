@@ -527,7 +527,24 @@ namespace GramaticasCQL.Parsers.CQL
                         return new Return(linea, columna);
                     else
                         return new Return((LinkedList<Expresion>)GenerarArbol(hijos[1]), linea, columna);
-
+                case "CURSOR_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new CursorDef(hijos[1].Token.Text, (Seleccionar)GenerarArbol(hijos[3]), linea, columna);
+                case "FOREACH_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 7)
+                        return new ForEach(null, hijos[5].Token.Text, (Bloque)GenerarArbol(hijos[6]), linea, columna);
+                    return new ForEach((LinkedList<Identificador>)GenerarArbol(hijos[3]), hijos[6].Token.Text, (Bloque)GenerarArbol(hijos[7]), linea, columna);
+                case "OPEN_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new Open(hijos[1].Token.Text, linea, columna);
+                case "CLOSE_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new Close(hijos[1].Token.Text, linea, columna);
                 case "LOG_STMT":
                     return new Log((Expresion)GenerarArbol(hijos[2]), hijos[0].Token.Location.Line + 1, hijos[0].Token.Location.Column + 1);
 

@@ -66,6 +66,7 @@
     <Compile Include="Parsers\CQL\ast\ASTCQL.cs" />
     <Compile Include="Parsers\CQL\ast\entorno\BD.cs" />
     <Compile Include="Parsers\CQL\ast\entorno\CollectionValue.cs" />
+    <Compile Include="Parsers\CQL\ast\entorno\Cursor.cs" />
     <Compile Include="Parsers\CQL\ast\entorno\Date.cs" />
     <Compile Include="Parsers\CQL\ast\entorno\Entorno.cs" />
     <Compile Include="Parsers\CQL\ast\entorno\Funcion.cs" />
@@ -105,12 +106,15 @@
     <Compile Include="Parsers\CQL\ast\instruccion\Break.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ciclos\DoWhile.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ciclos\For.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\ciclos\ForEach.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ciclos\While.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\Close.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\condicionales\Case.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\condicionales\If.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\condicionales\SubIf.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\condicionales\Switch.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\Continue.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\CursorDef.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\Actualizar.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\Batch.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ddl\BDCrear.cs" />
@@ -133,6 +137,7 @@
     <Compile Include="Parsers\CQL\ast\instruccion\FuncionDef.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\Instruccion.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\Log.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\Open.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\Return.cs" />
     <Compile Include="Parsers\CQL\ast\NodoASTCQL.cs" />
     <Compile Include="Parsers\CQL\GramaticaCQL.cs" />

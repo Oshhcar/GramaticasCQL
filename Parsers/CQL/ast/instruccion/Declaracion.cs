@@ -81,16 +81,24 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
                 if (target is Identificador id)
                 {
-                    Simbolo sim = e.GetLocal(id.Id);
-
-                    if (sim != null)
+                    if (id.IsId2)
                     {
-                        errores.AddLast(new Error("Semántico", "Ya se ha declarado una variable con el id: " + id.Id +".", Linea, Columna));
+                        Simbolo sim = e.GetLocal(id.Id);
+
+                        if (sim != null)
+                        {
+                            errores.AddLast(new Error("Semántico", "Ya se ha declarado una variable con el id: " + id.Id + ".", Linea, Columna));
+                            continue;
+                        }
+
+                        sim = new Simbolo(Tipo, Rol.VARIABLE, id.Id.ToLower(), valorExpr);
+                        e.Add(sim);
+                    }
+                    else
+                    {
+                        errores.AddLast(new Error("Semántico", "No se puede declarar una variable sin el @ al inicio.", Linea, Columna));
                         continue;
                     }
-
-                    sim = new Simbolo(Tipo, Rol.VARIABLE, id.Id.ToLower(), valorExpr);
-                    e.Add(sim);
                 }
                 else
                 {
