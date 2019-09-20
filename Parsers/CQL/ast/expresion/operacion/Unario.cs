@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GramaticasCQL.Parsers.CQL.ast.entorno;
+using GramaticasCQL.Parsers.CQL.ast.instruccion;
 using Type = GramaticasCQL.Parsers.CQL.ast.entorno.Type;
 
 namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
@@ -30,6 +31,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
 
                         if (valArit != null)
                         {
+                            if (valArit is Throw)
+                                return valArit;
+
                             sim.Valor = valArit;
                             Tipo = sim.Tipo;
                             return valAnt;
@@ -55,6 +59,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
 
                 if (valOp1 != null)
                 {
+                    if (valOp1 is Throw)
+                        return valOp1;
+
                     if (Op1.Tipo.IsNumeric())
                     {
                         object factor = Op == Operador.SUMA ? 1 : -1;

@@ -52,6 +52,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                             object valWhere = Where.GetValor(e, log, errores);
                             if (valWhere != null)
                             {
+                                if (valWhere is Throw)
+                                    return valWhere;
+
                                 if (Where.Tipo.IsBoolean())
                                 {
                                     if (!(bool)valWhere)
@@ -80,12 +83,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                     return null;
                 }
                 else
-                    errores.AddLast(new Error("Semántico", "No existe una Tabla con el id: " + Id + " en la base de datos.", Linea, Columna));
+                    return new Throw("TableDontExists", Linea, Columna);
+                    //errores.AddLast(new Error("Semántico", "No existe una Tabla con el id: " + Id + " en la base de datos.", Linea, Columna));
             }
             else
-                errores.AddLast(new Error("Semántico", "No se ha seleccionado una base de datos, no se pudo Eliminar.", Linea, Columna));
-
-            return null;
+                return new Throw("UseBDException", Linea, Columna);
+                //errores.AddLast(new Error("Semántico", "No se ha seleccionado una base de datos, no se pudo Eliminar.", Linea, Columna));
         }
     }
 }

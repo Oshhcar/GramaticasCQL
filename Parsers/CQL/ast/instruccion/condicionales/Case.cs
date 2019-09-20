@@ -39,7 +39,10 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.condicionales
                     object valExpr = Expr.GetValor(e, log, errores);
 
                     if (valExpr != null)
-                    { 
+                    {
+                        if (valExpr is Throw)
+                            return valExpr;
+
                         Relacional rel = new Relacional(ExprSwitch, new Literal(Expr.Tipo, valExpr, Linea, Columna), Operador.IGUAL, Linea, Columna);
                         object valRel = rel.GetValor(e, log, errores);
 

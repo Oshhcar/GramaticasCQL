@@ -24,17 +24,23 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ciclos
 
             do
             {
-                object obj = Bloque.Ejecutar(e, funcion, true, sw, tc, log, errores);
+                Entorno local = new Entorno(e);
+                object obj = Bloque.Ejecutar(local, funcion, true, sw, tc, log, errores);
 
                 if (obj is Break)
                     break;
                 else if (obj is Return)
+                    return obj;
+                else if (obj is Throw)
                     return obj;
 
                 object valExpr = Expr.GetValor(e, log, errores);
 
                 if (valExpr != null)
                 {
+                    if (valExpr is Throw)
+                        return valExpr; 
+
                     if (Expr.Tipo.IsBoolean())
                     {
                         condicion = (bool)valExpr;

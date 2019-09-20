@@ -38,6 +38,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                     object valExpr = expr.GetValor(e, log, errores);
                     if (valExpr != null)
                     {
+                        if (valExpr is Throw)
+                            return valExpr;
+
                         Valor = new Literal(expr.Tipo, valExpr, Linea, Columna);
                         return this;
                     }
@@ -51,6 +54,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                         object valExpr = expr.GetValor(e, log, errores);
                         if (valExpr != null)
                         {
+                            if (valExpr is Throw)
+                                return valExpr;
+
                             Valores.AddLast(new Literal(expr.Tipo, valExpr, Linea, Columna));
                             continue;
                         }

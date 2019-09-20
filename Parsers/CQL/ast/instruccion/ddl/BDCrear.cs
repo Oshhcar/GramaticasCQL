@@ -26,8 +26,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
             }
             else
             {
-                if(!IfNotExist)
-                    errores.AddLast(new Error("Semántico", "Ya existe una base de datos con el id: "+Id+".", Linea, Columna));
+                if (!IfNotExist)
+                    return new Throw("BDAlreadyExists", Linea, Columna);
+                    //errores.AddLast(new Error("Semántico", "Ya existe una base de datos con el id: "+Id+".", Linea, Columna));
             }
             return null;
         }

@@ -39,6 +39,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.condicionales
 
                 if (valCond != null)
                 {
+                    if (valCond is Throw)
+                        return valCond;
+
                     if (Cond.Tipo.IsBoolean())
                     {
                         Entra = (bool)valCond;

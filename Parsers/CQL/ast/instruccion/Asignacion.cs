@@ -25,7 +25,10 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
             if (valExpr != null)
             {
-                if (Target is Identificador)
+                if (valExpr is Throw)
+                    return valExpr;
+
+                if (Target is Identificador iden)
                 {
                     Simbolo sim = Target.GetSimbolo(e);
 
@@ -62,6 +65,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
                                 if (valExpr != null)
                                 {
+                                    if (valExpr is Throw)
+                                        return valExpr;
+
                                     sim.Valor = valExpr;
                                     return null;
                                 }
@@ -71,7 +77,10 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                         errores.AddLast(new Error("Semántico", "El valor no corresponde al tipo de la variable.", Linea, Columna));
                         return null;
                     }
-                    errores.AddLast(new Error("Semántico", "No se ha declarado una variable con el id: " + Target.GetId() + ".", Linea, Columna));
+                    if (iden.IsId2)
+                        errores.AddLast(new Error("Semántico", "No se ha declarado una variable con el id: " + Target.GetId() + ".", Linea, Columna));
+                    else
+                        return new Throw("ColumnException", Linea, Columna);
 
                 }
                 else if (Target is AtributoRef atributo)
@@ -112,6 +121,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
                                 if (valExpr != null)
                                 {
+                                    if (valExpr is Throw)
+                                        return valExpr;
+
                                     sim.Valor = valExpr;
                                     return null;
                                 }
@@ -161,6 +173,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
                                 if (valExpr != null)
                                 {
+                                    if (valExpr is Throw)
+                                        return valExpr;
+
                                     collection.Valor = valExpr;
                                     return null;
                                 }

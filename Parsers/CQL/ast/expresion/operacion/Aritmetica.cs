@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GramaticasCQL.Parsers.CQL.ast.entorno;
+using GramaticasCQL.Parsers.CQL.ast.instruccion;
 using Type = GramaticasCQL.Parsers.CQL.ast.entorno.Type;
 
 namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
@@ -20,6 +21,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
 
             if (valOp1 != null && valOp2 != null)
             {
+                if (valOp1 is Throw)
+                    return valOp1;
+
+                if (valOp2 is Throw)
+                    return valOp2;
+
                 TipoDominante(errores);
 
                 if (Tipo != null)
@@ -46,8 +53,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
                                     {
                                         return Convert.ToDouble(valOp1) / Convert.ToDouble(valOp2);
                                     }
-                                    errores.AddLast(new Error("Semántico", "División entre 0.", Linea, Columna));
-                                    return null;
+                                    //errores.AddLast(new Error("Semántico", "División entre 0.", Linea, Columna));
+                                    return new Throw("ArithmeticException", Linea, Columna);
 
                             }
                             break;
@@ -69,14 +76,14 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
                                     {
                                         return Convert.ToInt32(valOp1) / Convert.ToInt32(valOp2);
                                     }
-                                    errores.AddLast(new Error("Semántico", "División entre 0.", Linea, Columna));
-                                    return null;
+                                    //errores.AddLast(new Error("Semántico", "División entre 0.", Linea, Columna));
+                                    return new Throw("ArithmeticException", Linea, Columna);
 
                             }
                             break;
                     }
                 }
-
+                return new Throw("ArithmeticException", Linea, Columna);
             }
 
             return null;
@@ -96,7 +103,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
                     }
                     else
                     {
-                        errores.AddLast(new Error("Semántico", "Las cadenas solo admiten el operador: " + "+.", Linea, Columna));
+                        //errores.AddLast(new Error("Semántico", "Las cadenas solo admiten el operador: " + "+.", Linea, Columna));
                         return;
                     }
                 }
@@ -118,7 +125,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
                         return;
                     }
                 }
-                errores.AddLast(new Error("Semántico", "Error de tipos en operación aritmética.", Linea, Columna));
+                //errores.AddLast(new Error("Semántico", "Error de tipos en operación aritmética.", Linea, Columna));
             }
         }
 

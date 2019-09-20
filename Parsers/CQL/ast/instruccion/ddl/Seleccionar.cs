@@ -127,6 +127,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
                                 if (identValor != null)
                                 {
+
                                     if (ident.Tipo.IsString() || ident.Tipo.IsDate() || ident.Tipo.IsTime())
                                         ordered = datos.OrderBy(p => p.GetCualquiera(ident.GetId()).Valor.ToString()).AsEnumerable();
                                     else if (ident.Tipo.IsInt())
@@ -227,6 +228,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                             object valWhere = Where.GetValor(e, log, errores);
                             if (valWhere != null)
                             {
+                                if (valWhere is Throw)
+                                    return valWhere;
+
                                 if (Where.Tipo.IsBoolean())
                                 {
                                     if (!(bool)valWhere)
@@ -254,6 +258,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
                                 if (valColExp != null)
                                 {
+                                    if (valColExp is Throw)
+                                        return valColExp;
+
                                     simActual.Tipo = colExp.Tipo;
                                     simActual.Rol = Rol.COLUMNA;
 
@@ -293,6 +300,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                         object valLimit = Limit.GetValor(e, log, errores);
                         if (valLimit != null)
                         {
+                            if (valLimit is Throw)
+                                return valLimit;
+
                             if (Limit.Tipo.IsInt())
                             {
                                 limite = (int)valLimit-1;
@@ -310,6 +320,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
                                 if (valLimit != null)
                                 {
+                                    if (valLimit is Throw)
+                                        return valLimit;
+
                                     limite = (int)valLimit-1;
                                     if((int)valLimit < 0)
                                         errores.AddLast(new Error("Semántico", "El Límite debe ser entero positivo.", Linea, Columna));
@@ -374,10 +387,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                         return data;
                 }
                 else
-                    errores.AddLast(new Error("Semántico", "No existe una Tabla con el id: " + Id + " en la base de datos.", Linea, Columna));
+                    return new Throw("TableDontExists", Linea, Columna);
+                    //errores.AddLast(new Error("Semántico", "No existe una Tabla con el id: " + Id + " en la base de datos.", Linea, Columna));
             }
             else
-                errores.AddLast(new Error("Semántico", "No se ha seleccionado una base de datos, no se pudo Actualizar.", Linea, Columna));
+                return new Throw("UseBDException", Linea, Columna);
+                //errores.AddLast(new Error("Semántico", "No se ha seleccionado una base de datos, no se pudo Actualizar.", Linea, Columna));
 
             return null;
         }

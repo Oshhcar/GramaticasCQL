@@ -55,6 +55,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                         if (valorExpr == null)
                             return null;
 
+                        if (valorExpr is Throw)
+                            return valorExpr;
+
                         if (!Tipo.Equals(Expr.Tipo))
                         {
                             Casteo cast = new Casteo(Tipo, new Literal(Expr.Tipo, valorExpr, 0, 0), 0, 0)
@@ -66,6 +69,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
                             if (valorExpr == null)
                             {
+                                if (valorExpr is Throw)
+                                    return valorExpr;
+
                                 errores.AddLast(new Error("Semántico", "El valor no corresponde al tipo declarado.", Linea, Columna));
                                 return null;
                             }
@@ -87,8 +93,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
                         if (sim != null)
                         {
-                            errores.AddLast(new Error("Semántico", "Ya se ha declarado una variable con el id: " + id.Id + ".", Linea, Columna));
-                            continue;
+                            return new Throw("ObjectAlreadyExists", Linea, Columna);
+                            //errores.AddLast(new Error("Semántico", "Ya se ha declarado una variable con el id: " + id.Id + ".", Linea, Columna));
+                            //continue;
                         }
 
                         sim = new Simbolo(Tipo, Rol.VARIABLE, id.Id.ToLower(), valorExpr);

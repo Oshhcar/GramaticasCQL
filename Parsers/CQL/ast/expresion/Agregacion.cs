@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GramaticasCQL.Parsers.CQL.ast.entorno;
 using GramaticasCQL.Parsers.CQL.ast.expresion.operacion;
+using GramaticasCQL.Parsers.CQL.ast.instruccion;
 using GramaticasCQL.Parsers.CQL.ast.instruccion.ddl;
 using Type = GramaticasCQL.Parsers.CQL.ast.entorno.Type;
 
@@ -24,10 +25,15 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
         public override object GetValor(Entorno e, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             Select.Mostrar = false;
-            LinkedList<Entorno> data = (LinkedList<Entorno>) Select.Ejecutar(e, false, false, false, false, log, errores);
+            object obj = Select.Ejecutar(e, false, false, false, false, log, errores);
 
-            if (data != null)
+            if (obj != null)
             {
+                if (obj is Throw)
+                    return obj;
+
+                LinkedList<Entorno> data = (LinkedList<Entorno>)obj;
+
                 Aritmetica op;
                 Relacional rel;
 
@@ -70,6 +76,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                                 if (valRel != null)
                                 {
+                                    if (valRel is Throw)
+                                        return valRel;
+
                                     if (!((bool)valRel))
                                         min = sim1.Valor;
                                 }
@@ -116,6 +125,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                                 if (valRel != null)
                                 {
+                                    if (valRel is Throw)
+                                        return valRel;
+
                                     if (!((bool)valRel))
                                         max = sim1.Valor;
                                 }
@@ -163,6 +175,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                     return null;
                                 }
 
+                                if (sum is Throw)
+                                    return sum;
+
                             }
 
                             if (Tipo.IsString() || Tipo.IsNumeric())
@@ -208,6 +223,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                     errores.AddLast(new Error("Semántico", "No se pudo realizar la función de agregación AVG.", Linea, Columna));
                                     return null;
                                 }
+
+                                if (sum is Throw)
+                                    return sum;
                             }
 
                             int total = data.Count();

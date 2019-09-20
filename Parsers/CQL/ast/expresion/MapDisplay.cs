@@ -1,4 +1,5 @@
 ﻿using GramaticasCQL.Parsers.CQL.ast.entorno;
+using GramaticasCQL.Parsers.CQL.ast.instruccion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
             if (valClave != null && valValor != null)
             {
+                if (valClave is Throw)
+                    return valClave;
+
+                if (valValor is Throw)
+                    return valValor;
+
                 Collection map = new Collection(new Tipo(clave.Tipo, valor.Tipo));
                 map.Insert(valClave, valValor);
 
@@ -40,6 +47,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                     if (valClave != null && valValor != null)
                     {
+                        if (valClave is Throw)
+                            return valClave;
+
+                        if (valValor is Throw)
+                            return valValor;
+
                         if (map.Tipo.Clave.Equals(clave.Tipo) && map.Tipo.Valor.Equals(valor.Tipo))
                         {
                             if (map.Get(valClave) == null)

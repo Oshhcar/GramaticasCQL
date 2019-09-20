@@ -18,33 +18,50 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
         public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, bool tc, LinkedList<Salida> log, LinkedList<Error> errores)
         {
+            object obj;       
+            
             foreach (Instruccion inst in Inst)
             {
                 if (inst is Actualizar act)
                 {
-                    act.Ejecutar(e, funcion, ciclo, sw, tc, log, errores);
+                    obj = act.Ejecutar(e, funcion, ciclo, sw, tc, log, errores);
+
+                    if (obj is Throw)
+                        return new Throw("BatchException", Linea, Columna);
+
                     if (!act.Correcto)
                     {
-                        errores.AddLast(new Error("Semántico", "Error en Batch.", Linea, Columna));
-                        return null;
+                        return new Throw("BatchException", Linea, Columna);
+                        //errores.AddLast(new Error("Semántico", "Error en Batch.", Linea, Columna));
+                        //return null;
                     }
                 }
                 else if (inst is Insertar inser)
                 {
-                    inser.Ejecutar(e, funcion, ciclo, sw, tc, log, errores);
+                    obj = inser.Ejecutar(e, funcion, ciclo, sw, tc, log, errores);
+
+                    if(obj is Throw)
+                        return new Throw("BatchException", Linea, Columna);
+
                     if (!inser.Correcto)
                     {
-                        errores.AddLast(new Error("Semántico", "Error en Batch.", Linea, Columna));
-                        return null;
+                        return new Throw("BatchException", Linea, Columna);
+                        //errores.AddLast(new Error("Semántico", "Error en Batch.", Linea, Columna));
+                        //return null;
                     }
                 }
                 else if (inst is Eliminar eli)
                 {
-                    eli.Ejecutar(e, funcion, ciclo, sw, tc, log, errores);
+                    obj = eli.Ejecutar(e, funcion, ciclo, sw, tc, log, errores);
+
+                    if(obj is Throw)
+                        return new Throw("BatchException", Linea, Columna);
+
                     if (!eli.Correcto)
                     {
-                        errores.AddLast(new Error("Semántico", "Error en Batch.", Linea, Columna));
-                        return null;
+                        return new Throw("BatchException", Linea, Columna);
+                        //errores.AddLast(new Error("Semántico", "Error en Batch.", Linea, Columna));
+                        //return null;
                     }
                 }
             }

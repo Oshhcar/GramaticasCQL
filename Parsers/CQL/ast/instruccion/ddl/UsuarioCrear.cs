@@ -25,7 +25,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                 e.Master.AddUsuario(Id, Password.Valor);
             }
             else
-                errores.AddLast(new Error("Semántico", "Ya existe una Usuario con el id: " + Id + ".", Linea, Columna));
+                return new Throw("UserAlreadyExists", Linea, Columna);
+                //errores.AddLast(new Error("Semántico", "Ya existe una Usuario con el id: " + Id + ".", Linea, Columna));
 
             return null;
         }

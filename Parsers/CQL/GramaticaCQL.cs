@@ -449,7 +449,8 @@ namespace GramaticasCQL.Parsers.CQL
 
             SENTENCIAS.Rule = MakePlusRule(SENTENCIAS, SENTENCIA);
 
-            SENTENCIA.Rule =    USE + semicolon
+            SENTENCIA.Rule =    TYPEDEF + semicolon /****/
+                              |  USE + semicolon
                               | DATABASEDEF + semicolon
                               | DROP + semicolon
                               | TABLEDEF + semicolon
@@ -568,7 +569,8 @@ namespace GramaticasCQL.Parsers.CQL
 
             THROW_STMT.Rule = throw_ + new_ + identifier;
 
-            TRYCATCH_STMT.Rule = try_ + BLOQUE + catch_ + PARAMETER_LIST + leftPar + rightPar + BLOQUE;
+            TRYCATCH_STMT.Rule = try_ + BLOQUE + catch_ + leftPar + PARAMETER_LIST + rightPar + BLOQUE
+                                | try_ + BLOQUE + catch_ + leftPar + rightPar + BLOQUE; ;
 
             EXPRESSION_LIST.Rule = MakePlusRule(EXPRESSION_LIST, comma, EXPRESSION);
 

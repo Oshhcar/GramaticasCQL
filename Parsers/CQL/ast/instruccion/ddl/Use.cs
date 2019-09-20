@@ -26,7 +26,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
             }
             else
             {
-                errores.AddLast(new Error("Semántico", "No existe una base de datos con el id: " + Id + ".", Linea, Columna));
+                //errores.AddLast(new Error("Semántico", "No existe una base de datos con el id: " + Id + ".", Linea, Columna));
+                return new Throw("BDDontExists", Linea, Columna);
             }
             return null;
         }

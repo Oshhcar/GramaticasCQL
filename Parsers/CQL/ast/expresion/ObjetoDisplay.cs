@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GramaticasCQL.Parsers.CQL.ast.entorno;
+using GramaticasCQL.Parsers.CQL.ast.instruccion;
 
 namespace GramaticasCQL.Parsers.CQL.ast.expresion
 {
@@ -38,6 +39,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                             if (valExpr != null)
                             {
+                                if (valExpr is Throw)
+                                    return valExpr;
+
                                 if (s.Tipo.Equals(expr.Tipo))
                                 {
                                     sims.AddLast(new Simbolo(s.Tipo, Rol.ATRIBUTO, s.Id, valExpr));
@@ -63,6 +67,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                                         if (valExpr != null)
                                         {
+                                            if (valExpr is Throw)
+                                                return valExpr;
+
                                             sims.AddLast(new Simbolo(s.Tipo, Rol.ATRIBUTO, s.Id, valExpr));
                                             continue;
                                         }

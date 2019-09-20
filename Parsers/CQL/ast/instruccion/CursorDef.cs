@@ -32,7 +32,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
             }
             else
-                errores.AddLast(new Error("Semántico", "Ya se ha declarado una variable con el id: " + Id + ".", Linea, Columna));
+                return new Throw("ObjectAlreadyExists", Linea, Columna);
+            //errores.AddLast(new Error("Semántico", "Ya se ha declarado una variable con el id: " + Id + ".", Linea, Columna));
 
             return null;
         }

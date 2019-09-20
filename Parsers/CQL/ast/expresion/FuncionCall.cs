@@ -62,6 +62,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                     object valExpr = expr.GetValor(e, log, errores);
                     if (valExpr != null)
                     {
+                        if (valExpr is Throw)
+                            return valExpr;
+
                         firma += "-" + expr.Tipo.Type.ToString();
                         parametros.AddLast(new Literal(expr.Tipo, valExpr, 0, 0));
                         continue;
@@ -109,6 +112,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                         }
                         return null;
                     }
+
+                    if (obj is Throw)
+                        return obj;
                 }
 
                 if(IsExpresion)

@@ -27,7 +27,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
         public LinkedList<Literal> Parametros { get; set; }
         public Simbolo Simbolo { get; set; }
 
-        public Simbolo GetSimbolo(Entorno e, LinkedList<Salida> log, LinkedList<Error> errores)
+        public object GetSimbolo(Entorno e, LinkedList<Salida> log, LinkedList<Error> errores)
         {
             BD actual = e.Master.Actual;
 
@@ -44,6 +44,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                         object valExpr = expr.GetValor(e, log, errores);
                         if (valExpr != null)
                         {
+                            if (valExpr is Throw)
+                                return valExpr;
+
                             firma += "-" + expr.Tipo.Type.ToString();
                             Parametros.AddLast(new Literal(expr.Tipo, valExpr, 0, 0));
                             continue;
@@ -69,7 +72,19 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
         {
             Entorno local = new Entorno(e.Global); /*********/
 
-            Simbolo sim = Simbolo ?? GetSimbolo(e, log, errores);
+            Simbolo sim;
+
+            if (Simbolo != null)
+                sim = Simbolo;
+            else
+            {
+                 object obj =  GetSimbolo(e, log, errores);
+
+                if (obj is Throw)
+                    return obj;
+
+                sim = (Simbolo)obj;
+            }
 
             if (sim != null)
             {
@@ -125,7 +140,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                         }
                                     }
                                     else
-                                        errores.AddLast(new Error("Semántico", "Los valores del Return no coinciden con los del Procedimiento.", ret.Linea, ret.Columna));
+                                        return new Throw("NumberReturnsException", Linea, Columna);
+                                        //errores.AddLast(new Error("Semántico", "Los valores del Return no coinciden con los del Procedimiento.", ret.Linea, ret.Columna));
                                 }
                                 else if (ret.Valores != null)
                                 {
@@ -157,10 +173,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                         return ret.Valores;
                                     }
                                     else
-                                        errores.AddLast(new Error("Semántico", "Los valores del Return no coinciden con los del Procedimiento.", ret.Linea, ret.Columna));
+                                        return new Throw("NumberReturnsException", Linea, Columna);
+                                    //errores.AddLast(new Error("Semántico", "Los valores del Return no coinciden con los del Procedimiento.", ret.Linea, ret.Columna));
                                 }
                                 else
-                                    errores.AddLast(new Error("Semántico", "Se esperaba valor en Return.", ret.Linea, ret.Columna));
+                                    return new Throw("NumberReturnsException", Linea, Columna);
+                                //errores.AddLast(new Error("Semántico", "Se esperaba valor en Return.", ret.Linea, ret.Columna));
                             }
                             else
                             {
@@ -170,6 +188,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                         }
                         return null;
                     }
+
+                    if (obj is Throw)
+                        return obj;
                 }
 
                 if(proc.Retorno != null)

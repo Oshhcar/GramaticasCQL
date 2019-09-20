@@ -570,7 +570,16 @@ namespace GramaticasCQL.Parsers.CQL
                     return new Close(hijos[1].Token.Text, linea, columna);
                 case "LOG_STMT":
                     return new Log((Expresion)GenerarArbol(hijos[2]), hijos[0].Token.Location.Line + 1, hijos[0].Token.Location.Column + 1);
-
+                case "THROW_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    return new Throw(hijos[2].Token.Text, linea, columna);
+                case "TRYCATCH_STMT":
+                    linea = hijos[0].Token.Location.Line + 1;
+                    columna = hijos[0].Token.Location.Column + 1;
+                    if (hijos.Count() == 6)
+                        return new TryCatch((Bloque)GenerarArbol(hijos[1]), (Bloque)GenerarArbol(hijos[5]), linea, columna);
+                    return new TryCatch((Bloque)GenerarArbol(hijos[1]), (LinkedList<Identificador>)GenerarArbol(hijos[4]), (Bloque)GenerarArbol(hijos[6]), linea, columna);
                 case "EXPRESSION_LIST":
                     LinkedList<Expresion> exprList = new LinkedList<Expresion>();
                     foreach (ParseTreeNode hijo in hijos)

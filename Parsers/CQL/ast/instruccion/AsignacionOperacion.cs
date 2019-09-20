@@ -28,6 +28,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
             if (valExpr != null)
             {
+                if (valExpr is Throw)
+                    return valExpr;
+
                 Simbolo sim = Target.GetSimbolo(e);
 
                 if (sim != null)
@@ -37,6 +40,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
                     if (valArit != null)
                     {
+                        if (valArit is Throw)
+                            return valArit;
+
                         sim.Valor = valArit;
                     }
 

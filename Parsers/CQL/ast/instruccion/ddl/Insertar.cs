@@ -53,14 +53,18 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                                 object valValor = valor.GetValor(e, log, errores);
                                 if (valValor != null)
                                 {
+                                    if (valValor is Throw)
+                                        return valValor;
+
                                     string col = Columnas.ElementAt(i);
                                     Simbolo dato = datos.GetCualquiera(col);
                                     if (dato != null)
                                     {
                                         if (dato.Tipo.IsCounter())
                                         {
-                                            dato.Valor = tabla.Contador;
-                                            continue;
+                                            return new Throw("CounterTypeException", Linea, Columna);
+                                            //dato.Valor = tabla.Contador;
+                                            //continue;
                                         }
 
                                         if (dato.Tipo.Equals(valor.Tipo))
@@ -86,12 +90,16 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
                                             if (valValor != null)
                                             {
+                                                if (valValor is Throw)
+                                                    return valValor;
+
                                                 dato.Valor = valValor;
                                                 continue;
                                             }
 
-                                            errores.AddLast(new Error("Semántico", "El tipo de la expresión no corresponde al tipo en la columna: " + sim.Id + ".", Linea, Columna));
-                                            return null;
+                                            return new Throw("ValuesException", Linea, Columna);
+                                            //errores.AddLast(new Error("Semántico", "El tipo de la expresión no corresponde al tipo en la columna: " + sim.Id + ".", Linea, Columna));
+                                            //return null;
                                         }
                                     }
                                     else
@@ -148,12 +156,16 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                                 object valValor = valor.GetValor(e, log, errores);
                                 if (valValor != null)
                                 {
+                                    if (valValor is Throw)
+                                        return valValor;
+
                                     Simbolo col = tabla.Cabecera.Simbolos.ElementAt(i);
 
                                     if (col.Tipo.IsCounter())
                                     {
-                                        errores.AddLast(new Error("Semántico", "No se puede insertar un valor en una columna tipo Counter.", Linea, Columna));
-                                        return null;
+                                        return new Throw("CounterTypeException", Linea, Columna);
+                                        //errores.AddLast(new Error("Semántico", "No se puede insertar un valor en una columna tipo Counter.", Linea, Columna));
+                                        //return null;
                                     }
 
                                     if (!col.Tipo.Equals(valor.Tipo))
@@ -166,8 +178,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
                                         if (valValor == null)
                                         {
-                                            errores.AddLast(new Error("Semántico", "El tipo de la expresión no corresponde al tipo en la columna: " + col.Id + ".", Linea, Columna));
-                                            return null;
+                                            if (valValor is Throw)
+                                                return valValor;
+
+                                            return new Throw("ValuesException", Linea, Columna);
+                                            //errores.AddLast(new Error("Semántico", "El tipo de la expresión no corresponde al tipo en la columna: " + col.Id + ".", Linea, Columna));
+                                            //return null;
                                         }
                                     }
 
@@ -194,15 +210,18 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                             return null;
                         }
                         else
-                            errores.AddLast(new Error("Semántico", "Los valores no corresponden a las columnas en la Tabla.", Linea, Columna));
+                            return new Throw("ValuesException", Linea, Columna);
+                            //errores.AddLast(new Error("Semántico", "Los valores no corresponden a las columnas en la Tabla.", Linea, Columna));
                     }
 
                 }
                 else
-                    errores.AddLast(new Error("Semántico", "No existe una Tabla con el id: " + Id + " en la base de datos.", Linea, Columna));
+                    return new Throw("TableDontExists", Linea, Columna);
+                    //errores.AddLast(new Error("Semántico", "No existe una Tabla con el id: " + Id + " en la base de datos.", Linea, Columna));
             }
             else
-                errores.AddLast(new Error("Semántico", "No se ha seleccionado una base de datos, no se pudo Insertar.", Linea, Columna));
+                return new Throw("UseBDException", Linea, Columna);
+                //errores.AddLast(new Error("Semántico", "No se ha seleccionado una base de datos, no se pudo Insertar.", Linea, Columna));
 
             return null;
         }

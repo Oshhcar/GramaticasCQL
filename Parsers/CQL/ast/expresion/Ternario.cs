@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GramaticasCQL.Parsers.CQL.ast.entorno;
+using GramaticasCQL.Parsers.CQL.ast.instruccion;
 
 namespace GramaticasCQL.Parsers.CQL.ast.expresion
 {
@@ -26,6 +27,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
             if (valExpr != null)
             {
+                if (valExpr is Throw)
+                    return valExpr;
+
                 if (Expr.Tipo.IsBoolean())
                 {
                     if ((Boolean)valExpr)
@@ -34,6 +38,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                         if (valV != null)
                         {
+                            if (valV is Throw)
+                                return valV;
+
                             Tipo = V.Tipo;
                             return valV;
                         }
@@ -44,6 +51,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                         if (valF != null)
                         {
+                            if (valF is Throw)
+                                return valF;
+
                             Tipo = F.Tipo;
                             return valF;
                         }

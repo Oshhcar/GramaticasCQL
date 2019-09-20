@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GramaticasCQL.Parsers.CQL.ast.entorno;
+using GramaticasCQL.Parsers.CQL.ast.instruccion;
 
 namespace GramaticasCQL.Parsers.CQL.ast.expresion
 {
@@ -58,8 +59,10 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                         Tipo = sim.Tipo;
                         return sim.Valor;
                     }
-                    errores.AddLast(new Error("Semántico", "No hay una columna con el id: " + Id + " en la consulta.", Linea, Columna));
-                    return null;
+
+                    return new Throw("ColumnException", Linea, Columna);
+                    //errores.AddLast(new Error("Semántico", "No hay una columna con el id: " + Id + " en la consulta.", Linea, Columna));
+                    //return null;
                 }
                 else
                     errores.AddLast(new Error("Semántico", "No esta dentro de una consulta, no se puede buscar: " + Id + ".", Linea, Columna));

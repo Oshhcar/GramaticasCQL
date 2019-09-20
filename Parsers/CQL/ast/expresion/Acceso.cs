@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GramaticasCQL.Parsers.CQL.ast.entorno;
+using GramaticasCQL.Parsers.CQL.ast.instruccion;
 
 namespace GramaticasCQL.Parsers.CQL.ast.expresion
 {
@@ -26,28 +27,36 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
             if (valExpr != null)
             {
+                if (valExpr is Throw)
+                    return valExpr;
+
                 if (Expr.Tipo.IsInt())
                 {
                     object valTarget = Target.GetValor(e, log, errores);
 
                     if (valTarget != null)
                     {
+                        if (valTarget is Throw)
+                            return valExpr;
+
                         if (Target.Tipo.IsMap() || Target.Tipo.IsList() || Target.Tipo.IsSet())
                         {
                             if (!(valTarget is Null))
                             {
                                 Collection collection = (Collection)valTarget;
-                                object valor = GetCollection? collection.GetCollection(valExpr.ToString()) : collection.Get(valExpr.ToString());
+                                object valor = GetCollection ? collection.GetCollection(valExpr.ToString()) : collection.Get(valExpr.ToString());
                                 if (valor != null)
                                 {
-                                     Tipo = collection.Tipo.Valor;
+                                    Tipo = collection.Tipo.Valor;
                                     return valor;
                                 }
                                 else
-                                    errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valExpr.ToString() + " del " + Target.Tipo.Type.ToString() + ".", Linea, Columna));
+                                    return new Throw("IndexOutException", Linea, Columna);
+                                //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valExpr.ToString() + " del " + Target.Tipo.Type.ToString() + ".", Linea, Columna));
                             }
                             else
-                                errores.AddLast(new Error("Semántico", "El " + Target.Tipo.Type.ToString() + " no ha sido inicializado.", Linea, Columna));
+                                return new Throw("NullPointerException", Linea, Columna);
+                                //errores.AddLast(new Error("Semántico", "El " + Target.Tipo.Type.ToString() + " no ha sido inicializado.", Linea, Columna));
 
                         }
                         else

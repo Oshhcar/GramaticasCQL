@@ -66,6 +66,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ciclos
 
                                                 if (valCol != null)
                                                 {
+                                                    if (valCol is Throw)
+                                                        return valCol;
+                                                      
                                                     var = new Simbolo(par.Tipo, Rol.VARIABLE, par.Id, valCol);
                                                 }
                                                 else
@@ -82,6 +85,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ciclos
                                         if (obj is Break)
                                             break;
                                         else if (obj is Return)
+                                            return obj;
+                                        else if (obj is Throw)
                                             return obj;
                                     }
                                     return null;

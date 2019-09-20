@@ -21,6 +21,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
         {
             object valorExpr = Expr.GetValor(e, log, errores);
 
+            if (valorExpr is Throw)
+                return valorExpr;
+
             if (valorExpr != null)
                 log.AddLast(new Salida(1, valorExpr.ToString()));
 

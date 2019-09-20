@@ -21,66 +21,80 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
         public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, bool tc, LinkedList<Salida> log, LinkedList<Error> errores)
         {
-            Simbolo sim = Call.GetSimbolo(e, log, errores);
+            object obj = Call.GetSimbolo(e, log, errores);
 
-            if (sim != null)
+            if (obj == null)
+                return null;
+
+            if (obj is Throw)
+                return obj;
+
+            Simbolo sim = (Simbolo)obj;
+
+            Procedimiento proc = (Procedimiento)sim.Valor;
+
+            if (proc.Retorno != null)
             {
-                Procedimiento proc = (Procedimiento)sim.Valor;
-
-                if (proc.Retorno != null)
+                if (proc.Retorno.Count() == Target.Count())
                 {
-                    if (proc.Retorno.Count() == Target.Count())
+                    obj = Call.GetValor(e, log, errores);
+
+                    if (obj != null)
                     {
-                        LinkedList<Literal> valores = (LinkedList<Literal>)Call.GetValor(e, log, errores);
+                        if (obj is Throw)
+                            return obj;
 
-                        if (valores != null)
+                        LinkedList<Literal> valores = (LinkedList<Literal>)obj;
+
+                        for (int i = 0; i < Target.Count(); i++)
                         {
-                            for (int i = 0; i < Target.Count(); i++)
+                            Expresion target = Target.ElementAt(i);
+                            Literal valor = valores.ElementAt(i);
+
+                            if (target is Identificador iden)
                             {
-                                Expresion target = Target.ElementAt(i);
-                                Literal valor = valores.ElementAt(i);
+                                Simbolo simIden = iden.GetSimbolo(e);
 
-                                if(target is Identificador iden)
+                                if (simIden != null)
                                 {
-                                    Simbolo simIden = iden.GetSimbolo(e);
-
-                                    if (simIden != null)
+                                    if (simIden.Tipo.Equals(valor.Tipo))
                                     {
-                                        if (simIden.Tipo.Equals(valor.Tipo))
-                                        {
-                                            simIden.Valor = valor.Valor;
-                                        }
-                                        else
-                                        {
-                                            Casteo cast = new Casteo(simIden.Tipo, valor, 0, 0)
-                                            {
-                                                Mostrar = false
-                                            };
-
-                                            object valExpr = cast.GetValor(e, log, errores);
-
-                                            if (valExpr != null)
-                                            {
-                                                simIden.Valor = valExpr;
-                                            }
-                                            else
-                                                errores.AddLast(new Error("Semántico", "El tipo del Return no coincide con el de la variable: "+target.GetId()+".", Linea, Columna));
-                                        }
+                                        simIden.Valor = valor.Valor;
                                     }
                                     else
-                                        errores.AddLast(new Error("Semántico", "No se ha declarado una variable con el id: " + target.GetId() + ".", Linea, Columna));
+                                    {
+                                        Casteo cast = new Casteo(simIden.Tipo, valor, 0, 0)
+                                        {
+                                            Mostrar = false
+                                        };
+
+                                        object valExpr = cast.GetValor(e, log, errores);
+
+                                        if (valExpr != null)
+                                        {
+                                            if (valExpr is Throw)
+                                                return valExpr;
+
+                                            simIden.Valor = valExpr;
+                                        }
+                                        else
+                                            errores.AddLast(new Error("Semántico", "El tipo del Return no coincide con el de la variable: " + target.GetId() + ".", Linea, Columna));
+                                    }
                                 }
                                 else
-                                    errores.AddLast(new Error("Semántico", "Solo se pueden capturar el Return en variables.", Linea, Columna));
+                                    errores.AddLast(new Error("Semántico", "No se ha declarado una variable con el id: " + target.GetId() + ".", Linea, Columna));
                             }
+                            else
+                                errores.AddLast(new Error("Semántico", "Solo se pueden capturar el Return en variables.", Linea, Columna));
                         }
                     }
-                    else
-                        errores.AddLast(new Error("Semántico", "Los valores que retorna el Procedimiento no coinciden con la asignación.", Linea, Columna));
                 }
                 else
-                    errores.AddLast(new Error("Semántico", "El procedimiento no retorna valores.", Linea, Columna));
+                    errores.AddLast(new Error("Semántico", "Los valores que retorna el Procedimiento no coinciden con la asignación.", Linea, Columna));
             }
+            else
+                errores.AddLast(new Error("Semántico", "El procedimiento no retorna valores.", Linea, Columna));
+
             return null;
         }
     }

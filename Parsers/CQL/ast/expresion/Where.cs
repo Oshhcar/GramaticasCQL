@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GramaticasCQL.Parsers.CQL.ast.entorno;
+using GramaticasCQL.Parsers.CQL.ast.instruccion;
 using Type = GramaticasCQL.Parsers.CQL.ast.entorno.Type;
 
 namespace GramaticasCQL.Parsers.CQL.ast.expresion
@@ -30,6 +31,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
             if (valExpr != null)
             {
+                if (valExpr is Throw)
+                    return valExpr;
+
                 if (InExpr == null)
                 {
                     Tipo = Expr.Tipo;
@@ -45,6 +49,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                         if (valExprActual != null)
                         {
+                            if (valExprActual is Throw)
+                                return valExprActual;
+
                             if (exprActual.Tipo.IsCollection())
                             {
                                 Collection collection = (Collection)valExprActual;

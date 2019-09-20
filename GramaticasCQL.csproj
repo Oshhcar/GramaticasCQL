@@ -143,6 +143,8 @@
     <Compile Include="Parsers\CQL\ast\instruccion\Open.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\ProcedimientoDef.cs" />
     <Compile Include="Parsers\CQL\ast\instruccion\Return.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\Throw.cs" />
+    <Compile Include="Parsers\CQL\ast\instruccion\TryCatch.cs" />
     <Compile Include="Parsers\CQL\ast\NodoASTCQL.cs" />
     <Compile Include="Parsers\CQL\GramaticaCQL.cs" />
     <Compile Include="Parsers\Error.cs" />

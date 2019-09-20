@@ -51,6 +51,10 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                                 errores.AddLast(new Error("Semántico", "Sentencia return no se encuentra dentro de una función o procedimiento.", Linea, Columna));
 
                         }
+                        else if (obj is Throw)
+                        {
+                                return obj;
+                        }
                     }
                     else if (bloque is Expresion expr)
                     {

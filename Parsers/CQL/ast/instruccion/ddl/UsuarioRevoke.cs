@@ -32,7 +32,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                     errores.AddLast(new Error("Semántico", "No existe una Base de Datos con el id: " + Permiso + ".", Linea, Columna));
             }
             else
-                errores.AddLast(new Error("Semántico", "No existe una Usuario con el id: " + Id + ".", Linea, Columna));
+                return new Throw("UserDontExists", Linea, Columna);
+                //errores.AddLast(new Error("Semántico", "No existe una Usuario con el id: " + Id + ".", Linea, Columna));
 
             return null;
         }

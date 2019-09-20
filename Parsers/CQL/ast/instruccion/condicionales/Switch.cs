@@ -25,6 +25,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.condicionales
 
             if (valExp != null)
             {
+                if (valExp is Throw)
+                    return valExp;
+
                 bool continuar = false;
                 Expresion exprSwitch = new Literal(Expr.Tipo, valExp, Linea, Columna);
 

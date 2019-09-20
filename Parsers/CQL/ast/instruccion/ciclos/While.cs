@@ -24,6 +24,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ciclos
 
             if(valExpr != null)
             {
+                if (valExpr is Throw)
+                    return valExpr;
+
                 if (Expr.Tipo.IsBoolean())
                 {
                     bool condicion = (bool)valExpr;
@@ -36,11 +39,16 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ciclos
                             break;
                         else if (obj is Return)
                             return obj;
+                        else if (obj is Throw)
+                            return obj;
 
                         valExpr = Expr.GetValor(e, log, errores);
 
                         if (valExpr != null)
                         {
+                            if (valExpr is Throw)
+                                return valExpr;
+
                             if (Expr.Tipo.IsBoolean())
                             {
                                 condicion = (bool)valExpr;

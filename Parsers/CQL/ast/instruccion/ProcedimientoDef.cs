@@ -49,7 +49,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                     actual.Add(sim);
                 }
                 else
-                    errores.AddLast(new Error("Semántico", "Ya se ha declarado un Procedimiento con la misma firma: " + firma.ToLower() + " en la base de datos.", Linea, Columna));
+                    return new Throw("ProcedureAlreadyExists", Linea, Columna);
+                    //errores.AddLast(new Error("Semántico", "Ya se ha declarado un Procedimiento con la misma firma: " + firma.ToLower() + " en la base de datos.", Linea, Columna));
 
             }
             else

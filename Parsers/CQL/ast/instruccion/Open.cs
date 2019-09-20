@@ -24,7 +24,16 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                 if (sim.Tipo.IsCursor())
                 {
                     Cursor cursor = (Cursor)sim.Valor;
-                    cursor.Data = (LinkedList<Entorno>)cursor.Select.Ejecutar(e, funcion, ciclo, sw, tc, log, errores);
+
+                    object obj = cursor.Select.Ejecutar(e, funcion, ciclo, sw, tc, log, errores);
+
+                    if (obj != null)
+                    {
+                        if (obj is Throw)
+                            return obj;
+
+                        cursor.Data = (LinkedList<Entorno>)obj;
+                    }
                 }
                 else
                     errores.AddLast(new Error("Semántico", "La variable: " + Id + " no es un Cursor.", Linea, Columna));

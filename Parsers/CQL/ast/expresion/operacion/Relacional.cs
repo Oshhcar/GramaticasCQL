@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GramaticasCQL.Parsers.CQL.ast.entorno;
+using GramaticasCQL.Parsers.CQL.ast.instruccion;
 using Type = GramaticasCQL.Parsers.CQL.ast.entorno.Type;
 
 namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
@@ -19,6 +20,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
 
             if (valOp1 != null && valOp2 != null)
             {
+                if (valOp1 is Throw)
+                    return valOp1;
+
+                if (valOp2 is Throw)
+                    return valOp2;
+
                 Tipo = new Tipo(Type.BOOLEAN);
 
                 if (Op1.Tipo.IsNumeric() && Op2.Tipo.IsNumeric())

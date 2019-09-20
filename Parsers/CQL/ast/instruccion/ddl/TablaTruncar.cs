@@ -24,11 +24,13 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
             {
                 if (!actual.TruncateTabla(Id))
                 {
-                    errores.AddLast(new Error("Semántico", "No existe una Tabla con el id: " + Id + " en la base de datos.", Linea, Columna));
+                    return new Throw("TableDontExists", Linea, Columna);
+                    //errores.AddLast(new Error("Semántico", "No existe una Tabla con el id: " + Id + " en la base de datos.", Linea, Columna));
                 }
             }
             else
-                errores.AddLast(new Error("Semántico", "No se ha seleccionado una base de datos, no se pudo truncar la Tabla.", Linea, Columna));
+                return new Throw("UseBDException", Linea, Columna);
+                //errores.AddLast(new Error("Semántico", "No se ha seleccionado una base de datos, no se pudo truncar la Tabla.", Linea, Columna));
 
             return null;
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GramaticasCQL.Parsers.CQL.ast.entorno;
+using GramaticasCQL.Parsers.CQL.ast.instruccion;
 using Type = GramaticasCQL.Parsers.CQL.ast.entorno.Type;
 
 namespace GramaticasCQL.Parsers.CQL.ast.expresion
@@ -27,6 +28,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
             if (valorTarget != null)
             {
+                if (valorTarget is Throw)
+                    return valorTarget;
+
                 if (Atributo is FuncionCall funcion)
                 {
                     switch (funcion.Id.ToLower())
@@ -43,7 +47,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                     return valorTarget.ToString().Length;
                                 }
                                 else
-                                    errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
+                                    return new Throw("NullPointerException", Linea, Columna);
+                                    //errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
 
                             }
                             else
@@ -63,7 +68,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                     return valorTarget.ToString().ToUpper();
                                 }
                                 else
-                                    errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
+                                    return new Throw("NullPointerException", Linea, Columna);
+                                    //errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
                             }
                             else
                             {
@@ -82,7 +88,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                     return valorTarget.ToString().ToLower();
                                 }
                                 else
-                                    errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
+                                    return new Throw("NullPointerException", Linea, Columna);
+                                //errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
                             }
                             else
                             {
@@ -102,6 +109,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                                     if (valParametro != null)
                                     {
+                                        if (valParametro is Throw)
+                                            return valParametro;
+
                                         if (parametro.Tipo.IsString())
                                         {
                                             if (Target.Tipo.IsString())
@@ -112,7 +122,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     return valorTarget.ToString().StartsWith(valParametro.ToString());
                                                 }
                                                 else
-                                                    errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
+                                                    return new Throw("NullPointerException", Linea, Columna);
+                                                //errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
                                             }
                                             else
                                             {
@@ -141,6 +152,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                                     if (valParametro != null)
                                     {
+                                        if (valParametro is Throw)
+                                            return valParametro;
+
                                         if (parametro.Tipo.IsString())
                                         {
                                             if (Target.Tipo.IsString())
@@ -151,7 +165,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     return valorTarget.ToString().EndsWith(valParametro.ToString());
                                                 }
                                                 else
-                                                    errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
+                                                    return new Throw("NullPointerException", Linea, Columna);
+                                                //errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
                                             }
                                             else
                                             {
@@ -186,6 +201,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                                     if (valParametro1 != null && valParametro2 != null)
                                     {
+                                        if (valParametro1 is Throw)
+                                            return valParametro1;
+
+                                        if (valParametro2 is Throw)
+                                            return valParametro2;
+
                                         if (parametro1.Tipo.IsInt() && parametro2.Tipo.IsInt())
                                         {
                                             if (Target.Tipo.IsString())
@@ -206,7 +227,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     }
                                                 }
                                                 else
-                                                    errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
+                                                    return new Throw("NullPointerException", Linea, Columna);
+                                                // errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
                                             }
                                             else
                                                 errores.AddLast(new Error("Semántico", "La función nativa subString solo se puede aplicar a valores de tipo String.", Linea, Columna));
@@ -234,7 +256,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                     return ((Date)valorTarget).Year;
                                 }
                                 else
-                                    errores.AddLast(new Error("Semántico", "El Date no ha sido inicializado.", Linea, Columna));
+                                    return new Throw("NullPointerException", Linea, Columna);
+                                //errores.AddLast(new Error("Semántico", "El Date no ha sido inicializado.", Linea, Columna));
                             }
                             else
                             {
@@ -253,7 +276,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                     return ((Date)valorTarget).Month;
                                 }
                                 else
-                                    errores.AddLast(new Error("Semántico", "El Date no ha sido inicializado.", Linea, Columna));
+                                    return new Throw("NullPointerException", Linea, Columna);
+                                //errores.AddLast(new Error("Semántico", "El Date no ha sido inicializado.", Linea, Columna));
                             }
                             else
                             {
@@ -272,7 +296,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                     return ((Date)valorTarget).Day;
                                 }
                                 else
-                                    errores.AddLast(new Error("Semántico", "El Date no ha sido inicializado.", Linea, Columna));
+                                    return new Throw("NullPointerException", Linea, Columna);
+                                //errores.AddLast(new Error("Semántico", "El Date no ha sido inicializado.", Linea, Columna));
                             }
                             else
                             {
@@ -291,7 +316,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                     return ((Time)valorTarget).Hours;
                                 }
                                 else
-                                    errores.AddLast(new Error("Semántico", "El Time no ha sido inicializado.", Linea, Columna));
+                                    return new Throw("NullPointerException", Linea, Columna);
+                                //errores.AddLast(new Error("Semántico", "El Time no ha sido inicializado.", Linea, Columna));
                             }
                             else
                             {
@@ -310,7 +336,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                     return ((Time)valorTarget).Minutes;
                                 }
                                 else
-                                    errores.AddLast(new Error("Semántico", "El Time no ha sido inicializado.", Linea, Columna));
+                                    return new Throw("NullPointerException", Linea, Columna);
+                                //errores.AddLast(new Error("Semántico", "El Time no ha sido inicializado.", Linea, Columna));
                             }
                             else
                             {
@@ -329,7 +356,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                     return ((Time)valorTarget).Seconds;
                                 }
                                 else
-                                    errores.AddLast(new Error("Semántico", "El Time no ha sido inicializado.", Linea, Columna));
+                                    return new Throw("NullPointerException", Linea, Columna);
+                                //errores.AddLast(new Error("Semántico", "El Time no ha sido inicializado.", Linea, Columna));
                             }
                             else
                                 errores.AddLast(new Error("Semántico", "La función nativa getSeconds solo se puede aplicar a valores de tipo Time.", Linea, Columna));
@@ -344,6 +372,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                                     if (valParametro1 != null)
                                     {
+                                        if (valParametro1 is Throw)
+                                            return valParametro1;
+
                                         if (Target.Tipo.IsMap())
                                         {
                                             errores.AddLast(new Error("Semántico", "La funcion Insert necesita dos parámetros para Map.", Linea, Columna));
@@ -363,7 +394,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     errores.AddLast(new Error("Semántico", "El tipo del parametro no coinciden con el valor del List.", Linea, Columna));
                                             }
                                             else
-                                                errores.AddLast(new Error("Semántico", "El List no ha sido inicializado.", Linea, Columna));
+                                                return new Throw("NullPointerException", Linea, Columna);
+                                            //errores.AddLast(new Error("Semántico", "El List no ha sido inicializado.", Linea, Columna));
                                         }
                                         else if (Target.Tipo.IsSet())
                                         {
@@ -380,7 +412,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     errores.AddLast(new Error("Semántico", "El tipo del parametro no coinciden con la valor del Set.", Linea, Columna));
                                             }
                                             else
-                                                errores.AddLast(new Error("Semántico", "El Set no ha sido inicializado.", Linea, Columna));
+                                                return new Throw("NullPointerException", Linea, Columna);
+                                            //errores.AddLast(new Error("Semántico", "El Set no ha sido inicializado.", Linea, Columna));
                                         }
                                         else
                                             errores.AddLast(new Error("Semántico", "La función Insert solo se puede aplicar a valores de tipo Map, List o Set.", Linea, Columna));
@@ -401,6 +434,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                                         if (valParametro1 != null && valParametro2 != null)
                                         {
+                                            if (valParametro1 is Throw)
+                                                return valParametro1;
+
+                                            if (valParametro2 is Throw)
+                                                return valParametro2;
+
                                             if (Target.Tipo.IsMap())
                                             {
                                                 if (!(valorTarget is Null))
@@ -421,7 +460,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         errores.AddLast(new Error("Semántico", "Los tipos de los parametros no coinciden con la clave:valor del Map.", Linea, Columna));
                                                 }
                                                 else
-                                                    errores.AddLast(new Error("Semántico", "El Map no ha sido inicializado.", Linea, Columna));
+                                                    return new Throw("NullPointerException", Linea, Columna);
+                                                //errores.AddLast(new Error("Semántico", "El Map no ha sido inicializado.", Linea, Columna));
                                             }
                                             else if (Target.Tipo.IsList())
                                             {
@@ -439,7 +479,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         errores.AddLast(new Error("Semántico", "El tipo de parametro no coinciden con la valor del List.", Linea, Columna));
                                                 }
                                                 else
-                                                    errores.AddLast(new Error("Semántico", "El List no ha sido inicializado.", Linea, Columna));
+                                                    return new Throw("NullPointerException", Linea, Columna);
+                                                //errores.AddLast(new Error("Semántico", "El List no ha sido inicializado.", Linea, Columna));
                                             }
                                             else if (Target.Tipo.IsSet())
                                             {
@@ -458,7 +499,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         errores.AddLast(new Error("Semántico", "El tipo del parametro no coinciden con la valor del Set.", Linea, Columna));
                                                 }
                                                 else
-                                                    errores.AddLast(new Error("Semántico", "El Set no ha sido inicializado.", Linea, Columna));
+                                                    return new Throw("NullPointerException", Linea, Columna);
+                                                //errores.AddLast(new Error("Semántico", "El Set no ha sido inicializado.", Linea, Columna));
                                             }
                                             else
                                                 errores.AddLast(new Error("Semántico", "La función Insert solo se puede aplicar a valores de tipo Map, List o Set.", Linea, Columna));
@@ -483,6 +525,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                                     if (valParametro1 != null)
                                     {
+                                        if (valParametro1 is Throw)
+                                            return valParametro1;
+
                                         if (Target.Tipo.IsMap())
                                         {
                                             if (!(valorTarget is Null))
@@ -504,7 +549,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     errores.AddLast(new Error("Semántico", "El tipo de la clave no coincide con el declarado en el Map: " + map.Tipo.Clave.Type.ToString() + ".", Linea, Columna));
                                             }
                                             else
-                                                errores.AddLast(new Error("Semántico", "El Map no ha sido inicializado.", Linea, Columna));
+                                                return new Throw("NullPointerException", Linea, Columna);
+                                            //errores.AddLast(new Error("Semántico", "El Map no ha sido inicializado.", Linea, Columna));
 
                                         }
                                         else if (Target.Tipo.IsList())
@@ -522,14 +568,16 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         return valValor;
                                                     }
                                                     else
-                                                        errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " en List.", Linea, Columna));
+                                                        return new Throw("IndexOutException", Linea, Columna);
+                                                        //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " en List.", Linea, Columna));
                                                 }
                                                 else
                                                     errores.AddLast(new Error("Semántico", "El tipo de la posición del List debe ser Int.", Linea, Columna));
 
                                             }
                                             else
-                                                errores.AddLast(new Error("Semántico", "El List no ha sido inicializado.", Linea, Columna));
+                                                return new Throw("NullPointerException", Linea, Columna);
+                                            //errores.AddLast(new Error("Semántico", "El List no ha sido inicializado.", Linea, Columna));
                                         }
                                         else if (Target.Tipo.IsSet())
                                         {
@@ -548,14 +596,16 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         return valValor;
                                                     }
                                                     else
-                                                        errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " en Set.", Linea, Columna));
+                                                        return new Throw("IndexOutException", Linea, Columna);
+                                                        //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " en Set.", Linea, Columna));
                                                 }
                                                 else
                                                     errores.AddLast(new Error("Semántico", "El tipo de la posición del Set debe ser Int.", Linea, Columna));
 
                                             }
                                             else
-                                                errores.AddLast(new Error("Semántico", "El Set no ha sido inicializado.", Linea, Columna));
+                                                return new Throw("NullPointerException", Linea, Columna);
+                                            //errores.AddLast(new Error("Semántico", "El Set no ha sido inicializado.", Linea, Columna));
                                         }
                                         else
                                             errores.AddLast(new Error("Semántico", "La función Get solo se puede aplicar a valores de tipo Map, List o Set.", Linea, Columna));
@@ -581,6 +631,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                                     if (valParametro1 != null && valParametro2 != null)
                                     {
+                                        if (valParametro1 is Throw)
+                                            return valParametro1;
+
+                                        if (valParametro2 is Throw)
+                                            return valParametro2;
+
                                         if (Target.Tipo.IsMap())
                                         {
                                             if (!(valorTarget is Null))
@@ -600,7 +656,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     errores.AddLast(new Error("Semántico", "Los tipos de los parametros no coinciden con la clave:valor del Map.", Linea, Columna));
                                             }
                                             else
-                                                errores.AddLast(new Error("Semántico", "El Map no ha sido inicializado.", Linea, Columna));
+                                                return new Throw("NullPointerException", Linea, Columna);
+                                            //errores.AddLast(new Error("Semántico", "El Map no ha sido inicializado.", Linea, Columna));
                                         }
                                         else if (Target.Tipo.IsList())
                                         {
@@ -615,13 +672,15 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         return null;
                                                     }
                                                     else
-                                                        errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " del List.", Linea, Columna));
+                                                        return new Throw("IndexOutException", Linea, Columna);
+                                                        //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " del List.", Linea, Columna));
                                                 }
                                                 else
                                                     errores.AddLast(new Error("Semántico", "Los tipos de los parametros no coinciden con la clave:valor del List.", Linea, Columna));
                                             }
                                             else
-                                                errores.AddLast(new Error("Semántico", "El List no ha sido inicializado.", Linea, Columna));
+                                                return new Throw("NullPointerException", Linea, Columna);
+                                            //errores.AddLast(new Error("Semántico", "El List no ha sido inicializado.", Linea, Columna));
                                         }
                                         else if (Target.Tipo.IsSet())
                                         {
@@ -637,13 +696,15 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         return null;
                                                     }
                                                     else
-                                                        errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " del Set.", Linea, Columna));
+                                                        return new Throw("IndexOutException", Linea, Columna);
+                                                        //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " del Set.", Linea, Columna));
                                                 }
                                                 else
                                                     errores.AddLast(new Error("Semántico", "Los tipos de los parametros no coinciden con la clave:valor del Set.", Linea, Columna));
                                             }
                                             else
-                                                errores.AddLast(new Error("Semántico", "El Set no ha sido inicializado.", Linea, Columna));
+                                                return new Throw("NullPointerException", Linea, Columna);
+                                            //errores.AddLast(new Error("Semántico", "El Set no ha sido inicializado.", Linea, Columna));
                                         }
                                         else
                                             errores.AddLast(new Error("Semántico", "La funcion insert solo se puede aplicar a valores de tipo Map, List o Set.", Linea, Columna));
@@ -669,6 +730,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                                     if (valParametro1 != null)
                                     {
+                                        if (valParametro1 is Throw)
+                                            return valParametro1;
+
                                         if (Target.Tipo.IsMap())
                                         {
                                             if (!(valorTarget is Null))
@@ -688,7 +752,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     errores.AddLast(new Error("Semántico", "El tipo de la clave no coincide con el declarado en el Map: " + map.Tipo.Clave.Type.ToString() + ".", Linea, Columna));
                                             }
                                             else
-                                                errores.AddLast(new Error("Semántico", "El Map no ha sido inicializado.", Linea, Columna));
+                                                return new Throw("NullPointerException", Linea, Columna);
+                                            //errores.AddLast(new Error("Semántico", "El Map no ha sido inicializado.", Linea, Columna));
 
                                         }
                                         else if (Target.Tipo.IsList())
@@ -704,13 +769,15 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         return null;
                                                     }
                                                     else
-                                                        errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " del List.", Linea, Columna));
+                                                        return new Throw("IndexOutException", Linea, Columna);
+                                                        //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " del List.", Linea, Columna));
                                                 }
                                                 else
                                                     errores.AddLast(new Error("Semántico", "El tipo de la posición debe ser Int.", Linea, Columna));
                                             }
                                             else
-                                                errores.AddLast(new Error("Semántico", "El List no ha sido inicializado.", Linea, Columna));
+                                                return new Throw("NullPointerException", Linea, Columna);
+                                            //errores.AddLast(new Error("Semántico", "El List no ha sido inicializado.", Linea, Columna));
                                         }
                                         else if (Target.Tipo.IsSet())
                                         {
@@ -726,13 +793,15 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         return null;
                                                     }
                                                     else
-                                                        errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " del Set.", Linea, Columna));
+                                                        return new Throw("IndexOutException", Linea, Columna);
+                                                        //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " del Set.", Linea, Columna));
                                                 }
                                                 else
                                                     errores.AddLast(new Error("Semántico", "El tipo de la posición debe ser Int.", Linea, Columna));
                                             }
                                             else
-                                                errores.AddLast(new Error("Semántico", "El Set no ha sido inicializado.", Linea, Columna));
+                                                return new Throw("NullPointerException", Linea, Columna);
+                                            //errores.AddLast(new Error("Semántico", "El Set no ha sido inicializado.", Linea, Columna));
                                         }
                                         else
                                             errores.AddLast(new Error("Semántico", "La función Remove solo se puede aplicar a valores de tipo Map, List o Set.", Linea, Columna));
@@ -754,7 +823,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                     return ((Collection)valorTarget).Valores.Count();
                                 }
                                 else
-                                    errores.AddLast(new Error("Semántico", "El " + Target.Tipo.Type.ToString() + " no ha sido inicializado.", Linea, Columna));
+                                    return new Throw("NullPointerException", Linea, Columna);
+                                //errores.AddLast(new Error("Semántico", "El " + Target.Tipo.Type.ToString() + " no ha sido inicializado.", Linea, Columna));
                             }
                             else
                                 errores.AddLast(new Error("Semántico", "La función Size solo se puede aplicar a valores de tipo Map, List o Set.", Linea, Columna));
@@ -775,7 +845,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                     return null;
                                 }
                                 else
-                                    errores.AddLast(new Error("Semántico", "El  " + Target.Tipo.Type.ToString() + " no ha sido inicializado.", Linea, Columna));
+                                    return new Throw("NullPointerException", Linea, Columna);
+                                //errores.AddLast(new Error("Semántico", "El  " + Target.Tipo.Type.ToString() + " no ha sido inicializado.", Linea, Columna));
                             }
                             else
                                 errores.AddLast(new Error("Semántico", "La función Clear solo se puede aplicar a valores de tipo Map, List o Set.", Linea, Columna));
@@ -794,6 +865,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                                     if (valParametro1 != null)
                                     {
+                                        if (valParametro1 is Throw)
+                                            return valParametro1;
+
                                         if (Target.Tipo.IsMap())
                                         {
                                             if (!(valorTarget is Null))
@@ -813,7 +887,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     errores.AddLast(new Error("Semántico", "El tipo de la clave no coincide con el declarado en el Map: " + map.Tipo.Clave.Type.ToString() + ".", Linea, Columna));
                                             }
                                             else
-                                                errores.AddLast(new Error("Semántico", "El Map no ha sido inicializado.", Linea, Columna));
+                                                return new Throw("NullPointerException", Linea, Columna);
+                                            //errores.AddLast(new Error("Semántico", "El Map no ha sido inicializado.", Linea, Columna));
 
                                         }
                                         else if (Target.Tipo.IsList())
@@ -834,7 +909,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     errores.AddLast(new Error("Semántico", "El tipo del valor no coincide con el declarado en el List: " + list.Tipo.Valor.Type.ToString() + ".", Linea, Columna));
                                             }
                                             else
-                                                errores.AddLast(new Error("Semántico", "El List no ha sido inicializado.", Linea, Columna));
+                                                return new Throw("NullPointerException", Linea, Columna);
+                                            //errores.AddLast(new Error("Semántico", "El List no ha sido inicializado.", Linea, Columna));
 
                                         }
                                         else if (Target.Tipo.IsSet())
@@ -855,7 +931,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     errores.AddLast(new Error("Semántico", "El tipo del valor no coincide con el declarado en el Set: " + set.Tipo.Valor.Type.ToString() + ".", Linea, Columna));
                                             }
                                             else
-                                                errores.AddLast(new Error("Semántico", "El Set no ha sido inicializado.", Linea, Columna));
+                                                return new Throw("NullPointerException", Linea, Columna);
+                                            //errores.AddLast(new Error("Semántico", "El Set no ha sido inicializado.", Linea, Columna));
 
                                         }
                                         else
@@ -890,7 +967,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                 errores.AddLast(new Error("Semántico", "No hay un atributo con el id: "+Atributo.GetId()+" en el User Type.", Linea, Columna));
                         }
                         else
-                            errores.AddLast(new Error("Semántico", "No se ha inicializado la variable.", Linea, Columna));
+                            return new Throw("NullPointerException", Linea, Columna);
+                        //errores.AddLast(new Error("Semántico", "No se ha inicializado la variable.", Linea, Columna));
                     }
                     else
                         errores.AddLast(new Error("Semántico", "La variable no es un User Type.", Linea, Columna));

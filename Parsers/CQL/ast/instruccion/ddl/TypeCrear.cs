@@ -33,11 +33,13 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                 else
                 {
                     if (!IfNotExist)
-                        errores.AddLast(new Error("Semántico", "Ya existe un User Type con el id: " + Id + " en la base de datos.", Linea, Columna));
+                        return new Throw("TypeAlreadyExists", Linea, Columna);
+                        //errores.AddLast(new Error("Semántico", "Ya existe un User Type con el id: " + Id + " en la base de datos.", Linea, Columna));
                 }
             }
             else
-                errores.AddLast(new Error("Semántico", "No se ha seleccionado una base de datos, no se pudo guardar el User Type.", Linea, Columna));
+                return new Throw("UseBDException", Linea, Columna);
+                //errores.AddLast(new Error("Semántico", "No se ha seleccionado una base de datos, no se pudo guardar el User Type.", Linea, Columna));
 
             return null;
         }

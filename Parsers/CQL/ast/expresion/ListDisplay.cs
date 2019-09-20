@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GramaticasCQL.Parsers.CQL.ast.entorno;
+using GramaticasCQL.Parsers.CQL.ast.instruccion;
 using Type = GramaticasCQL.Parsers.CQL.ast.entorno.Type;
 
 namespace GramaticasCQL.Parsers.CQL.ast.expresion
@@ -24,6 +25,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
             if (valValor != null)
             {
+                if (valValor is Throw)
+                    return valValor;
+
                 Collection list = new Collection(new Tipo(Type.LIST, valor.Tipo));
                 list.Insert(list.Posicion++, valValor);
 
@@ -34,6 +38,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
 
                     if (valValor != null)
                     {
+                        if (valValor is Throw)
+                            return valValor;
+
                         if (list.Tipo.Valor.Equals(valor.Tipo))
                             list.Insert(list.Posicion++, valValor);
                         else
