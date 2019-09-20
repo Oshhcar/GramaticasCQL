@@ -27,25 +27,40 @@ namespace GramaticasCQL.Parsers.CQL.ast
             global.Global = global;
             global.Master = master;
 
+            object obj;
+
             foreach (NodoASTCQL stmt in Sentencias)
             {
                 if (stmt is FuncionDef fun)
-                    fun.Ejecutar(global, false, false, false, false, log, errores);
+                {
+                    obj = fun.Ejecutar(global, false, false, false, false, log, errores);
+
+                    if (obj is Throw th)
+                        errores.AddLast(new Error("Semántico", "Excepción no Controlada: " + th.Id + ".", th.Linea, th.Columna));
+                }
             }
 
             foreach (NodoASTCQL stmt in Sentencias)
             {
                 if (stmt is Instruccion instr)
                 {
-                    if(!(stmt is FuncionDef))
-                        instr.Ejecutar(global, false, false, false, false, log, errores);
+                    if (!(stmt is FuncionDef))
+                    {
+                        obj = instr.Ejecutar(global, false, false, false, false, log, errores);
+                        
+                        if(obj is Throw th)
+                            errores.AddLast(new Error("Semántico", "Excepción no Controlada: " + th.Id + ".", th.Linea, th.Columna));
+                    }
                 }
                 else  if(stmt is Expresion expr)
                 {
                     if (expr is FuncionCall fun)
                         fun.IsExpresion = false;
 
-                    expr.GetValor(global, log, errores);
+                    obj = expr.GetValor(global, log, errores);
+
+                    if(obj is Throw th)
+                        errores.AddLast(new Error("Semántico", "Excepción no Controlada: " + th.Id + ".", th.Linea, th.Columna));
                 }
 
             }
