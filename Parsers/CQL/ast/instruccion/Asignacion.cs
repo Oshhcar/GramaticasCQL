@@ -132,36 +132,19 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                         }
                         else
                         {
-                            if (acceso.Tipo.IsCollection() && Expr.Tipo.IsCollection())
+                            Casteo cast = new Casteo(acceso.Tipo, new Literal(Expr.Tipo, valExpr, 0, 0), 0, 0)
                             {
-                                if (acceso.Tipo.EqualsCollection(Expr.Tipo))
-                                {/*probar esto*/
-                                    if (valExpr is Collection collection2)
-                                    {
-                                        acceso.Tipo.Clave = collection2.Tipo.Clave;
-                                        acceso.Tipo.Valor = collection2.Tipo.Valor;
-                                        collection.Valor = collection2;
-                                        return null;
-                                    }
-                                }
+                                Mostrar = false
+                            };
+                            valExpr = cast.GetValor(e, log, errores);
 
-                            }
-                            else
+                            if (valExpr != null)
                             {
-                                Casteo cast = new Casteo(acceso.Tipo, new Literal(Expr.Tipo, valExpr, 0, 0), 0, 0)
-                                {
-                                    Mostrar = false
-                                };
-                                valExpr = cast.GetValor(e, log, errores);
+                                if (valExpr is Throw)
+                                    return valExpr;
 
-                                if (valExpr != null)
-                                {
-                                    if (valExpr is Throw)
-                                        return valExpr;
-
-                                    collection.Valor = valExpr;
-                                    return null;
-                                }
+                                collection.Valor = valExpr;
+                                return null;
                             }
                         }
 
