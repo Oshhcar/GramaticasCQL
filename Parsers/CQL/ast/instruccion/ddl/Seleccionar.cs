@@ -116,49 +116,56 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
                             e.Master.EntornoActual = tabla.Datos.ElementAt(0);
 
-                            if (Order.Count() == 1)
+                            if (Order.Count() >= 1)
                             {
-                                Identificador ident = Order.ElementAt(0);
-
-                                LinkedList<Entorno> tmp = new LinkedList<Entorno>();
-                                IEnumerable<Entorno> ordered;
-
-                                object identValor = ident.GetValor(e, log, errores);
-
-                                if (identValor != null)
+                                for (int j = Order.Count() - 1; j >= 0; j--)
                                 {
+                                    Identificador ident = Order.ElementAt(j);
 
-                                    if (ident.Tipo.IsString() || ident.Tipo.IsDate() || ident.Tipo.IsTime())
-                                        ordered = datos.OrderBy(p => p.GetCualquiera(ident.GetId()).Valor.ToString()).AsEnumerable();
-                                    else if (ident.Tipo.IsInt())
-                                        ordered = datos.OrderBy(p => (int)p.GetCualquiera(ident.GetId()).Valor).AsEnumerable();
-                                    else if (ident.Tipo.IsDouble())
-                                        ordered = datos.OrderBy(p => (double)p.GetCualquiera(ident.GetId()).Valor).AsEnumerable();
-                                    else
+                                    LinkedList<Entorno> tmp = new LinkedList<Entorno>();
+                                    IEnumerable<Entorno> ordered;
+
+                                    object identValor = ident.GetValor(e, log, errores);
+
+                                    if (identValor != null)
                                     {
-                                        errores.AddLast(new Error("Semántico", "Solo se puede usar la cláusula Order By sobre datos primitivos.", Linea, Columna));
+
+                                        if (identValor is Throw)
+                                            return identValor;
+
+                                        if (ident.Tipo.IsString() || ident.Tipo.IsDate() || ident.Tipo.IsTime())
+                                            ordered = datos.OrderBy(p => p.GetCualquiera(ident.GetId()).Valor.ToString()).AsEnumerable();
+                                        else if (ident.Tipo.IsInt())
+                                            ordered = datos.OrderBy(p => (int)p.GetCualquiera(ident.GetId()).Valor).AsEnumerable();
+                                        else if (ident.Tipo.IsDouble())
+                                            ordered = datos.OrderBy(p => (double)p.GetCualquiera(ident.GetId()).Valor).AsEnumerable();
+                                        else
+                                        {
+                                            errores.AddLast(new Error("Semántico", "Solo se puede usar la cláusula Order By sobre datos primitivos.", Linea, Columna));
+                                            return null;
+                                        }
+
+                                        if (ident.IsASC)
+                                        {
+                                            foreach (Entorno eTmp in ordered)
+                                            {
+                                                tmp.AddLast(eTmp);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            for (int i = ordered.Count() - 1; i >= 0; i--)
+                                            {
+                                                tmp.AddLast(ordered.ElementAt(i));
+                                            }
+                                        }
+                                        datos = tmp;
+                                    }
+                                    else
                                         return null;
-                                    }
-
-                                    if (ident.IsASC)
-                                    {
-                                        foreach (Entorno eTmp in ordered)
-                                        {
-                                            tmp.AddLast(eTmp);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        for (int i = ordered.Count() - 1; i >= 0; i--)
-                                        {
-                                            tmp.AddLast(ordered.ElementAt(i));
-                                        }
-                                    }
-                                    datos = tmp;
                                 }
-                                else
-                                    return null;
                             }
+                            /*
                             else if (Order.Count() >= 2)
                             {
                                 Identificador ident = Order.ElementAt(0);
@@ -205,6 +212,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                                 else
                                     return null;
                             }
+                            */
                         }
                         else
                         {
@@ -394,7 +402,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                 return new Throw("UseBDException", Linea, Columna);
                 //errores.AddLast(new Error("Semántico", "No se ha seleccionado una base de datos, no se pudo Actualizar.", Linea, Columna));
 
-            return null;
+            //return null;
         }
 
         class ComparaTupla : IComparer<Tuple<string, string>>
