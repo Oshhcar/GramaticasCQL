@@ -48,7 +48,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                 }
                                 else
                                     return new Throw("NullPointerException", Linea, Columna);
-                                    //errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
+                                //errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
 
                             }
                             else
@@ -69,7 +69,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                 }
                                 else
                                     return new Throw("NullPointerException", Linea, Columna);
-                                    //errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
+                                //errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
                             }
                             else
                             {
@@ -391,7 +391,24 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     return null;
                                                 }
                                                 else
+                                                {
+                                                    Casteo cast = new Casteo(list.Tipo.Valor, new Literal(parametro1.Tipo, valParametro1, 0, 0), 0, 0)
+                                                    {
+                                                        Mostrar = false
+                                                    };
+                                                    valParametro1 = cast.GetValor(e, log, errores);
+
+                                                    if (valParametro1 != null)
+                                                    {
+                                                        if (valParametro1 is Throw)
+                                                            return valParametro1;
+
+                                                        list.Insert(list.Posicion++, valParametro1);
+                                                        return null;
+                                                    }
                                                     errores.AddLast(new Error("Semántico", "El tipo del parametro no coinciden con el valor del List.", Linea, Columna));
+                                                    return null;
+                                                }
                                             }
                                             else
                                                 return new Throw("NullPointerException", Linea, Columna);
@@ -409,7 +426,26 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     return null;
                                                 }
                                                 else
+                                                {
+                                                    Casteo cast = new Casteo(set.Tipo.Valor, new Literal(parametro1.Tipo, valParametro1, 0, 0), 0, 0)
+                                                    {
+                                                        Mostrar = false
+                                                    };
+                                                    valParametro1 = cast.GetValor(e, log, errores);
+
+                                                    if (valParametro1 != null)
+                                                    {
+                                                        if (valParametro1 is Throw)
+                                                            return valParametro1;
+
+                                                        set.Insert(set.Posicion++, valParametro1);
+                                                        set.Ordenar();
+                                                        return null;
+                                                    }
+
                                                     errores.AddLast(new Error("Semántico", "El tipo del parametro no coinciden con la valor del Set.", Linea, Columna));
+                                                    return null;
+                                                }
                                             }
                                             else
                                                 return new Throw("NullPointerException", Linea, Columna);
@@ -423,7 +459,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                 {
                                     if (funcion.Parametro.Count() >= 2)
                                     {
-                                        if(funcion.Parametro.Count() > 2)
+                                        if (funcion.Parametro.Count() > 2)
                                             errores.AddLast(new Error("Semántico", "La funcion Insert no necesita más de dos parámetros.", Linea, Columna));
 
                                         Expresion parametro1 = funcion.Parametro.ElementAt(0);
@@ -457,7 +493,38 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                             errores.AddLast(new Error("Semántico", "Ya existe un valor con la clave: " + valParametro1.ToString() + " en Map.", Linea, Columna));
                                                     }
                                                     else
+                                                    {
+                                                        Casteo cast1 = new Casteo(map.Tipo.Clave, new Literal(parametro1.Tipo, valParametro1, 0, 0), 0, 0)
+                                                        {
+                                                            Mostrar = false
+                                                        };
+
+                                                        Casteo cast2 = new Casteo(map.Tipo.Valor, new Literal(parametro2.Tipo, valParametro2, 0, 0), 0, 0)
+                                                        {
+                                                            Mostrar = false
+                                                        };
+
+                                                        valParametro1 = cast1.GetValor(e, log, errores);
+                                                        valParametro2 = cast2.GetValor(e, log, errores);
+
+                                                        if (valParametro1 != null && valParametro2 != null)
+                                                        {
+                                                            if (valParametro1 is Throw)
+                                                                return valParametro1;
+
+                                                            if (valParametro2 is Throw)
+                                                                return valParametro2;
+
+                                                            if (map.Get(valParametro1) == null)
+                                                                map.Insert(valParametro1, valParametro2);
+                                                            else
+                                                                errores.AddLast(new Error("Semántico", "Ya existe un valor con la clave: " + valParametro1.ToString() + " en Map.", Linea, Columna));
+
+                                                            return null;
+                                                        }
                                                         errores.AddLast(new Error("Semántico", "Los tipos de los parametros no coinciden con la clave:valor del Map.", Linea, Columna));
+                                                        return null;
+                                                    }
                                                 }
                                                 else
                                                     return new Throw("NullPointerException", Linea, Columna);
@@ -476,8 +543,24 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         return null;
                                                     }
                                                     else
-                                                        errores.AddLast(new Error("Semántico", "El tipo de parametro no coinciden con la valor del List.", Linea, Columna));
-                                                }
+                                                    {
+                                                        Casteo cast = new Casteo(list.Tipo.Valor, new Literal(parametro1.Tipo, valParametro1, 0, 0), 0, 0)
+                                                        {
+                                                            Mostrar = false
+                                                        };
+                                                        valParametro1 = cast.GetValor(e, log, errores);
+
+                                                        if (valParametro1 != null)
+                                                        {
+                                                            if (valParametro1 is Throw)
+                                                                return valParametro1;
+
+                                                            list.Insert(list.Posicion++, valParametro1);
+                                                            return null;
+                                                        }
+                                                        errores.AddLast(new Error("Semántico", "El tipo del parametro no coinciden con el valor del List.", Linea, Columna));
+                                                        return null;
+                                                    }                                                }
                                                 else
                                                     return new Throw("NullPointerException", Linea, Columna);
                                                 //errores.AddLast(new Error("Semántico", "El List no ha sido inicializado.", Linea, Columna));
@@ -496,7 +579,26 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         return null;
                                                     }
                                                     else
+                                                    {
+                                                        Casteo cast = new Casteo(set.Tipo.Valor, new Literal(parametro1.Tipo, valParametro1, 0, 0), 0, 0)
+                                                        {
+                                                            Mostrar = false
+                                                        };
+                                                        valParametro1 = cast.GetValor(e, log, errores);
+
+                                                        if (valParametro1 != null)
+                                                        {
+                                                            if (valParametro1 is Throw)
+                                                                return valParametro1;
+
+                                                            set.Insert(set.Posicion++, valParametro1);
+                                                            set.Ordenar();
+                                                            return null;
+                                                        }
+
                                                         errores.AddLast(new Error("Semántico", "El tipo del parametro no coinciden con la valor del Set.", Linea, Columna));
+                                                        return null;
+                                                    }
                                                 }
                                                 else
                                                     return new Throw("NullPointerException", Linea, Columna);
@@ -569,7 +671,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     }
                                                     else
                                                         return new Throw("IndexOutException", Linea, Columna);
-                                                        //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " en List.", Linea, Columna));
+                                                    //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " en List.", Linea, Columna));
                                                 }
                                                 else
                                                     errores.AddLast(new Error("Semántico", "El tipo de la posición del List debe ser Int.", Linea, Columna));
@@ -597,7 +699,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     }
                                                     else
                                                         return new Throw("IndexOutException", Linea, Columna);
-                                                        //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " en Set.", Linea, Columna));
+                                                    //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " en Set.", Linea, Columna));
                                                 }
                                                 else
                                                     errores.AddLast(new Error("Semántico", "El tipo de la posición del Set debe ser Int.", Linea, Columna));
@@ -653,7 +755,37 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         errores.AddLast(new Error("Semántico", "No existe un valor con la clave: " + valParametro1.ToString() + " en Map.", Linea, Columna));
                                                 }
                                                 else
+                                                {
+                                                    Casteo cast1 = new Casteo(map.Tipo.Clave, new Literal(parametro1.Tipo, valParametro1, 0, 0), 0, 0)
+                                                    {
+                                                        Mostrar = false
+                                                    };
+
+                                                    Casteo cast2 = new Casteo(map.Tipo.Valor, new Literal(parametro2.Tipo, valParametro2, 0, 0), 0, 0)
+                                                    {
+                                                        Mostrar = false
+                                                    };
+
+                                                    valParametro1 = cast1.GetValor(e, log, errores);
+                                                    valParametro2 = cast2.GetValor(e, log, errores);
+
+                                                    if (valParametro1 != null && valParametro2 != null)
+                                                    {
+                                                        if (valParametro1 is Throw)
+                                                            return valParametro1;
+
+                                                        if (valParametro2 is Throw)
+                                                            return valParametro2;
+
+                                                        if (!map.Set(valParametro1, valParametro2))
+                                                            errores.AddLast(new Error("Semántico", "No existe un valor con la clave: " + valParametro1.ToString() + " en Map.", Linea, Columna));
+                                                    
+                                                        return null;
+                                                    }
+
                                                     errores.AddLast(new Error("Semántico", "Los tipos de los parametros no coinciden con la clave:valor del Map.", Linea, Columna));
+                                                    return null;
+                                                }
                                             }
                                             else
                                                 return new Throw("NullPointerException", Linea, Columna);
@@ -673,10 +805,40 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     }
                                                     else
                                                         return new Throw("IndexOutException", Linea, Columna);
-                                                        //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " del List.", Linea, Columna));
+                                                    //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " del List.", Linea, Columna));
                                                 }
                                                 else
+                                                {
+                                                    Casteo cast1 = new Casteo(new Tipo(Type.INT), new Literal(parametro1.Tipo, valParametro1, 0, 0), 0, 0)
+                                                    {
+                                                        Mostrar = false
+                                                    };
+
+                                                    Casteo cast2 = new Casteo(list.Tipo.Valor, new Literal(parametro2.Tipo, valParametro2, 0, 0), 0, 0)
+                                                    {
+                                                        Mostrar = false
+                                                    };
+
+                                                    valParametro1 = cast1.GetValor(e, log, errores);
+                                                    valParametro2 = cast2.GetValor(e, log, errores);
+
+                                                    if (valParametro1 != null && valParametro2 != null)
+                                                    {
+                                                        if (valParametro1 is Throw)
+                                                            return valParametro1;
+
+                                                        if (valParametro2 is Throw)
+                                                            return valParametro2;
+
+                                                        if (!list.Set(valParametro1, valParametro2))
+                                                            return new Throw("IndexOutException", Linea, Columna);
+
+                                                        return null;
+                                                    }
+
                                                     errores.AddLast(new Error("Semántico", "Los tipos de los parametros no coinciden con la clave:valor del List.", Linea, Columna));
+                                                    return null;
+                                                }
                                             }
                                             else
                                                 return new Throw("NullPointerException", Linea, Columna);
@@ -697,10 +859,44 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     }
                                                     else
                                                         return new Throw("IndexOutException", Linea, Columna);
-                                                        //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " del Set.", Linea, Columna));
+                                                    //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " del Set.", Linea, Columna));
                                                 }
                                                 else
+                                                {
+                                                    Casteo cast1 = new Casteo(new Tipo(Type.INT), new Literal(parametro1.Tipo, valParametro1, 0, 0), 0, 0)
+                                                    {
+                                                        Mostrar = false
+                                                    };
+
+                                                    Casteo cast2 = new Casteo(set.Tipo.Valor, new Literal(parametro2.Tipo, valParametro2, 0, 0), 0, 0)
+                                                    {
+                                                        Mostrar = false
+                                                    };
+
+                                                    valParametro1 = cast1.GetValor(e, log, errores);
+                                                    valParametro2 = cast2.GetValor(e, log, errores);
+
+                                                    if (valParametro1 != null && valParametro2 != null)
+                                                    {
+                                                        if (valParametro1 is Throw)
+                                                            return valParametro1;
+
+                                                        if (valParametro2 is Throw)
+                                                            return valParametro2;
+
+                                                        if (set.Set(valParametro1, valParametro2))
+                                                        {
+                                                            set.Ordenar();
+                                                        }
+                                                        else
+                                                            return new Throw("IndexOutException", Linea, Columna);
+
+                                                        return null;
+                                                    }
+
                                                     errores.AddLast(new Error("Semántico", "Los tipos de los parametros no coinciden con la clave:valor del Set.", Linea, Columna));
+                                                    return null;
+                                                }
                                             }
                                             else
                                                 return new Throw("NullPointerException", Linea, Columna);
@@ -749,7 +945,27 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         errores.AddLast(new Error("Semántico", "No existe un valor con la clave: " + valParametro1.ToString() + " en Map.", Linea, Columna));
                                                 }
                                                 else
+                                                {
+                                                    Casteo cast = new Casteo(map.Tipo.Clave, new Literal(parametro1.Tipo, valParametro1, 0, 0), 0, 0)
+                                                    {
+                                                        Mostrar = false
+                                                    };
+                                                    valParametro1 = cast.GetValor(e, log, errores);
+
+                                                    if (valParametro1 != null)
+                                                    {
+                                                        if (valParametro1 is Throw)
+                                                            return valParametro1;
+
+                                                        if (!map.Remove(valParametro1))
+                                                            errores.AddLast(new Error("Semántico", "No existe un valor con la clave: " + valParametro1.ToString() + " en Map.", Linea, Columna));
+
+                                                        return null;
+                                                    }
+
                                                     errores.AddLast(new Error("Semántico", "El tipo de la clave no coincide con el declarado en el Map: " + map.Tipo.Clave.Type.ToString() + ".", Linea, Columna));
+                                                    return null;
+                                                }
                                             }
                                             else
                                                 return new Throw("NullPointerException", Linea, Columna);
@@ -770,10 +986,29 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                     }
                                                     else
                                                         return new Throw("IndexOutException", Linea, Columna);
-                                                        //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " del List.", Linea, Columna));
+                                                    //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " del List.", Linea, Columna));
                                                 }
                                                 else
+                                                {
+                                                    Casteo cast = new Casteo(new Tipo(Type.INT), new Literal(parametro1.Tipo, valParametro1, 0, 0), 0, 0)
+                                                    {
+                                                        Mostrar = false
+                                                    };
+                                                    valParametro1 = cast.GetValor(e, log, errores);
+
+                                                    if (valParametro1 != null)
+                                                    {
+                                                        if (valParametro1 is Throw)
+                                                            return valParametro1;
+
+                                                        if (!list.RemoveList(valParametro1))
+                                                            return new Throw("IndexOutException", Linea, Columna);
+                                                        return null;
+                                                    }
+
                                                     errores.AddLast(new Error("Semántico", "El tipo de la posición debe ser Int.", Linea, Columna));
+                                                    return null;
+                                                }
                                             }
                                             else
                                                 return new Throw("NullPointerException", Linea, Columna);
@@ -783,21 +1018,44 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                         {
                                             if (!(valorTarget is Null))
                                             {
-                                                Collection list = (Collection)valorTarget;
+                                                Collection set = (Collection)valorTarget;
 
                                                 if (parametro1.Tipo.IsInt())
                                                 {
-                                                    if (list.Remove(valParametro1))
+                                                    if (set.Remove(valParametro1))
                                                     {
-                                                        list.Ordenar();
+                                                        set.Ordenar();
                                                         return null;
                                                     }
                                                     else
                                                         return new Throw("IndexOutException", Linea, Columna);
-                                                        //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " del Set.", Linea, Columna));
+                                                    //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valParametro1.ToString() + " del Set.", Linea, Columna));
                                                 }
                                                 else
+                                                {
+                                                    Casteo cast = new Casteo(new Tipo(Type.INT), new Literal(parametro1.Tipo, valParametro1, 0, 0), 0, 0)
+                                                    {
+                                                        Mostrar = false
+                                                    };
+                                                    valParametro1 = cast.GetValor(e, log, errores);
+
+                                                    if (valParametro1 != null)
+                                                    {
+                                                        if (valParametro1 is Throw)
+                                                            return valParametro1;
+
+                                                        if (set.RemoveList(valParametro1))
+                                                        {
+                                                            set.Ordenar();
+                                                        }
+                                                        else
+                                                            return new Throw("IndexOutException", Linea, Columna);
+                                                        return null;
+                                                    }
+
                                                     errores.AddLast(new Error("Semántico", "El tipo de la posición debe ser Int.", Linea, Columna));
+                                                    return null;
+                                                }
                                             }
                                             else
                                                 return new Throw("NullPointerException", Linea, Columna);
@@ -884,7 +1142,29 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         return false;
                                                 }
                                                 else
+                                                {
+                                                    Casteo cast = new Casteo(map.Tipo.Clave, new Literal(parametro1.Tipo, valParametro1, 0, 0), 0, 0)
+                                                    {
+                                                        Mostrar = false
+                                                    };
+                                                    valParametro1 = cast.GetValor(e, log, errores);
+
+                                                    if (valParametro1 != null)
+                                                    {
+                                                        if (valParametro1 is Throw)
+                                                            return valParametro1;
+
+                                                        object valValor = map.Get(valParametro1);
+                                                        Tipo = new Tipo(Type.BOOLEAN);
+                                                        if (valValor != null)
+                                                            return true;
+                                                        else
+                                                            return false;
+                                                    }
+
                                                     errores.AddLast(new Error("Semántico", "El tipo de la clave no coincide con el declarado en el Map: " + map.Tipo.Clave.Type.ToString() + ".", Linea, Columna));
+                                                    return null;
+                                                }
                                             }
                                             else
                                                 return new Throw("NullPointerException", Linea, Columna);
@@ -906,7 +1186,28 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         return false;
                                                 }
                                                 else
+                                                {
+                                                    Casteo cast = new Casteo(list.Tipo.Valor, new Literal(parametro1.Tipo, valParametro1, 0, 0), 0, 0)
+                                                    {
+                                                        Mostrar = false
+                                                    };
+                                                    valParametro1 = cast.GetValor(e, log, errores);
+
+                                                    if (valParametro1 != null)
+                                                    {
+                                                        if (valParametro1 is Throw)
+                                                            return valParametro1;
+
+                                                        Tipo = new Tipo(Type.BOOLEAN);
+                                                        if (list.Contains(valParametro1))
+                                                            return true;
+                                                        else
+                                                            return false;
+                                                    }
+
                                                     errores.AddLast(new Error("Semántico", "El tipo del valor no coincide con el declarado en el List: " + list.Tipo.Valor.Type.ToString() + ".", Linea, Columna));
+                                                    return null;
+                                                }
                                             }
                                             else
                                                 return new Throw("NullPointerException", Linea, Columna);
@@ -928,7 +1229,28 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                                         return false;
                                                 }
                                                 else
+                                                {
+                                                    Casteo cast = new Casteo(set.Tipo.Valor, new Literal(parametro1.Tipo, valParametro1, 0, 0), 0, 0)
+                                                    {
+                                                        Mostrar = false
+                                                    };
+                                                    valParametro1 = cast.GetValor(e, log, errores);
+
+                                                    if (valParametro1 != null)
+                                                    {
+                                                        if (valParametro1 is Throw)
+                                                            return valParametro1;
+
+                                                        Tipo = new Tipo(Type.BOOLEAN);
+                                                        if (set.Contains(valParametro1))
+                                                            return true;
+                                                        else
+                                                            return false;
+                                                    }
+
                                                     errores.AddLast(new Error("Semántico", "El tipo del valor no coincide con el declarado en el Set: " + set.Tipo.Valor.Type.ToString() + ".", Linea, Columna));
+                                                    return null;
+                                                }
                                             }
                                             else
                                                 return new Throw("NullPointerException", Linea, Columna);
@@ -964,7 +1286,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                 return GetObjeto ? sim : sim.Valor;
                             }
                             else
-                                errores.AddLast(new Error("Semántico", "No hay un atributo con el id: "+Atributo.GetId()+" en el User Type.", Linea, Columna));
+                                errores.AddLast(new Error("Semántico", "No hay un atributo con el id: " + Atributo.GetId() + " en el User Type.", Linea, Columna));
                         }
                         else
                             return new Throw("NullPointerException", Linea, Columna);
@@ -972,6 +1294,16 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                     }
                     else
                         errores.AddLast(new Error("Semántico", "La variable no es un User Type.", Linea, Columna));
+                }
+            }
+            else
+            {
+                if (Target is AtributoRef atref)
+                {
+                    if (atref.Atributo is FuncionCall)
+                    {
+                        errores.AddLast(new Error("Semántico", "Algúnas funciones nativas no retornan valor.", Linea, Columna));
+                    }
                 }
             }
             return null;
