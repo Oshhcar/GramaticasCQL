@@ -19,9 +19,18 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         public LinkedList<CollectionValue> Valores { get; set; }
         public int Posicion { get; set; }
 
+        public bool Castear(Tipo t)
+        {
+            if (t.IsList())
+            {
+                /*Casteo*/
+            }
+            return false;
+        }
+
         public override string ToString()
         {
-            string cad = "";
+            string cad;
             if (Tipo.IsMap())
             {
                 cad = "[";

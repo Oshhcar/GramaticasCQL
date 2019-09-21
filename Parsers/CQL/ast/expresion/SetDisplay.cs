@@ -28,6 +28,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                 if (valValor is Throw)
                     return valValor;
 
+                Tipo = new Tipo(Type.SET, valor.Tipo);
+
                 Collection set = new Collection(new Tipo(Type.SET, valor.Tipo));
                 set.Insert(set.Posicion++, valValor);
 
@@ -44,15 +46,32 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                         if (set.Tipo.Valor.Equals(valor.Tipo))
                             set.Insert(set.Posicion++, valValor);
                         else
+                        {
+                            Casteo cast = new Casteo(set.Tipo.Valor, new Literal(valor.Tipo, valValor, 0, 0), 0, 0)
+                            {
+                                Mostrar = false
+                            };
+
+                            valValor = cast.GetValor(e, log, errores);
+
+                            if (valValor != null)
+                            {
+                                if (valValor is Throw)
+                                    return valValor;
+
+                                set.Insert(set.Posicion++, valValor);
+                                continue;
+                            }
+
                             errores.AddLast(new Error("Semántico", "El tipo no coinciden con el valor del List.", Linea, Columna));
-                        continue;
+                        }
+                        //continue;
                     }
                     //return null;
                 }
 
                 set.Ordenar();
 
-                Tipo = new Tipo(Type.SET);
                 return set;
             }
             return null;

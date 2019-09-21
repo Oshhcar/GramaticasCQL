@@ -34,6 +34,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                 if (valValor is Throw)
                     return valValor;
 
+                Tipo = new Tipo(clave.Tipo, valor.Tipo);
+
                 Collection map = new Collection(new Tipo(clave.Tipo, valor.Tipo));
                 map.Insert(valClave, valValor);
 
@@ -61,13 +63,43 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                 errores.AddLast(new Error("Semántico", "Ya existe un valor con la clave: " + valClave.ToString() + " en Map.", Linea, Columna));
                         }
                         else
+                        {
+                            Casteo cast1 = new Casteo(map.Tipo.Clave, new Literal(clave.Tipo, valClave, 0, 0), 0, 0)
+                            {
+                                Mostrar = false
+                            };
+
+                            Casteo cast2 = new Casteo(map.Tipo.Valor, new Literal(valor.Tipo, valValor, 0, 0), 0, 0)
+                            {
+                                Mostrar = false
+                            };
+
+                            valClave = cast1.GetValor(e, log, errores);
+                            valValor = cast2.GetValor(e, log, errores);
+
+                            if (valClave != null && valValor != null)
+                            {
+                                if (valClave is Throw)
+                                    return valClave;
+
+                                if (valValor is Throw)
+                                    return valValor;
+
+                                if (map.Get(valClave) == null)
+                                    map.Insert(valClave, valValor);
+                                else
+                                    errores.AddLast(new Error("Semántico", "Ya existe un valor con la clave: " + valClave.ToString() + " en Map.", Linea, Columna));
+                            
+                            continue;
+                            }
+
                             errores.AddLast(new Error("Semántico", "Los tipos no coinciden con la clave:valor del Map.", Linea, Columna));
-                        continue;
+                        }
+                        //continue;
                     }
                     //return null;
                 }
 
-                Tipo = new Tipo(Type.MAP);
                 return map;
             }
             return null;

@@ -37,7 +37,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                     if (valTarget != null)
                     {
                         if (valTarget is Throw)
-                            return valExpr;
+                            return valTarget;
 
                         if (Target.Tipo.IsMap() || Target.Tipo.IsList() || Target.Tipo.IsSet())
                         {

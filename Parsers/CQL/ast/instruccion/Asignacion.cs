@@ -97,36 +97,19 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                         }
                         else
                         {
-                            if (sim.Tipo.IsCollection() && Expr.Tipo.IsCollection())
+                            Casteo cast = new Casteo(sim.Tipo, new Literal(Expr.Tipo, valExpr, 0, 0), 0, 0)
                             {
-                                if (sim.Tipo.EqualsCollection(Expr.Tipo))
-                                {
-                                    if (valExpr is Collection collection)
-                                    {
-                                        sim.Tipo.Clave = collection.Tipo.Clave;
-                                        sim.Tipo.Valor = collection.Tipo.Valor;
-                                        sim.Valor = collection;
-                                        return null;
-                                    }
-                                }
+                                Mostrar = false
+                            };
+                            valExpr = cast.GetValor(e, log, errores);
 
-                            }
-                            else
+                            if (valExpr != null)
                             {
-                                Casteo cast = new Casteo(sim.Tipo, new Literal(Expr.Tipo, valExpr, 0, 0), 0, 0)
-                                {
-                                    Mostrar = false
-                                };
-                                valExpr = cast.GetValor(e, log, errores);
+                                if (valExpr is Throw)
+                                    return valExpr;
 
-                                if (valExpr != null)
-                                {
-                                    if (valExpr is Throw)
-                                        return valExpr;
-
-                                    sim.Valor = valExpr;
-                                    return null;
-                                }
+                                sim.Valor = valExpr;
+                                return null;
                             }
                         }
 
