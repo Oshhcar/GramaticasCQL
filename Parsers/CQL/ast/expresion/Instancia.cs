@@ -37,13 +37,13 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
             switch (Id.ToLower())
             {
                 case "map":
-                    Tipo = new Tipo(Type.MAP);
+                    Tipo = new Tipo(Tipo1, Tipo2);
                     return new Collection(new Tipo(Tipo1, Tipo2));
                 case "list":
-                    Tipo = new Tipo(Type.LIST);
+                    Tipo = new Tipo(Type.LIST, Tipo1);
                     return new Collection(new Tipo(Type.LIST, Tipo1));
                 case "set":
-                    Tipo = new Tipo(Type.SET);
+                    Tipo = new Tipo(Type.SET, Tipo1);
                     return new Collection(new Tipo(Type.SET, Tipo1));
             }
 

@@ -30,6 +30,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         public Tipo(Type type, Tipo valor)
         {
             Type = type;
+            Clave = new Tipo(Type.INT);
             Valor = valor;
         }
 

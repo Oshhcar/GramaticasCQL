@@ -41,7 +41,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                         }
                         else
                         {
-                            if (sim.Tipo.IsCollection() && Expr.Tipo.IsCollection())
+                            if (sim.Tipo.IsCollection() && Expr.Tipo.IsCollection() && iden.IsId2)
                             {
                                 if (sim.Tipo.EqualsCollection(Expr.Tipo))
                                 {
@@ -86,10 +86,16 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                 else if (Target is AtributoRef atributo)
                 {
                     atributo.GetObjeto = true;
-                    Simbolo sim = (Simbolo)atributo.GetValor(e, log, errores);
 
-                    if (sim != null)
+                    object obj = atributo.GetValor(e, log, errores);
+
+                    if (obj != null)
                     {
+                        if (obj is Throw)
+                            return obj;
+
+                        Simbolo sim = (Simbolo)obj;
+
                         if (sim.Tipo.Equals(Expr.Tipo))
                         {
                             sim.Valor = valExpr;
@@ -121,10 +127,16 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                 else if (Target is Acceso acceso)
                 {
                     acceso.GetCollection = true;
-                    CollectionValue collection = (CollectionValue) acceso.GetValor(e, log, errores);
 
-                    if (collection != null)
+                    object obj = acceso.GetValor(e, log, errores);
+                    
+                    if (obj != null)
                     {
+                        if (obj is Throw)
+                            return obj;
+
+                        CollectionValue collection = (CollectionValue)obj;
+
                         if (acceso.Tipo.Equals(Expr.Tipo))
                         {
                             collection.Valor = valExpr;

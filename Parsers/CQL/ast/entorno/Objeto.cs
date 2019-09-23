@@ -17,6 +17,20 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         public string Id { get; set; }
         public Entorno Entorno { get; set; } /*Reconsiderar guardar solo una lista aquí*/
 
+        public override string ToString()
+        {
+            string cad = "{";
+            foreach (Simbolo sim in Entorno.Simbolos)
+            {
+                cad += sim.Valor.ToString();
+
+                if (!Entorno.Simbolos.Last.Value.Equals(sim))
+                    cad += ", ";
+            }
+            cad += "}"; //as " + Id;
+            return cad;
+        }
+
         public Simbolo GetAtributo(string id)
         {
             foreach (Simbolo sim in Entorno.Simbolos)

@@ -266,14 +266,22 @@ namespace GramaticasCQL.Parsers.CQL
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
                     if(hijos.Count() == 4)
-                        return new Actualizar(hijos[1].Token.Text, (LinkedList<Asignacion>)GenerarArbol(hijos[3]), linea, columna);
-                    return new Actualizar(hijos[1].Token.Text, (LinkedList<Asignacion>)GenerarArbol(hijos[3]),(Where)GenerarArbol(hijos[4]), linea, columna);
+                        return new Actualizar(hijos[1].Token.Text, (LinkedList<Instruccion>)GenerarArbol(hijos[3]), linea, columna);
+                    return new Actualizar(hijos[1].Token.Text, (LinkedList<Instruccion>)GenerarArbol(hijos[3]),(Where)GenerarArbol(hijos[4]), linea, columna);
                 case "DELETE":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
                     if (hijos.Count() == 3)
                         return new Eliminar(hijos[2].Token.Text, linea, columna);
-                    return new Eliminar(hijos[2].Token.Text, (Where)GenerarArbol(hijos[3]), linea, columna);
+                    else if (hijos.Count() == 4)
+                    {
+                        if (hijos[1].Term.Name.Equals("from"))
+                            return new Eliminar(hijos[2].Token.Text, (Where)GenerarArbol(hijos[3]), linea, columna);
+                        else
+                            return new Eliminar((Expresion)GenerarArbol(hijos[1]), hijos[3].Token.Text, linea, columna);
+                    }
+                    else
+                        return new Eliminar((Expresion)GenerarArbol(hijos[1]), hijos[3].Token.Text, (Where)GenerarArbol(hijos[4]), linea, columna);
                 case "SELECT":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
@@ -398,12 +406,14 @@ namespace GramaticasCQL.Parsers.CQL
                     columna = hijos[1].Token.Location.Column + 1;
                     return new AsignacionCall((LinkedList<Expresion>)GenerarArbol(hijos[0]), (Call)GenerarArbol(hijos[2]), linea, columna);
                 case "ASSIGNMENT_LIST":
-                    LinkedList<Asignacion> asignaLista = new LinkedList<Asignacion>();
+                    LinkedList<Instruccion> asignaLista = new LinkedList<Instruccion>();
                     foreach (ParseTreeNode hijo in hijos)
                     {
-                        asignaLista.AddLast((Asignacion)GenerarArbol(hijo));
+                        asignaLista.AddLast((Instruccion)GenerarArbol(hijo));
                     }
                     return asignaLista;
+                case "ASSIGNMENTS":
+                    return GenerarArbol(hijos[0]);
                 case "AUGMENTED_ASSIGNMENT_STMT":
                     linea = hijos[1].ChildNodes.ToArray()[0].Token.Location.Line + 1;
                     columna = hijos[1].ChildNodes.ToArray()[0].Token.Location.Column + 1;

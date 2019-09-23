@@ -222,6 +222,7 @@ namespace GramaticasCQL.Parsers.CQL
 
                 EXPRESSION_STMT = new NonTerminal("EXPRESSION_STMT"),
                 ASSIGNMENT_STMT = new NonTerminal("ASSIGNMENT_STMT"),
+                ASSIGNMENTS = new NonTerminal("ASSIGNMENTS"),
                 ASSIGNMENT_CALL = new NonTerminal("ASSIGNMENT_CALL"),
                 ASSIGNMENT_LIST = new NonTerminal("ASSIGNMENT_LIST"),
 
@@ -415,7 +416,9 @@ namespace GramaticasCQL.Parsers.CQL
                          | update_ + identifier + set_ + ASSIGNMENT_LIST + WHERE;
 
             DELETE.Rule = delete_ + from_ + identifier
-                        | delete_ + from_ + identifier + WHERE;
+                        | delete_ + from_ + identifier + WHERE
+                        | delete_ + TARGET + from_ + identifier
+                        | delete_ + TARGET + from_ + identifier + WHERE;
 
             SELECT.Rule = select_ + SELECT_EXP + from_ + identifier
                          | select_ + SELECT_EXP + from_ + identifier + WHERE
@@ -508,7 +511,9 @@ namespace GramaticasCQL.Parsers.CQL
 
             ASSIGNMENT_CALL.Rule = TARGET_LIST + equal + CALL;
 
-            ASSIGNMENT_LIST.Rule = MakePlusRule(ASSIGNMENT_LIST, comma, ASSIGNMENT_STMT);
+            ASSIGNMENT_LIST.Rule = MakePlusRule(ASSIGNMENT_LIST, comma, ASSIGNMENTS);
+
+            ASSIGNMENTS.Rule = ASSIGNMENT_STMT | AUGMENTED_ASSIGNMENT_STMT;
 
             AUGMENTED_ASSIGNMENT_STMT.Rule = TARGET + AUG_OPERATOR + EXPRESSION;
 

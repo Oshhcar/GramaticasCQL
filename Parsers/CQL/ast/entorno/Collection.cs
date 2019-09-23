@@ -65,7 +65,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
                     if (!Valores.Last.Value.Equals(value))
                         cad += ", ";
                 }
-                cad = "}";
+                cad += "}";
                 return cad;
             }
             return base.ToString();
@@ -115,6 +115,19 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             foreach (CollectionValue val in Valores)
             {
                 if (val.Clave.Equals(clave.ToString()))
+                {
+                    Valores.Remove(val);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool RemoveValor(object valor)
+        {
+            foreach (CollectionValue val in Valores)
+            {
+                if (val.Valor.ToString().Equals(valor.ToString()))
                 {
                     Valores.Remove(val);
                     return true;

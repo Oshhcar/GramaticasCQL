@@ -43,7 +43,7 @@ namespace GramaticasCQL.Parsers.CHISON
             var stringcodigo = new StringLiteral("stringcodigo", "$", StringOptions.IsTemplate);
             RegexBasedTerminal date = new RegexBasedTerminal("date", "'[0-2][0-9]{3}-([0][0-9]|[1][0-2])-([0][0-9]|[1][0-9]|[2][0-9]|[3][0-1])'");
             RegexBasedTerminal time = new RegexBasedTerminal("time", "'([0][0-9]|[1][0-9]|[2][0-4]):[0-5][0-9]:[0-5][0-9]'");
-            IdentifierTerminal fileName = new IdentifierTerminal("fileName", "!@#$%^*_'.?-", "!@#$%^*_'.?0123456789");
+            //IdentifierTerminal fileName = new IdentifierTerminal("fileName", "!@#$%^*_'.?-", "!@#$%^*_'.?0123456789");
 
 
             NonTerminal

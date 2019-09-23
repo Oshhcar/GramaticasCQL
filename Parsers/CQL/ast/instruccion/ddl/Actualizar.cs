@@ -10,13 +10,13 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 {
     class Actualizar : Instruccion
     {
-        public Actualizar(string id, LinkedList<Asignacion> asignaciones, int linea, int columna) : base(linea, columna)
+        public Actualizar(string id, LinkedList<Instruccion> asignaciones, int linea, int columna) : base(linea, columna)
         {
             Id = id;
             Asignaciones = asignaciones;
         }
 
-        public Actualizar(string id, LinkedList<Asignacion> asignaciones, Where where, int linea, int columna) : base(linea, columna)
+        public Actualizar(string id, LinkedList<Instruccion> asignaciones, Where where, int linea, int columna) : base(linea, columna)
         {
             Id = id;
             Asignaciones = asignaciones;
@@ -24,7 +24,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
         }
 
         public string Id { get; set; }
-        public LinkedList<Asignacion> Asignaciones { get; set; }
+        public LinkedList<Instruccion> Asignaciones { get; set; }
         public Where Where { get; set; }
         public bool Correcto { get; set; }
 
@@ -67,7 +67,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                                 return null;
                         }
 
-                        foreach (Asignacion asigna in Asignaciones)
+                        foreach (Instruccion asigna in Asignaciones)
                         {
                             object obj = asigna.Ejecutar(e, funcion, ciclo, sw, tc, log, errores);
 

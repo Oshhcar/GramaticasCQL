@@ -30,20 +30,21 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                 if (valExpr is Throw)
                     return valExpr;
 
-                if (Expr.Tipo.IsInt())
+                object valTarget = Target.GetValor(e, log, errores);
+
+                if (valTarget != null)
                 {
-                    object valTarget = Target.GetValor(e, log, errores);
+                    if (valTarget is Throw)
+                        return valTarget;
 
-                    if (valTarget != null)
+                    if (Target.Tipo.IsMap() || Target.Tipo.IsList() || Target.Tipo.IsSet())
                     {
-                        if (valTarget is Throw)
-                            return valTarget;
-
-                        if (Target.Tipo.IsMap() || Target.Tipo.IsList() || Target.Tipo.IsSet())
+                        if (!(valTarget is Null))
                         {
-                            if (!(valTarget is Null))
+                            Collection collection = (Collection)valTarget;
+
+                            if (collection.Tipo.Clave.Equals(Expr.Tipo))
                             {
-                                Collection collection = (Collection)valTarget;
                                 object valor = GetCollection ? collection.GetCollection(valExpr.ToString()) : collection.Get(valExpr.ToString());
                                 if (valor != null)
                                 {
@@ -55,16 +56,39 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                 //errores.AddLast(new Error("Semántico", "No existe un valor en la posición: " + valExpr.ToString() + " del " + Target.Tipo.Type.ToString() + ".", Linea, Columna));
                             }
                             else
-                                return new Throw("NullPointerException", Linea, Columna);
-                                //errores.AddLast(new Error("Semántico", "El " + Target.Tipo.Type.ToString() + " no ha sido inicializado.", Linea, Columna));
+                            {
+                                Casteo cast = new Casteo(collection.Tipo.Clave, new Literal(Expr.Tipo, valExpr, 0, 0), 0, 0)
+                                {
+                                    Mostrar = false
+                                };
+                                valExpr = cast.GetValor(e, log, errores);
 
+                                if (valExpr != null)
+                                {
+                                    if (valExpr is Throw)
+                                        return valExpr;
+
+                                    object valor = GetCollection ? collection.GetCollection(valExpr.ToString()) : collection.Get(valExpr.ToString());
+                                    if (valor != null)
+                                    {
+                                        Tipo = collection.Tipo.Valor;
+                                        return valor;
+                                    }
+                                    else
+                                        return new Throw("IndexOutException", Linea, Columna);
+                                }
+
+                                errores.AddLast(new Error("Semántico", "El tipo de la clave no coincide con la clave de la Collection.", Linea, Columna));
+                                return null;
+                            }
                         }
                         else
-                            errores.AddLast(new Error("Semántico", "La variable debe ser de tipo Map, List o Set.", Linea, Columna));
+                            return new Throw("NullPointerException", Linea, Columna);
+                            //errores.AddLast(new Error("Semántico", "El " + Target.Tipo.Type.ToString() + " no ha sido inicializado.", Linea, Columna));
                     }
+                    else
+                        errores.AddLast(new Error("Semántico", "La variable debe ser de tipo Map, List o Set.", Linea, Columna));
                 }
-                else
-                    errores.AddLast(new Error("Semántico", "La posición debe ser Int.", Linea, Columna));
             }
 
             return null;
