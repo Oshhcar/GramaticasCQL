@@ -31,6 +31,33 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             return cad;
         }
 
+        public string ToString2()
+        {
+            string cad = "<";
+            foreach (Simbolo sim in Entorno.Simbolos)
+            {
+                cad += "\"" + sim.Id + "\"= ";
+
+                if (sim.Valor is Objeto obj)
+                    cad += obj.ToString2();
+                else if (sim.Valor is Collection coll)
+                    cad += coll.ToString2();
+                else if (sim.Valor is Cadena cade)
+                    cad += cade.ToString2();
+                else if (sim.Valor is Date dat)
+                    cad += dat.ToString2();
+                else if (sim.Valor is Time tim)
+                    cad += tim.ToString2();
+                else
+                    cad += sim.Valor.ToString();
+
+                if (!Entorno.Simbolos.Last.Value.Equals(sim))
+                    cad += ", ";
+            }
+            cad += ">";
+            return cad;
+        }
+
         public Simbolo GetAtributo(string id)
         {
             foreach (Simbolo sim in Entorno.Simbolos)

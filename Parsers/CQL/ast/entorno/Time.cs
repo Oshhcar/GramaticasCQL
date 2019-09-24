@@ -46,6 +46,11 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             return Hours + ":" + Minutes + ":" + Seconds;
         }
 
+        public string ToString2()
+        {
+            return "'" + Hours + ":" + Minutes + ":" + Seconds + "'";
+        }
+
         public override int GetHashCode()
         {
             return base.GetHashCode();

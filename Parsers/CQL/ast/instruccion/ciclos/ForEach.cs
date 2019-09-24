@@ -52,7 +52,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ciclos
 
                                             if (par.Tipo.Equals(col.Tipo))
                                             {
-                                                var = new Simbolo(par.Tipo, Rol.VARIABLE, par.Id, col.Valor);
+                                                var = new Simbolo(par.Tipo, Rol.VARIABLE, par.Id.ToLower(), col.Valor);
                                             }
                                             else
                                             {
@@ -69,7 +69,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ciclos
                                                     if (valCol is Throw)
                                                         return valCol;
                                                       
-                                                    var = new Simbolo(par.Tipo, Rol.VARIABLE, par.Id, valCol);
+                                                    var = new Simbolo(par.Tipo, Rol.VARIABLE, par.Id.ToLower(), valCol);
                                                 }
                                                 else
                                                 {

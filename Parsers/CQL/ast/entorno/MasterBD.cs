@@ -40,8 +40,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             {
                 if (bd.Id.Equals(id.ToLower()))
                 {
-                    if (Actual.Equals(bd))
-                        Actual = null;
+                    if(Actual != null)
+                        if (Actual.Equals(bd))
+                            Actual = null;
 
                     //bd.Simbolos.Clear();
                     Data.Remove(bd);

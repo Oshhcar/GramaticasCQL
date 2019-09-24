@@ -34,7 +34,11 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion.operacion
                     switch (Tipo.Type)
                     {
                         case Type.STRING:
-                            return valOp1.ToString() + valOp2.ToString();
+                            Cadena cad = new Cadena
+                            {
+                                Valor = valOp1.ToString() + valOp2.ToString()
+                            };
+                            return cad;
                         case Type.DOUBLE:
                             switch (Op)
                             {

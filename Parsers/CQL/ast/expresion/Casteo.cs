@@ -29,18 +29,35 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                 if (valExpr is Throw)
                     return valExpr;
 
+                if (Expr.Tipo.IsNull())
+                {
+                    if (Mostrar)
+                        return new Throw("NullPointerException", Linea, Columna);
+                    return null;
+                }
+
                 if (Tipo.IsString())
                 {
-                    if (Expr.Tipo.IsString() || Expr.Tipo.IsInt() || Expr.Tipo.IsCounter() || Expr.Tipo.IsDouble() || Expr.Tipo.IsTime() || Expr.Tipo.IsDate())
+                    if (Expr.Tipo.IsString() || Expr.Tipo.IsInt() || Expr.Tipo.IsCounter() || Expr.Tipo.IsDouble() || Expr.Tipo.IsTime() || Expr.Tipo.IsDate() || Expr.Tipo.IsCollection())
                     {
                         if (valExpr is Null)
                         {
+                            return valExpr;
+                            /*
                             if (Mostrar)
                                 return new Throw("NullPointerException", Linea, Columna);
                             //errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
-                            return valExpr;
+                            //return valExpr;
+                            return null;*/
                         }
-                        return valExpr.ToString();
+                        else
+                        {
+                            Cadena cad = new Cadena
+                            {
+                                Valor = valExpr.ToString()
+                            };
+                            return cad;
+                        }
                     }
                 }
                 else if (Tipo.IsInt())
@@ -71,9 +88,11 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                         }
                         else
                         {
+                            /*
                             if (Mostrar)
                                 return new Throw("NullPointerException", Linea, Columna);
                             //errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
+                            */
                         }
 
                     }
@@ -99,9 +118,11 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                         }
                         else
                         {
+                            /*
                             if (Mostrar)
                                 return new Throw("NullPointerException", Linea, Columna);
                             // errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
+                            */
                         }
 
                     }
@@ -134,9 +155,11 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                         }
                         else
                         {
+                            /*
                             if (Mostrar)
                                 return new Throw("NullPointerException", Linea, Columna);
                             //errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
+                            */
                         }
 
                     }
@@ -158,10 +181,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                         }
                         else
                         {
+                            return valExpr;
+                            /*
                             if (Mostrar)
                                 return new Throw("NullPointerException", Linea, Columna);
                             //errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
-                            return valExpr;
+                            */
                         }
                     }
                 }
@@ -182,11 +207,38 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                         }
                         else
                         {
+                            return valExpr;
+                            /*
                             if (Mostrar)
                                 return new Throw("NullPointerException", Linea, Columna);
                             //errores.AddLast(new Error("Semántico", "El String no ha sido inicializado.", Linea, Columna));
-                            return valExpr;
+                            //return valExpr;
+                            return null;*/
 
+                        }
+                    }
+                }
+                else if (Tipo.IsCollection())
+                {
+                    if (Expr.Tipo.IsCollection())
+                    {
+                        if(Tipo.EqualsCollection(Expr.Tipo))
+                        {
+                            if (!(valExpr is Null))
+                            {
+                                Collection collection = (Collection)valExpr;
+
+                                if (collection.Castear(Tipo, e, log, errores))
+                                    return collection;
+                            }
+                            else
+                            {
+                                return valExpr;
+                                /*
+                                if (Mostrar)
+                                    return new Throw("NullPointerException", Linea, Columna);
+                                return null;*/
+                            }
                         }
                     }
                 }

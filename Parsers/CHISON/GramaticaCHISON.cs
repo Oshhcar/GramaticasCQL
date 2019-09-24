@@ -40,9 +40,11 @@ namespace GramaticasCQL.Parsers.CHISON
 
             var number = new NumberLiteral("number");
             var stringliteral = new StringLiteral("stringliteral", "\"", StringOptions.IsTemplate);
-            var stringcodigo = new StringLiteral("stringcodigo", "$", StringOptions.IsTemplate);
-            RegexBasedTerminal date = new RegexBasedTerminal("date", "'[0-2][0-9]{3}-([0][0-9]|[1][0-2])-([0][0-9]|[1][0-9]|[2][0-9]|[3][0-1])'");
-            RegexBasedTerminal time = new RegexBasedTerminal("time", "'([0][0-9]|[1][0-9]|[2][0-4]):[0-5][0-9]:[0-5][0-9]'");
+            var stringcodigo = new StringLiteral("stringcodigo", "$", StringOptions.AllowsLineBreak);
+            RegexBasedTerminal date = new RegexBasedTerminal("date", "\'[0-9]+-[0-9]+-[0-9]+\'");
+            RegexBasedTerminal time = new RegexBasedTerminal("time", "\'[0-9]+:[0-9]+:[0-9]+\'");
+            //RegexBasedTerminal date = new RegexBasedTerminal("date", "'[0-2][0-9]{3}-([0][0-9]|[1][0-2])-([0][0-9]|[1][0-9]|[2][0-9]|[3][0-1])'");
+            //RegexBasedTerminal time = new RegexBasedTerminal("time", "'([0][0-9]|[1][0-9]|[2][0-4]):[0-5][0-9]:[0-5][0-9]'");
             //IdentifierTerminal fileName = new IdentifierTerminal("fileName", "!@#$%^*_'.?-", "!@#$%^*_'.?0123456789");
 
 
@@ -52,14 +54,19 @@ namespace GramaticasCQL.Parsers.CHISON
                 INSTRUCCIONES = new NonTerminal("INSTRUCCIONES"),
                 INSTRUCCION = new NonTerminal("INSTRUCCION"),
                 BLOQUE = new NonTerminal("BLOQUE"),
+                LISTA_BLOQUE = new NonTerminal("LISTA_BLOQUE"),
                 VALOR = new NonTerminal("VALOR"),
                 LISTA = new NonTerminal("LISTA"),
                 VALORES = new NonTerminal("VALORES");
+
             this.Root = INICIO;
 
             INICIO.Rule = ARCHIVO;
 
-            ARCHIVO.Rule = dollar + BLOQUE + dollar;
+            ARCHIVO.Rule = dollar + BLOQUE + dollar
+                          | LISTA_BLOQUE;
+
+            LISTA_BLOQUE.Rule = MakePlusRule(LISTA_BLOQUE, comma, BLOQUE);
 
             BLOQUE.Rule = menorque + INSTRUCCIONES + mayorque;
 
@@ -67,12 +74,13 @@ namespace GramaticasCQL.Parsers.CHISON
 
             INSTRUCCION.Rule = stringliteral + equal + VALOR;
 
-            VALOR.Rule = number | stringliteral | true_ | false_ | date | time | in_ | out_ | null_ 
+            VALOR.Rule = number | stringliteral | true_ | false_ | date | time | in_ | out_ | null_
                         | LISTA | BLOQUE | stringcodigo;
 
-            LISTA.Rule = leftCor + VALORES + rightCor;
+            LISTA.Rule = leftCor + VALORES + rightCor
+                        | leftCor + rightCor;
 
-            VALORES.Rule = MakeStarRule(VALORES, comma, VALOR);
+            VALORES.Rule = MakePlusRule(VALORES, comma, VALOR);
 
         }
     }

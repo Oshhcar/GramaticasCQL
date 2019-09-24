@@ -10,12 +10,14 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 {
     class Bloque : Instruccion
     {
-        public Bloque(LinkedList<NodoASTCQL> bloques, int linea, int columna) : base(linea, columna)
+        public Bloque(LinkedList<NodoASTCQL> bloques, string cadena, int linea, int columna) : base(linea, columna)
         {
             Bloques = bloques;
+            Cadena = cadena;
         }
 
         public LinkedList<NodoASTCQL> Bloques { get; set; }
+        public string Cadena { get; set; }
 
         public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, bool tc, LinkedList<Salida> log, LinkedList<Error> errores)
         {

@@ -23,6 +23,16 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
             if (e.Master.Get(Id) == null)
             {
                 e.Master.Add(Id);
+
+                Usuario user = e.Master.GetUsuario("admin");
+
+                if (user != null)
+                {
+                    if (!user.GetPermiso(Id))
+                    {
+                        user.AddPermiso(Id);
+                    }
+                }
             }
             else
             {

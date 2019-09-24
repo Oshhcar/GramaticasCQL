@@ -13,11 +13,21 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             Valor = valor.Substring(1, valor.Length - 2);
         }
 
+        public Cadena()
+        {
+
+        }
+
         public string Valor { get; set; }
 
         public override string ToString()
         {
             return Valor;
+        }
+
+        public string ToString2()
+        {
+            return "\"" + Valor + "\"";
         }
 
         public override bool Equals(object obj)

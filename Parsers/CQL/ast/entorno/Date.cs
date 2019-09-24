@@ -47,6 +47,11 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             return Year + "-" + Month + "-" + Day;
         }
 
+        public string ToString2()
+        {
+            return "'" + Year + "-" + Month + "-" + Day + "'";
+        }
+
         public override int GetHashCode()
         {
             return base.GetHashCode();

@@ -108,6 +108,37 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         {
             return base.GetHashCode();
         }
+
+        public override string ToString()
+        {
+            if (IsCollection())
+            {
+                if (IsMap())
+                {
+                    if (Clave != null && Valor != null)
+                        return "MAP<" + Clave.ToString() + ", " + Valor.ToString() + ">";
+                }
+                else if (IsList())
+                {
+                    if (Valor != null)
+                        return "LIST<" + Valor.ToString() + ">";
+                }
+                else
+                {
+                    if (Valor != null)
+                        return "SET<" + Valor.ToString() + ">";
+                }
+            }
+            else
+            {
+                if (IsObject())
+                    return Objeto;
+                else
+                    return Type.ToString();
+            }
+
+            return base.ToString();
+        }
     }
 
     public enum Type

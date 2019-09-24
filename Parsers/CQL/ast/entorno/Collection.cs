@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GramaticasCQL.Parsers.CQL.ast.expresion;
+using GramaticasCQL.Parsers.CQL.ast.instruccion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,13 +21,55 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         public LinkedList<CollectionValue> Valores { get; set; }
         public int Posicion { get; set; }
 
-        public bool Castear(Tipo t)
+        public bool Castear(Tipo t, Entorno e, LinkedList<Salida> log, LinkedList<Error> errores)
         {
-            if (t.IsList())
+            foreach (CollectionValue value in Valores)
             {
-                /*Casteo*/
+                if (Tipo.IsMap())
+                {
+                    if (!Tipo.Clave.Equals(t.Clave))
+                    {
+                        Casteo castClave = new Casteo(t.Clave, new Literal(Tipo.Clave, value.Clave, 0, 0), 0, 0)
+                        {
+                            Mostrar = false
+                        };
+
+                        object valorCastClave = castClave.GetValor(e, log, errores);
+
+                        if (valorCastClave != null)
+                        {
+                            if (valorCastClave is Throw)
+                                return false;
+
+                            value.Clave = valorCastClave;
+                        }
+                        else
+                            return false;
+                    }
+                }
+
+                if (!Tipo.Valor.Equals(t.Valor))
+                {
+                    Casteo cast = new Casteo(t.Valor, new Literal(Tipo.Valor, value.Valor, 0, 0), 0, 0)
+                    {
+                        Mostrar = false
+                    };
+
+                    object valorCast = cast.GetValor(e, log, errores);
+
+                    if (valorCast != null)
+                    {
+                        if (valorCast is Throw)
+                            return false;
+
+                        value.Valor = valorCast;
+                        continue;
+                    }
+                    return false;
+                }
             }
-            return false;
+            Tipo = t;
+            return true;
         }
 
         public override string ToString()
@@ -69,6 +113,71 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
                 return cad;
             }
             return base.ToString();
+        }
+
+        public string ToString2()
+        {
+            string cad;
+
+            if (Tipo.IsMap())
+            {
+                cad = "<";
+
+                foreach (CollectionValue value in Valores)
+                {
+                    cad += "\"" + value.Clave.ToString() + "\"= ";
+
+                    if (value.Valor is Objeto obj2)
+                        cad += obj2.ToString2();
+                    else if (value.Valor is Collection coll)
+                        cad += coll.ToString2();
+                    else if (value.Valor is Cadena cade)
+                        cad += cade.ToString2();
+                    else if (value.Valor is Date dat)
+                        cad += dat.ToString2();
+                    else if (value.Valor is Time tim)
+                        cad += tim.ToString2();
+                    else
+                        cad += value.Valor.ToString();
+
+                    if (!Valores.Last.Value.Equals(value))
+                        cad += ", ";
+                }
+
+                cad += ">";
+            }
+            else
+            {
+                //if (Tipo.IsList())
+                    cad = "[";
+                //else
+                    //cad = "{";
+
+                foreach (CollectionValue value in Valores)
+                {
+                    if (value.Valor is Objeto obj2)
+                        cad += obj2.ToString2();
+                    else if (value.Valor is Collection coll)
+                        cad += coll.ToString2();
+                    else if (value.Valor is Cadena cade)
+                        cad += cade.ToString2();
+                    else if (value.Valor is Date dat)
+                        cad += dat.ToString2();
+                    else if (value.Valor is Time tim)
+                        cad += tim.ToString2();
+                    else
+                        cad += value.Valor.ToString();
+
+                    if (!Valores.Last.Value.Equals(value))
+                        cad += ", ";
+                }
+                //if (Tipo.IsList())
+                    cad += "]";
+                //else
+                    //cad += "}";
+            }
+
+            return cad;
         }
 
         public void Insert(object clave, object valor)
