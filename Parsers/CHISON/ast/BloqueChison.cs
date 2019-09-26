@@ -18,14 +18,15 @@ namespace GramaticasCQL.Parsers.CHISON.ast
         {
             Instrucciones = instrucciones;
             Obj = OBJ.CUALQUIERA;
+            Tipo = new Tipo(Type.OBJECT);
         }
 
         public LinkedList<Instruccion> Instrucciones { get; set; }
         public OBJ Obj { get; set; }
         public Entorno Ent { get; set; }
+        
         public override object GetValor(Entorno e, LinkedList<Salida> log, LinkedList<Error> errores)
         {
-            Tipo = new Tipo(Type.OBJECT);
             bool cqlType;
 
             switch (Obj)
@@ -782,6 +783,50 @@ namespace GramaticasCQL.Parsers.CHISON.ast
                                                 }
                                             }
                                             break;
+                                        case Type.MAP:
+                                            if (atributo.Valor is BloqueChison bloque2)
+                                            {
+                                                bloque2.Obj = OBJ.MAP;
+                                                bloque2.Tipo = col.Tipo;
+                                                object obj = bloque2.GetValor(e, log, errores);
+
+                                                if (obj != null)
+                                                {
+                                                    if (obj is Collection)
+                                                    {
+                                                        col.Valor = obj;
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        case Type.LIST:
+                                        case Type.SET:
+                                            if (col.Tipo.Valor != null)
+                                            {
+                                                if (atributo.Valor is Lista list)
+                                                {
+                                                    Collection lista = new Collection(col.Tipo);
+
+                                                    if (list.Valores != null)
+                                                    {
+                                                        foreach (Expresion expr in list.Valores)
+                                                        {
+                                                            object valor = ObtenerValor(col.Tipo.Valor, new Literal(expr.Tipo, expr.GetValor(e, log, errores), 0, 0), expr, e, log, errores);
+
+                                                            if (valor != null)
+                                                            {
+                                                                lista.Insert(lista.Posicion++, valor);
+                                                            }
+                                                        }
+                                                    }
+
+                                                    if (lista.Tipo.IsSet())
+                                                        lista.Ordenar();
+
+                                                    col.Valor = lista;
+                                                }
+                                            }
+                                            break;
                                     }
                                 }   
                             }
@@ -789,8 +834,163 @@ namespace GramaticasCQL.Parsers.CHISON.ast
                         return Ent;
                     }
                     break;
+                case OBJ.MAP:
+                    if (Tipo.Valor != null && Tipo.Clave != null)
+                    {
+                        Collection collection = new Collection(Tipo);
+
+                        foreach (Instruccion inst in Instrucciones)
+                        {
+                            if (inst is Atributo atributo)
+                            {
+                                Cadena clave = new Cadena()
+                                {
+                                    Valor = atributo.Id.ToString()
+                                };
+
+                                Casteo cast = new Casteo(Tipo.Clave, new Literal(new Tipo(Type.STRING), clave, 0, 0), 0, 0)
+                                {
+                                    Mostrar = false
+                                };
+
+                                object valCast = cast.GetValor(e, log, errores);
+
+                                if (valCast != null)
+                                {
+                                    if (!(valCast is Throw))
+                                    {
+                                        if (collection.Get(valCast) == null)
+                                        {
+                                            object valorObj = atributo.Valor.GetValor(e, log, errores);
+
+                                            object valor = ObtenerValor(Tipo.Valor, new Literal(atributo.Valor.Tipo, valorObj, 0, 0), atributo.Valor , e, log, errores);
+
+                                            if (valor != null)
+                                            {
+                                                collection.Insert(valCast, valor);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return collection;
+                    }
+                    break;
             }
 
+            return null;
+        }
+
+        public object ObtenerValor(Tipo tipo, Literal valor, object valorObj, Entorno e, LinkedList<Salida> log, LinkedList<Error> errores)
+        {
+            switch (tipo.Type)
+            {
+                case Type.INT:
+                case Type.DOUBLE:
+                case Type.STRING:
+                case Type.BOOLEAN:
+                case Type.DATE:
+                case Type.TIME:
+                case Type.COUNTER:
+                    if (tipo.Equals(valor.Tipo))
+                    {
+                        return valor.Valor;
+                    }
+                    else
+                    {
+                        Casteo cast = new Casteo(tipo, new Literal(valor.Tipo, valor.Valor, 0, 0), 0, 0)
+                        {
+                            Mostrar = false
+                        };
+
+                        object valCast = cast.GetValor(e, log, errores);
+                        if (valCast != null)
+                        {
+                            if (!(valCast is Throw))
+                            {
+                                return valCast;
+                            }
+                        }
+                    }
+                    break;
+                case Type.OBJECT:
+                    if (e.MasterRollback.Actual != null)
+                    {
+                        Simbolo objeto = e.MasterRollback.Actual.GetUserType(tipo.Objeto);
+                        if (objeto != null)
+                        {
+                            LinkedList<Simbolo> atributos = new LinkedList<Simbolo>();
+
+                            foreach (Simbolo s in ((Entorno)objeto.Valor).Simbolos)
+                            {
+                                atributos.AddLast(new Simbolo(s.Tipo, Rol.ATRIBUTO, s.Id));
+                            }
+
+                            if (valorObj is BloqueChison bloque)
+                            {
+                                bloque.Obj = OBJ.DATO;
+                                bloque.Ent = new Entorno(null, atributos);
+
+                                object obj = bloque.GetValor(e, log, errores);
+
+                                if (obj != null)
+                                {
+                                    if (obj is Entorno ent)
+                                    {
+                                        return new Objeto(tipo.Objeto, ent);
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    break;
+                case Type.MAP:
+                    if (valorObj is BloqueChison bloque2)
+                    {
+                        bloque2.Obj = OBJ.MAP;
+                        bloque2.Tipo = tipo;
+                        object obj = bloque2.GetValor(e, log, errores);
+
+                        if (obj != null)
+                        {
+                            if (obj is Collection)
+                            {
+                                return obj;
+                            }
+                        }
+                    }
+                    break;
+                case Type.LIST:
+                case Type.SET:
+                    if (tipo.Valor != null)
+                    {
+                        if (valorObj is Lista list)
+                        {
+                            Collection lista = new Collection(tipo);
+
+                            if (list.Valores != null)
+                            {
+                                foreach (Expresion expr in list.Valores)
+                                {
+                                    object valor2 = ObtenerValor(tipo.Valor, new Literal(expr.Tipo, expr.GetValor(e, log, errores), 0, 0), expr, e, log, errores);
+
+                                    if (valor != null)
+                                    {
+                                        lista.Insert(lista.Posicion++, valor2);
+                                    }
+                                }
+                            }
+
+                            if (lista.Tipo.IsSet())
+                                lista.Ordenar();
+
+                            return lista;
+                        }
+                    }
+                    break;
+            }
             return null;
         }
     }
@@ -810,6 +1010,7 @@ namespace GramaticasCQL.Parsers.CHISON.ast
         TABLA,
         COLUMNA,
         DATO,
+        MAP,
         CUALQUIERA
     }
 }
