@@ -55,6 +55,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         public bool IsCollection() { return IsMap() || IsList() || IsSet(); }
         public bool IsNullable() { return IsString() || IsObject() || IsMap() || IsList() || IsSet() || IsNull(); }
         public bool IsCursor() { return Type == Type.CURSOR; }
+        public bool IsIn() { return Type == Type.IN; }
+        public bool IsOut() { return Type == Type.OUT; }
+        public bool IsVoid() { return Type == Type.VOID; }
 
         public override bool Equals(object obj)
         {
@@ -156,7 +159,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         SET,
         NULL,
         CURSOR,
-        VOID
+        VOID,
+        IN,
+        OUT
     }
 
     public enum Rol

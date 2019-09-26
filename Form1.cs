@@ -39,11 +39,11 @@ namespace GramaticasCQL
 
                     if (ast != null)
                     {
-                        //MessageBox.Show("Documento ok.", "Mensaje");
-                        ReporteErrores(analizador.Raiz);
-
                         LinkedList<Salida> log = new LinkedList<Salida>();
                         LinkedList<Error> errores = new LinkedList<Error>();
+
+                        //MessageBox.Show("Documento ok.", "Mensaje");
+                        ReporteErrores(analizador.Raiz);
 
                         ast.Ejecutar(log, errores);
 
@@ -64,7 +64,7 @@ namespace GramaticasCQL
                                 gridErrors.Rows.Add(error.Valor, error.Descripcion, error.Linea);
                             }
                         }
-                       
+
                     }
                     
                 }

@@ -24,9 +24,19 @@ namespace GramaticasCQL.Parsers.CHISON
                 true_ = ToTerm("true"),
                 false_ = ToTerm("false"),
                 in_ = ToTerm("in"),
-                out_ = ToTerm("out");
+                out_ = ToTerm("out"),
+                int_ = ToTerm("int"),
+                double_ = ToTerm("double"),
+                string_ = ToTerm("string"),
+                boolean_ = ToTerm("boolean"),
+                date_ = ToTerm("date"),
+                time_ = ToTerm("time"),
+                counter_ = ToTerm("counter"),
+                map_ = ToTerm("map"),
+                list_ = ToTerm("list"),
+                set_ = ToTerm("set");
 
-            MarkReservedWords("null", "true", "false", "in", "out");
+            MarkReservedWords("null", "true", "false", "in", "out", "int", "double", "string", "boolean", "date", "time","counter", "map", "list", "set");
 
             /* Symbols*/
             KeyTerm
@@ -36,13 +46,15 @@ namespace GramaticasCQL.Parsers.CHISON
                 leftCor = ToTerm("["),
                 rightCor = ToTerm("]"),
                 dollar = ToTerm("$"),
-                comma = ToTerm(",");
+                comma = ToTerm(","),
+                comilla = ToTerm("\"");
 
             var number = new NumberLiteral("number");
             var stringliteral = new StringLiteral("stringliteral", "\"", StringOptions.IsTemplate);
             var stringcodigo = new StringLiteral("stringcodigo", "$", StringOptions.AllowsLineBreak);
             RegexBasedTerminal date = new RegexBasedTerminal("date", "\'[0-9]+-[0-9]+-[0-9]+\'");
             RegexBasedTerminal time = new RegexBasedTerminal("time", "\'[0-9]+:[0-9]+:[0-9]+\'");
+            RegexBasedTerminal identifier = new RegexBasedTerminal("identifier", "([a-zA-ZñÑ]|_)([a-zA-ZñÑ]|[0-9]|_)*");
             //RegexBasedTerminal date = new RegexBasedTerminal("date", "'[0-2][0-9]{3}-([0][0-9]|[1][0-2])-([0][0-9]|[1][0-9]|[2][0-9]|[3][0-1])'");
             //RegexBasedTerminal time = new RegexBasedTerminal("time", "'([0][0-9]|[1][0-9]|[2][0-4]):[0-5][0-9]:[0-5][0-9]'");
             //IdentifierTerminal fileName = new IdentifierTerminal("fileName", "!@#$%^*_'.?-", "!@#$%^*_'.?0123456789");
@@ -51,6 +63,9 @@ namespace GramaticasCQL.Parsers.CHISON
             NonTerminal
                 INICIO = new NonTerminal("INICIO"),
                 ARCHIVO = new NonTerminal("ARCHIVO"),
+                TYPE = new NonTerminal("TYPE"),
+                TYPE_PRIMITIVE = new NonTerminal("TYPE_PRIMITIVE"),
+                TYPE_COLLECTION = new NonTerminal("TYPE_COLLECTION"),
                 INSTRUCCIONES = new NonTerminal("INSTRUCCIONES"),
                 INSTRUCCION = new NonTerminal("INSTRUCCION"),
                 BLOQUE = new NonTerminal("BLOQUE"),
@@ -64,7 +79,18 @@ namespace GramaticasCQL.Parsers.CHISON
             INICIO.Rule = ARCHIVO;
 
             ARCHIVO.Rule = dollar + BLOQUE + dollar
-                          | LISTA_BLOQUE;
+                          | LISTA_BLOQUE
+                          | TYPE
+                          | TYPE_COLLECTION;
+
+            TYPE.Rule = map_ | list_ | set_;
+
+            TYPE_PRIMITIVE.Rule = int_ | double_ | string_ | boolean_ | date_ | time_;
+
+            TYPE_COLLECTION.Rule = int_ | double_ | string_ | boolean_ | date_ | time_ | identifier | counter_
+                                    | map_ + menorque + TYPE_PRIMITIVE + comma + TYPE_COLLECTION + mayorque
+                                    | list_ + menorque + TYPE_COLLECTION + mayorque
+                                    | set_ + menorque + TYPE_COLLECTION + mayorque;
 
             LISTA_BLOQUE.Rule = MakePlusRule(LISTA_BLOQUE, comma, BLOQUE);
 

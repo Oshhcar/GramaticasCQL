@@ -15,9 +15,9 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
         public override object Ejecutar(Entorno e, bool funcion, bool ciclo, bool sw, bool tc, LinkedList<Salida> log, LinkedList<Error> errores)
         {
-            string archivo = "baseDatos.txt";
+            string archivo = "baseDatos.chison";
 
-            StreamWriter writer;
+            StreamWriter writer = null;
 
             try
             {
@@ -118,7 +118,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
                             if (proc.Retorno != null)
                             {
-                                if(parametro)
+                                if (parametro)
                                     contenido += ",";
 
                                 foreach (Identificador par in proc.Retorno)
@@ -136,8 +136,12 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
                             contenido += "\n\t   ],\n";
                             contenido += "\t   \"INSTR\"= $\n";
-                            if(!proc.Bloque.Cadena.Equals(""))
-                                contenido += proc.Bloque.Cadena.Substring(1, proc.Bloque.Cadena.Length - 3)+"\n";
+                            if (!proc.Bloque.Cadena.Equals(""))
+                            {
+                                int fin = proc.Bloque.Cadena.Length-3;
+                                if(fin >= 0)
+                                    contenido += proc.Bloque.Cadena.Substring(1, fin) + "\n";
+                            }
                             contenido += "\t   $\n\t   >";
                         }
                     }
@@ -156,7 +160,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                                 anterior = true;
                                 contenido += "\n\t   <\n";
                             }
-                                
+
                             contenido += "\t   \"CQL-TYPE\"= \"TABLE\",\n";
                             contenido += "\t   \"NAME\"= \"" + sim.Id + "\",\n";
                             contenido += "\t   \"COLUMNS\"= [";
@@ -166,7 +170,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                                 contenido += "\n\t    <\n";
                                 contenido += "\t    \"NAME\"= \"" + col.Id + "\",\n";
                                 contenido += "\t    \"TYPE\"= \"" + col.Tipo.ToString() + "\",\n";
-                                contenido += "\t    \"PK\"= " + (col.Rol == Rol.PRIMARY ? "TRUE":"FALSE") + "\n";
+                                contenido += "\t    \"PK\"= " + (col.Rol == Rol.PRIMARY ? "TRUE" : "FALSE") + "\n";
                                 contenido += "\t    >";
 
                                 if (!tabla.Cabecera.Simbolos.Last.Value.Equals(col))
@@ -255,6 +259,11 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
             catch (Exception ex)
             {
                 Console.WriteLine("Commit" + ex.Message);
+            }
+            finally
+            {
+                if (writer != null)
+                    writer.Close();
             }
 
             return null;

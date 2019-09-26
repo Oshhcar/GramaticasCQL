@@ -11,12 +11,14 @@ namespace GramaticasCQL.Parsers.CQL.ast
 {
     class ASTCQL
     {
-        public ASTCQL(LinkedList<NodoASTCQL> sentencias)
+        public ASTCQL(LinkedList<NodoASTCQL> sentencias, string cadena)
         {
             Sentencias = sentencias;
+            Cadena = cadena;
         }
 
-        public LinkedList<NodoASTCQL> Sentencias;
+        public LinkedList<NodoASTCQL> Sentencias { get; set; }
+        public string Cadena { get; set; }
 
         public void Ejecutar(LinkedList<Salida> log, LinkedList<Error> errores)
         {
@@ -47,9 +49,18 @@ namespace GramaticasCQL.Parsers.CQL.ast
                     if (!(stmt is FuncionDef))
                     {
                         obj = instr.Ejecutar(global, false, false, false, false, log, errores);
-                        
-                        if(obj is Throw th)
-                            errores.AddLast(new Error("Semántico", "Excepción no Controlada: " + th.Id + ".", th.Linea, th.Columna));
+
+                        if (obj != null)
+                        {
+                            if (obj is Throw th)
+                                errores.AddLast(new Error("Semántico", "Excepción no Controlada: " + th.Id + ".", th.Linea, th.Columna));
+                            else if (obj is Break bk)
+                                errores.AddLast(new Error("Semántico", "Sentencia break no se encuentra dentro de un switch o ciclo.", bk.Linea, bk.Columna));
+                            else if (obj is Continue co)
+                                errores.AddLast(new Error("Semántico", "Sentencia continue no se encuentra dentro de un ciclo.", co.Linea, co.Columna));
+                            else if (obj is Return re)
+                                errores.AddLast(new Error("Semántico", "Sentencia return no se encuentra dentro de una función o procedimiento.", re.Linea, re.Columna));
+                        }
                     }
                 }
                 else  if(stmt is Expresion expr)

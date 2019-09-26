@@ -29,28 +29,28 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
                     {
                         object obj = inst.Ejecutar(e, funcion, ciclo, sw, tc, log, errores);
 
-                        if (obj is Break)
+                        if (obj is Break bk)
                         {
                             if (ciclo || sw)
                                 return obj;
                             else
-                                errores.AddLast(new Error("Semántico", "Sentencia break no se encuentra dentro de un switch o ciclo.", Linea, Columna));
+                                errores.AddLast(new Error("Semántico", "Sentencia break no se encuentra dentro de un switch o ciclo.", bk.Linea, bk.Columna));
 
                         }
-                        else if (obj is Continue)
+                        else if (obj is Continue co)
                         {
                             if (ciclo)
                                 return obj;
                             else
-                                errores.AddLast(new Error("Semántico", "Sentencia continue no se encuentra dentro de un ciclo.", Linea, Columna));
+                                errores.AddLast(new Error("Semántico", "Sentencia continue no se encuentra dentro de un ciclo.", co.Linea, co.Columna));
 
                         }
-                        else if (obj is Return)
+                        else if (obj is Return re)
                         {
                             if (funcion)
                                 return obj;
                             else
-                                errores.AddLast(new Error("Semántico", "Sentencia return no se encuentra dentro de una función o procedimiento.", Linea, Columna));
+                                errores.AddLast(new Error("Semántico", "Sentencia return no se encuentra dentro de una función o procedimiento.", re.Linea, re.Columna));
 
                         }
                         else if (obj is Throw th)

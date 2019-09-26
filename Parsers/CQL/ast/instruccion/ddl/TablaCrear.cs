@@ -87,7 +87,11 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
                         }
                     }
 
-                    actual.Add(new Simbolo(Rol.TABLA, Id.ToLower(), tabla));
+                    if(tabla.Cabecera.Simbolos.Count() > 0)
+                        actual.Add(new Simbolo(Rol.TABLA, Id.ToLower(), tabla));
+                    else
+                        errores.AddLast(new Error("Semántico", "No puede crear una Tabla sin Columnas.", Linea, Columna));
+
                     return null;
                 }
                 else

@@ -46,9 +46,6 @@ namespace GramaticasCQL.Parsers.CQL
             string r = raiz.ToString();
             ParseTreeNode[] hijos = null;
 
-            int linea = 0;
-            int columna = 0;
-
             object obj;
             object obj2;
             object obj3;
@@ -58,6 +55,10 @@ namespace GramaticasCQL.Parsers.CQL
             {
                 hijos = raiz.ChildNodes.ToArray();
             }
+
+
+            int linea;
+            int columna;
 
             switch (r)
             {
@@ -69,9 +70,16 @@ namespace GramaticasCQL.Parsers.CQL
                     {
                         sentencias.AddLast((NodoASTCQL)GenerarArbol(hijo));
                     }
-                    return new ASTCQL(sentencias);
+                    return new ASTCQL(sentencias, Bloque);
                 case "INSTRUCCION":
-                    return GenerarArbol(hijos[0]);
+                    obj = GenerarArbol(hijos[0]);
+                    r = hijos[0].Term.Name;
+                    if (!r.Equals("IF_STMT") && !r.Equals("SWITCH_STMT") && !r.Equals("WHILE_STMT") && !r.Equals("FOR_STMT")
+                        && !r.Equals("TRYCATCH_STMT") && !r.Equals("FOREACH_STMT") && !r.Equals("FUNDEF") && !r.Equals("PROCDEF"))
+                    {
+                        Bloque += ";\n";
+                    }
+                    return obj;
                 case "TYPE":
                     switch (hijos[0].Term.Name)
                     {
@@ -200,12 +208,27 @@ namespace GramaticasCQL.Parsers.CQL
                         Bloque += ")";
                         return new TypeCrear(hijos[3].Token.Text, true, (LinkedList<Simbolo>)obj, linea, columna);
                     }
-                case "ATTRIBUTE_LIST":
+                case "ATTRIBUTE_LIST": /*CLASE PARA ESTO, VERIFICAR TIPOS*/
                     LinkedList<Simbolo> atribute = new LinkedList<Simbolo>();
                     contador = 1;
                     foreach (ParseTreeNode hijo in hijos)
                     {
-                        atribute.AddLast((Simbolo)GenerarArbol(hijo));
+                        Simbolo atr = (Simbolo)GenerarArbol(hijo);
+
+                        bool cont = false;
+                        foreach (Simbolo sim in atribute)
+                        {
+                            if(sim.Id.Equals(atr.Id))
+                            {
+                                cont = true;
+                                break;
+                            }
+                        }
+
+                        if (cont)
+                            continue;
+
+                        atribute.AddLast(atr);
 
                         if (hijos.Count() != contador++)
                             Bloque += ", ";
@@ -511,7 +534,7 @@ namespace GramaticasCQL.Parsers.CQL
                     Bloque += " limit ";
                     return new Seleccionar((LinkedList<Expresion>)obj, hijos[3].Token.Text, (Where)obj2, (LinkedList<Identificador>)obj3, (Expresion)GenerarArbol(hijos[9]), linea, columna);
                 case "SELECT_EXP":
-                    if (hijos[0].Term.Name.Equals("por"))
+                    if (hijos[0].Term.Name.Equals("*"))
                     {
                         Bloque += "*";
                         return null;
@@ -574,6 +597,7 @@ namespace GramaticasCQL.Parsers.CQL
                         Bloque += "{\n";
                         obj = GenerarArbol(hijos[1]);
                         Bloque += "}\n";
+
                         return new Bloque((LinkedList<NodoASTCQL>)obj, Bloque, linea, columna);
                     }
                     else
@@ -588,7 +612,8 @@ namespace GramaticasCQL.Parsers.CQL
                 case "SENTENCIA":
                     obj = GenerarArbol(hijos[0]);
                     r = hijos[0].Term.Name;
-                    if (!r.Equals("IF_STMT") && !r.Equals("SWITCH_STMT") && !r.Equals("WHILE_STMT") && !r.Equals("FOR_STMT") && !r.Equals("TRYCATCH_STMT"))
+                    if (!r.Equals("IF_STMT") && !r.Equals("SWITCH_STMT") && !r.Equals("WHILE_STMT") && !r.Equals("FOR_STMT") 
+                        && !r.Equals("TRYCATCH_STMT") && !r.Equals("FOREACH_STMT"))
                     {
                         Bloque += ";\n";
                     }
@@ -636,11 +661,14 @@ namespace GramaticasCQL.Parsers.CQL
 
                     if (hijos.Count() == 2)
                     {
-                        return new Declaracion((Tipo)GenerarArbol(hijos[0]), (LinkedList<Expresion>)GenerarArbol(hijos[1]), null, linea, columna);
+                        obj = GenerarArbol(hijos[0]);
+                        Bloque += " ";
+                        return new Declaracion((Tipo)obj, (LinkedList<Expresion>)GenerarArbol(hijos[1]), null, linea, columna);
                     }
                     else
                     {
                         obj = GenerarArbol(hijos[0]);
+                        Bloque += " ";
                         obj2 = GenerarArbol(hijos[1]);
                         Bloque += " = ";
                         return new Declaracion((Tipo)obj, (LinkedList<Expresion>)obj2, (Expresion)GenerarArbol(hijos[3]), linea, columna);
@@ -813,9 +841,20 @@ namespace GramaticasCQL.Parsers.CQL
                     linea = hijos[1].Token.Location.Line + 1;
                     columna = hijos[1].Token.Location.Column + 1;
                     if (hijos.Count() == 5)
-                        return new FuncionDef((Tipo)GenerarArbol(hijos[0]), hijos[1].Token.Text, (Bloque)GenerarArbol(hijos[4]), linea, columna);
+                    {
+                        obj = GenerarArbol(hijos[0]);
+                        obj2 = GenerarArbol(hijos[4]);
+                        Bloque = "";
+                        return new FuncionDef((Tipo)obj, hijos[1].Token.Text, (Bloque)obj2, linea, columna);
+                    }
                     else
-                        return new FuncionDef((Tipo)GenerarArbol(hijos[0]), hijos[1].Token.Text, (LinkedList<Identificador>)GenerarArbol(hijos[3]), (Bloque)GenerarArbol(hijos[5]), linea, columna);
+                    {
+                        obj = GenerarArbol(hijos[0]);
+                        obj2 = GenerarArbol(hijos[3]);
+                        obj3 = GenerarArbol(hijos[5]);
+                        Bloque = "";
+                        return new FuncionDef((Tipo)obj, hijos[1].Token.Text, (LinkedList<Identificador>)obj2, (Bloque)obj3, linea, columna);
+                    }
                 case "PARAMETER_LIST":
                     if (hijos.Count() == 2)
                     {
@@ -1307,13 +1346,13 @@ namespace GramaticasCQL.Parsers.CQL
                         obj = GenerarArbol(hijos[2]);
                         Bloque += ")";
                         return new FuncionCall(hijos[0].Token.Text, (LinkedList<Expresion>)obj, linea, columna);
-                    } 
+                    }
                 case "CALL":
                     linea = hijos[0].Token.Location.Line + 1;
                     columna = hijos[0].Token.Location.Column + 1;
                     if (hijos.Count() == 4)
                     {
-                        Bloque +="call " + hijos[1].Token.Text + "()";
+                        Bloque += "call " + hijos[1].Token.Text + "()";
                         return new Call(hijos[1].Token.Text, linea, columna);
                     }
                     {

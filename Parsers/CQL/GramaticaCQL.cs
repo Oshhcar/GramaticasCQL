@@ -333,8 +333,14 @@ namespace GramaticasCQL.Parsers.CQL
                               | WHILE_STMT
                               | DOWHILE_STMT + semicolon
                               | FOR_STMT
+
                               | FUNDEF
                               | PROCDEF
+
+                              | BREAK_STMT + semicolon
+                              | CONTINUE_STMT + semicolon
+                              | RETURN_STMT + semicolon
+
                               | CURSOR_STMT + semicolon
                               | FOREACH_STMT
                               | OPEN_STMT + semicolon

@@ -83,8 +83,16 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             foreach (Simbolo sim in Simbolos)
             {
                 Console.WriteLine(sim.Id + " " + sim.Rol.ToString() + " " + sim.Valor.ToString());
-                /* if (sim.Valor is Entorno ent)
-                     ent.Recorrer();*/
+
+                /*
+                if (sim.Valor is Entorno ent)
+                     ent.Recorrer();
+
+                if (sim.Valor is Procedimiento proc)
+                {
+                    Console.WriteLine(proc.Bloque.Cadena);
+                }
+                */
                 if (sim.Valor is Tabla t)
                 {
                     t.Recorrer();

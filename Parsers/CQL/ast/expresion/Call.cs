@@ -149,7 +149,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                     {
                                         for (int i = 0; i < proc.Retorno.Count(); i++)
                                         {
-                                            if (!proc.Retorno.ElementAt(i).Tipo.Equals(ret.Valores.ElementAt(i)))
+                                            if (!proc.Retorno.ElementAt(i).Tipo.Equals(ret.Valores.ElementAt(i).Tipo))
                                             {
                                                 Casteo cast = new Casteo(proc.Retorno.ElementAt(0).Tipo, ret.Valores.ElementAt(i), 0, 0)
                                                 {

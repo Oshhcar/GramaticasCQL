@@ -30,6 +30,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         public Entorno Padre { get; set; }
         public Entorno Global { get; set; }
         public MasterBD Master { get; set; }
+        public MasterBD MasterRollback { get; set; }
 
         public void Add(Simbolo sim)
         {
@@ -85,7 +86,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             Console.WriteLine("**Entorno**");
             foreach (Simbolo s in Simbolos)
             {
-                Console.WriteLine(s.Id + ", " + s.Tipo.Type + ", " + s.Rol + " " + s.Valor.ToString());
+                Console.WriteLine(s.Id + ", " + s.Tipo.ToString() + ", " + s.Rol + " " + s.Valor.ToString());
 
             }
 

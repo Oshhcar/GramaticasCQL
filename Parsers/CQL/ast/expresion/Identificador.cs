@@ -15,6 +15,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
             Id = id;
             IsId2 = false;
             IsASC = true;
+            In = true;
         }
 
         public Identificador(string id, bool isId2, int linea, int columna) : base(linea, columna)
@@ -22,6 +23,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
             Id = id;
             IsId2 = isId2;
             IsASC = true;
+            In = true;
         }
 
         public Identificador(string id, bool isId2, bool isAsc, int linea, int columna) : base(linea, columna)
@@ -29,11 +31,13 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
             Id = id;
             IsId2 = isId2;
             IsASC = isAsc;
+            In = true;
         }
 
         public string Id { get; set; }
         public bool IsId2 { get; set; }
         public bool IsASC { get; set; }
+        public bool In { get; set; }
 
         public override object GetValor(Entorno e, LinkedList<Salida> log, LinkedList<Error> errores)
         {
