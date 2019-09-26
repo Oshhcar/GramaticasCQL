@@ -22,7 +22,7 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
             string cad = "{";
             foreach (Simbolo sim in Entorno.Simbolos)
             {
-                cad += sim.Valor.ToString();
+                cad +=sim.Id + ": "+ sim.Valor.ToString();
 
                 if (!Entorno.Simbolos.Last.Value.Equals(sim))
                     cad += ", ";

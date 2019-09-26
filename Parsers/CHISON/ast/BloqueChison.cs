@@ -602,7 +602,17 @@ namespace GramaticasCQL.Parsers.CHISON.ast
                                     }
                                 }
                             }
-                            else if (atributo.Id.ToString().Equals("data"))
+
+                        }
+                    }
+
+                    foreach (Instruccion instr in Instrucciones)
+                    {
+                        if (instr is Atributo atributo)
+                        {
+                            object valorAtributo = atributo.Valor.GetValor(e, log, errores);
+
+                            if (atributo.Id.ToString().Equals("data"))
                             {
                                 if (atributo.Valor is Lista lista)
                                 {
@@ -1015,7 +1025,7 @@ namespace GramaticasCQL.Parsers.CHISON.ast
 
                 if (val.Tipo.IsVoid())
                 {
-                    string archivo = val.GetValor(e, log, errores).ToString().Replace("$", "").Replace("{", "").Replace("}", "");
+                    string archivo = val.GetValor(e, log, errores).ToString().Replace("$", "").Replace("{", "").Replace("}", "").Trim();
 
                     StreamReader reader = null;
                     try

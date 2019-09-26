@@ -68,7 +68,7 @@ namespace GramaticasCQL.Parsers.CHISON.ast
 
                 if (val.Tipo.IsVoid())
                 {
-                    string archivo = val.GetValor(e, log, errores).ToString().Replace("$", "").Replace("{", "").Replace("}", "");
+                    string archivo = val.GetValor(e, log, errores).ToString().Replace("$", "").Replace("{", "").Replace("}", "").Trim();
 
                     StreamReader reader = null;
                     try

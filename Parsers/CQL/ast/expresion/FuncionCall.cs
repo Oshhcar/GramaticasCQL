@@ -99,10 +99,52 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                 if (ret.Valor != null)
                                 {
                                     Tipo = ret.Valor.Tipo;
+
+                                    if (Tipo.IsNull())
+                                    {
+                                        if (sim.Tipo.IsNullable())
+                                        {
+                                            return ret.Valor.Valor;
+                                        }
+                                            
+                                    }
+
                                     if (Tipo.Equals(sim.Tipo))
+                                    {
                                         return ret.Valor.Valor;
+                                    }
                                     else
-                                        errores.AddLast(new Error("Semántico", "Se esperaba un valor en return de tipo: " + sim.Tipo.Type.ToString()+".", ret.Linea, ret.Columna));
+                                    {
+                                        if (sim.Tipo.IsCollection() && ret.Valor.Tipo.IsCollection())
+                                        {
+                                            if (sim.Tipo.EqualsCollection(ret.Valor.Tipo))
+                                            {
+                                                return ret.Valor.Valor;
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            Casteo cast = new Casteo(sim.Tipo, ret.Valor, 0, 0)
+                                            {
+                                                Mostrar = false
+                                            };
+
+                                            object valCast = cast.GetValor(e, log, errores);
+
+                                            if (valCast != null)
+                                            {
+                                                if (!(valCast is Throw))
+                                                {
+                                                    Tipo = cast.Tipo;
+                                                    return valCast;
+                                                }
+                                            }
+                                        }
+
+                                        errores.AddLast(new Error("Semántico", "Se esperaba un valor en return de tipo: " + sim.Tipo.Type.ToString() + ".", ret.Linea, ret.Columna));
+                                        return null;
+                                    }
                                 }
                                 else
                                     errores.AddLast(new Error("Semántico", "Se esperaba un valor en return.", ret.Linea, ret.Columna));

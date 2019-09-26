@@ -112,6 +112,16 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                 {
                                     if (proc.Retorno.Count() == 1)
                                     {
+                                        if (ret.Valor.Tipo.IsNull())
+                                        {
+                                            if (proc.Retorno.ElementAt(0).Tipo.IsNullable())
+                                            {
+                                                LinkedList<Literal> valores = new LinkedList<Literal>();
+                                                valores.AddLast(ret.Valor);
+                                                return valores;
+                                            }
+                                        }
+
                                         if (ret.Valor.Tipo.Equals(proc.Retorno.ElementAt(0).Tipo))
                                         {
                                             LinkedList<Literal> valores = new LinkedList<Literal>();
@@ -121,22 +131,38 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                                         else
                                         {
                                             /*Agregar collections*/
-
-                                            Casteo cast = new Casteo(proc.Retorno.ElementAt(0).Tipo, ret.Valor, 0, 0)
+                                            if (ret.Valor.Tipo.IsCollection() && proc.Retorno.ElementAt(0).Tipo.IsCollection())
                                             {
-                                                Mostrar = false
-                                            };
+                                                if (ret.Valor.Tipo.EqualsCollection(proc.Retorno.ElementAt(0).Tipo))
+                                                {
+                                                    LinkedList<Literal> valores = new LinkedList<Literal>();
+                                                    valores.AddLast(ret.Valor);
+                                                    return valores;
+                                                }
 
-                                            object valExpr = cast.GetValor(e, log, errores);
-
-                                            if (valExpr != null)
-                                            {
-                                                LinkedList<Literal> valores = new LinkedList<Literal>();
-                                                valores.AddLast(new Literal(cast.Tipo, valExpr, 0, 0));
-                                                return valores;
                                             }
                                             else
-                                                errores.AddLast(new Error("Semántico", "Los Tipos de los valores del Return no coinciden con los del Procedimiento.", ret.Linea, ret.Columna));
+                                            {
+                                                Casteo cast = new Casteo(proc.Retorno.ElementAt(0).Tipo, ret.Valor, 0, 0)
+                                                {
+                                                    Mostrar = false
+                                                };
+
+                                                object valExpr = cast.GetValor(e, log, errores);
+
+                                                if (valExpr != null)
+                                                {
+                                                    if (!(valExpr is Throw))
+                                                    {
+                                                        LinkedList<Literal> valores = new LinkedList<Literal>();
+                                                        valores.AddLast(new Literal(cast.Tipo, valExpr, 0, 0));
+                                                        return valores;
+                                                    }
+                                                }
+                                            }
+
+                                            errores.AddLast(new Error("Semántico", "Los Tipos de los valores del Return no coinciden con los del Procedimiento.", ret.Linea, ret.Columna));
+                                            return null;
                                         }
                                     }
                                     else
@@ -194,7 +220,8 @@ namespace GramaticasCQL.Parsers.CQL.ast.expresion
                 }
 
                 if(proc.Retorno != null)
-                    errores.AddLast(new Error("Semántico", "Se esperaba Return en Procedimiento.", Linea, Columna));
+                    if(proc.Retorno.Count()>0)
+                        errores.AddLast(new Error("Semántico", "Se esperaba Return en Procedimiento.", Linea, Columna));
 
                 return null;
             }

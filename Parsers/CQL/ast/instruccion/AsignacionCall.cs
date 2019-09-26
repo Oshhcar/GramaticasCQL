@@ -57,6 +57,15 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion
 
                                 if (simIden != null)
                                 {
+                                    if (valor.Tipo.IsNull())
+                                    {
+                                        if (simIden.Tipo.IsNullable())
+                                        {
+                                            simIden.Valor = valor.Valor;
+                                            continue;
+                                        }
+                                    }
+
                                     if (simIden.Tipo.Equals(valor.Tipo))
                                     {
                                         simIden.Valor = valor.Valor;

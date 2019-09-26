@@ -22,7 +22,15 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
         public void Add(Simbolo columna)
         {
             Cabecera.Add(columna);
-            /*Agregar en todos los datos*/
+            AddFilas(columna);
+        }
+
+        public void AddFilas(Simbolo columna)
+        {
+            foreach (Entorno ent in Datos)
+            {
+                ent.Add(new Simbolo(columna.Tipo, columna.Rol, columna.Id, columna.Valor));
+            }
         }
 
         public int Drop(string columna)
@@ -35,13 +43,25 @@ namespace GramaticasCQL.Parsers.CQL.ast.entorno
                     {
                         Cabecera.Simbolos.Remove(sim);
                         /*Remover en los datos*/
-
+                        DropFilas(columna);
                         return 1;
                     }
                     return 2; //Es llave primaria
                 }
             }
             return 3; // No se encontro
+        }
+
+        public void DropFilas(string columna)
+        {
+            foreach (Entorno ent in Datos)
+            {
+                Simbolo sim = ent.GetCualquiera(columna);
+                if (sim != null)
+                {
+                    ent.Simbolos.Remove(sim);
+                }
+            }
         }
 
         public bool Insertar(Entorno dato, LinkedList<Simbolo> primary)
