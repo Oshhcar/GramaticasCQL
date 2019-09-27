@@ -118,19 +118,22 @@ namespace GramaticasCQL.Parsers.CQL.ast.instruccion.ddl
 
                             if (proc.Retorno != null)
                             {
-                                if (parametro)
-                                    contenido += ",";
-
-                                foreach (Identificador par in proc.Retorno)
+                                if (proc.Retorno.Count() > 0)
                                 {
-                                    contenido += "\n\t    <\n";
-                                    contenido += "\t    \"NAME\"= \"" + par.Id + "\",\n";
-                                    contenido += "\t    \"TYPE\"= \"" + par.Tipo.ToString() + "\",\n";
-                                    contenido += "\t    \"AS\"= OUT\n";
-                                    contenido += "\t    >";
-
-                                    if (!proc.Retorno.Last.Value.Equals(par))
+                                    if (parametro)
                                         contenido += ",";
+
+                                    foreach (Identificador par in proc.Retorno)
+                                    {
+                                        contenido += "\n\t    <\n";
+                                        contenido += "\t    \"NAME\"= \"" + par.Id + "\",\n";
+                                        contenido += "\t    \"TYPE\"= \"" + par.Tipo.ToString() + "\",\n";
+                                        contenido += "\t    \"AS\"= OUT\n";
+                                        contenido += "\t    >";
+
+                                        if (!proc.Retorno.Last.Value.Equals(par))
+                                            contenido += ",";
+                                    }
                                 }
                             }
 
